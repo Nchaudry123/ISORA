@@ -2386,5 +2386,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': '第一次訓練最難，{0}。我們開始吧。',
   'Rest day, {0}. Muscles grow while you recover.': '休息日，{0}。肌肉在恢復時生長。',
   'Take it easy today, {0}. You’ve earned it.': '今天放輕鬆，{0}。這是你應得的。',
-  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': '認識你的夥伴。它會為你加油、關注你的一週，並隨你的訓練一起成長。要幫它取什麼名字？',
+  'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': '這是 Iso，你的 ISORA 夥伴。Iso 會為你加油、關注你的一週，並隨你的訓練一起成長。',
 }

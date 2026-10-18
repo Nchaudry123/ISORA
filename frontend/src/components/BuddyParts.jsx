@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { t, getLang } from '../lib/i18n.js'
@@ -8,26 +8,22 @@ import { PERSONAL } from '../lib/demo.js'
 import { cleanProfile } from '../lib/profile.js'
 import { KIND, DEFAULT_NAME, cleanBuddy, totalXP, levelOf, gearFor, moodOf, daysBetween, fallbackLine, lineKey } from '../lib/buddy.js'
 import Buddy from './Buddy.jsx'
-import { Button, TextField } from './ui.jsx'
+import { Button } from './ui.jsx'
 import Icon from './Icon.jsx'
 
-// The buddy's screens (lib/buddy.js, components/Buddy.jsx): choosing and naming it, its card on
-// Home with the line of the day, its sheet, and the level-up moment.
+// Iso's screens (lib/buddy.js, components/Buddy.jsx): meeting it, its card on Home with the line of
+// the day, its sheet, and the level-up moment.
 
 const update = fn => useStore.getState().update(fn)
 // the level the workouts so far are worth: a new buddy starts there, so meeting it is no level-up
 export const currentLevel = () => levelOf(totalXP(useStore.getState().S.workouts, setsDone)).level
 const setBuddy = patch => update(s => { s.buddy = { ...cleanBuddy(s.buddy), ...patch } })
 
-/** Meet the buddy and name it. `onDone(name)` after "Meet …". */
-export function BuddyPicker({ initialName = '', onDone, cta }) {
-  const [name, setName] = useState(initialName)
-  const shown = name.trim() || DEFAULT_NAME
+/** Meet Iso: Iso waves (tap to poke), then `onDone()` after "Meet Iso". */
+export function BuddyPicker({ onDone, cta }) {
   return <div className="bpick">
-    <div className="bpick-stage"><Buddy mood="hyped" size={170} /></div>
-    <TextField value={name} maxLength={20} placeholder={DEFAULT_NAME} aria-label={t('Name your buddy')} onChange={e => setName(e.target.value)} />
-    <div style={{ height: 12 }} />
-    <Button variant="primary" onClick={() => onDone(shown)}>{cta || t('Meet {0}', shown)}</Button>
+    <div className="bpick-stage"><Buddy mood="hyped" size={190} interactive /></div>
+    <Button variant="primary" onClick={() => onDone()}>{cta || t('Meet {0}', DEFAULT_NAME)}</Button>
   </div>
 }
 
@@ -98,16 +94,14 @@ export function BuddyCard({ doneToday, plannedToday, todayName, facts = {} }) {
 
 function BuddySheet({ close }) {
   const { S, bud, xp, lv, mood } = useBuddyState()
-  const [name, setName] = useState(bud.name)
   const gear = gearFor(lv.level)
   const prs = S.workouts.reduce((n, w) => n + ((w?.prs || []).length), 0)
   return <div className="bsheet">
     <div className="row between" style={{ marginBottom: 4 }}>
-      <h3 style={{ margin: 0 }}>{t('Your buddy')}</h3>
-      <Button size="sm" variant="ghost" onClick={() => { setBuddy({ name: name.trim() || DEFAULT_NAME }); close() }}>{t('Done')}</Button>
+      <h3 style={{ margin: 0 }}>{bud.name}</h3>
+      <Button size="sm" variant="ghost" onClick={close}>{t('Done')}</Button>
     </div>
-    <div className="bsheet-stage"><Buddy mood={mood === 'missing' ? 'missing' : 'proud'} level={lv.level} size={160} /></div>
-    <TextField value={name} maxLength={20} aria-label={t('Name your buddy')} onChange={e => setName(e.target.value)} onBlur={() => setBuddy({ name: name.trim() || DEFAULT_NAME })} />
+    <div className="bsheet-stage"><Buddy mood={mood === 'missing' ? 'missing' : mood === 'sleepy' ? 'sleepy' : 'hyped'} level={lv.level} size={180} interactive /></div>
     <div className="bsheet-level">
       <div className="row between"><b>{t('Level {0}', lv.level)}</b><span className="muted small">{t('{0} / {1} XP', lv.into, lv.need)}</span></div>
       <div className="bcard-bar big"><i style={{ width: lv.pct + '%' }} /></div>
@@ -130,7 +124,7 @@ export const buddySheet = () => useUI.getState().openSheet(close => <BuddySheet 
 function MeetSheet({ close }) {
   return <>
     <h3>{t('Meet your buddy')}</h3>
-    <BuddyPicker onDone={name => { setBuddy({ kind: KIND, name, born: todayISO(), level: currentLevel() }); close() }} />
+    <BuddyPicker onDone={() => { setBuddy({ kind: KIND, name: DEFAULT_NAME, born: todayISO(), level: currentLevel() }); close() }} />
   </>
 }
 export const meetSheet = () => useUI.getState().openSheet(close => <MeetSheet close={close} />)

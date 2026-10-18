@@ -2393,5 +2393,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': 'El primer entreno es el más difícil, {0}. Vamos allá.',
   'Rest day, {0}. Muscles grow while you recover.': 'Día de descanso, {0}. Los músculos crecen mientras descansas.',
   'Take it easy today, {0}. You’ve earned it.': 'Tómatelo con calma hoy, {0}. Te lo has ganado.',
-  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'Conoce a tu compañero. Te anima, vigila tu semana y crece contigo al entrenar. ¿Cómo lo vas a llamar?',
+  'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Este es Iso, tu compañero de ISORA. Iso te anima, vigila tu semana y crece contigo al entrenar.',
 }

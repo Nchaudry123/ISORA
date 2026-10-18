@@ -2393,5 +2393,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': 'İlk antrenman en zorudur, {0}. Hadi yapalım.',
   'Rest day, {0}. Muscles grow while you recover.': 'Dinlenme günü, {0}. Kaslar dinlenirken büyür.',
   'Take it easy today, {0}. You’ve earned it.': 'Bugün rahat ol, {0}. Bunu hak ettin.',
-  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'Arkadaşınla tanış. Seni destekler, haftanı takip eder ve antrenmanınla birlikte büyür. Adını ne koyacaksın?',
+  'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Bu Iso, ISORA arkadaşın. Iso seni destekler, haftanı takip eder ve antrenmanınla birlikte büyür.',
 }

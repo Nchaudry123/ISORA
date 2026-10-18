@@ -2390,5 +2390,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': 'Перше тренування найважче, {0}. Уперед.',
   'Rest day, {0}. Muscles grow while you recover.': 'День відпочинку, {0}. М’язи ростуть під час відновлення.',
   'Take it easy today, {0}. You’ve earned it.': 'Сьогодні легше, {0}. Ти це заслужив.',
-  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'Познайомся з напарником. Він підбадьорює тебе, стежить за тижнем і росте разом із тренуваннями. Як ти його назвеш?',
+  'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Це Iso, твій напарник в ISORA. Iso підбадьорює тебе, стежить за тижнем і росте разом із тренуваннями.',
 }

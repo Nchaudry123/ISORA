@@ -2396,5 +2396,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': 'Az első edzés a legnehezebb, {0}. Gyerünk.',
   'Rest day, {0}. Muscles grow while you recover.': 'Pihenőnap, {0}. Az izmok a pihenés alatt nőnek.',
   'Take it easy today, {0}. You’ve earned it.': 'Ma lazíts, {0}. Megérdemled.',
-  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'Ismerd meg a társad. Biztat, figyeli a hetedet, és veled együtt fejlődik. Minek nevezed el?',
+  'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Ő Iso, az ISORA-társad. Iso biztat, figyeli a hetedet, és veled együtt fejlődik.',
 }

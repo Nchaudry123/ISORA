@@ -2,8 +2,9 @@
 // how your training is going and grows with it. Pure helpers here — who it is, its mood, its level
 // and the words it falls back on when the line of the day cannot come from the server.
 
-// One buddy: a square block creature in the app's blue (the accent), like the blocks of the logo
-// and of Rest Blast. Earlier versions offered four; any of them now reads as this one.
+// One buddy, Iso: a square block creature in the app's blue (the accent), like the blocks of the logo
+// and of Rest Blast. Earlier versions offered four shapes and a name of your own; any of them now
+// reads as Iso.
 export const KIND = 'block'
 export const KIND_COLOR = 'var(--acc)'
 export const DEFAULT_NAME = 'Iso'
@@ -14,7 +15,7 @@ export const emptyBuddy = () => ({ kind: null, name: '', born: null, level: 1, l
 export function cleanBuddy(b) {
   const o = b && typeof b === 'object' ? b : {}
   const kind = typeof o.kind === 'string' && o.kind ? KIND : null
-  const name = typeof o.name === 'string' && o.name.trim() ? o.name.trim().slice(0, 20) : (kind ? DEFAULT_NAME : '')
+  const name = kind ? DEFAULT_NAME : ''
   const lvl = Number(o.level)
   const line = o.line && typeof o.line === 'object' && typeof o.line.text === 'string' && typeof o.line.key === 'string'
     ? { key: o.line.key.slice(0, 40), text: o.line.text.slice(0, 200) } : null

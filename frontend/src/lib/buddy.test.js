@@ -2,10 +2,10 @@ import { describe, it, expect } from 'vitest'
 import { cleanBuddy, emptyBuddy, totalXP, levelOf, xpForLevel, gearFor, moodOf, daysBetween, fallbackLine, lineKey, LINES } from './buddy.js'
 
 describe('the buddy', () => {
-  it('keeps a valid buddy and names an unnamed one after its kind', () => {
-    expect(cleanBuddy({ kind: 'block', name: '  Momo ', born: '2026-10-18', level: 3 })).toEqual({ kind: 'block', name: 'Momo', born: '2026-10-18', level: 3, line: null })
-    // one buddy now: an earlier choice of another shape keeps its name and level, as Iso's shape
-    expect(cleanBuddy({ kind: 'drop', name: 'Remi', level: 4 })).toMatchObject({ kind: 'block', name: 'Remi', level: 4 })
+  it('keeps a valid buddy, always called Iso', () => {
+    expect(cleanBuddy({ kind: 'block', name: '  Momo ', born: '2026-10-18', level: 3 })).toEqual({ kind: 'block', name: 'Iso', born: '2026-10-18', level: 3, line: null })
+    // one buddy now: an earlier shape or name of your own becomes Iso, keeping its level
+    expect(cleanBuddy({ kind: 'drop', name: 'Remi', level: 4 })).toMatchObject({ kind: 'block', name: 'Iso', level: 4 })
     expect(cleanBuddy({ kind: 'block' }).name).toBe('Iso')
     expect(cleanBuddy({ level: -2 })).toEqual(emptyBuddy())
     expect(cleanBuddy({ kind: 'block', line: { key: 'k', text: 'hi' } }).line).toEqual({ key: 'k', text: 'hi' })

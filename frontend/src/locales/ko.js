@@ -2393,5 +2393,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': '첫 운동이 제일 어려워요, {0}. 해 봐요.',
   'Rest day, {0}. Muscles grow while you recover.': '휴식일이에요, {0}. 근육은 쉬는 동안 자라요.',
   'Take it easy today, {0}. You’ve earned it.': '오늘은 편하게, {0}. 그럴 자격 있어요.',
-  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': '친구를 만나 보세요. 응원해 주고, 한 주를 챙기고, 운동하면서 함께 자라요. 이름을 뭐라고 지을까요?',
+  'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'ISORA 친구 Iso예요. Iso는 응원해 주고, 한 주를 챙기고, 운동하면서 함께 자라요.',
 }

@@ -2393,5 +2393,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': 'पहला वर्कआउट सबसे मुश्किल होता है, {0}। चलिए करते हैं।',
   'Rest day, {0}. Muscles grow while you recover.': 'आराम का दिन, {0}। रिकवरी में मांसपेशियाँ बढ़ती हैं।',
   'Take it easy today, {0}. You’ve earned it.': 'आज आराम से, {0}। आपने यह कमाया है।',
-  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'अपने साथी से मिलें। यह आपका हौसला बढ़ाता है, आपके हफ़्ते पर नज़र रखता है और आपकी ट्रेनिंग के साथ बढ़ता है। इसे क्या नाम देंगे?',
+  'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'यह Iso है, आपका ISORA साथी। Iso आपका हौसला बढ़ाता है, आपके हफ़्ते पर नज़र रखता है और आपकी ट्रेनिंग के साथ बढ़ता है।',
 }
