@@ -11,6 +11,7 @@ import { ACCENTS, ACCENT_NAMES, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY, 
 import { cleanStats, emptyStats } from '../lib/blockblast.js'
 import { cleanProfile } from '../lib/profile.js'
 import { Avatar, profileSheet } from '../components/ProfileSheet.jsx'
+import CloudBackupSection from '../components/CloudBackupSection.jsx'
 import { inventoryFor, ownsPlates } from '../lib/plates.js'
 import { dumbbellsOf } from '../lib/dumbbells.js'
 import { effortOf } from '../lib/history.js'
@@ -258,7 +259,7 @@ export default function Settings({ page = null, find = null, via = null }) {
   // and the copy it exports is the one that has not reached the server.
   const doExport = async () => {
     const json = JSON.stringify(useStore.getState().S, null, 2)
-    const name = 'opengym-backup-' + todayISO() + '.json'
+    const name = 'isora-backup-' + todayISO() + '.json'
     // WKWebView can't download blob URLs — the native build hands the file to the share sheet.
     if (MOBILE) {
       try { await shareExport(json, name); toast(t('Backup exported')) } catch (e) { /* share sheet dismissed */ }
@@ -784,6 +785,7 @@ export default function Settings({ page = null, find = null, via = null }) {
     </>,
 
     data: () => <>
+      {PERSONAL && <CloudBackupSection />}
       <Section title={t('Back up')}>
         <Row icon="share" iconTint="var(--blue)" title={t('Export backup (JSON)')} subtitle={hasMedia ? t('Without photos and videos') : undefined} accessory="chevron" onClick={doExport} />
         {hasMedia && <Row icon="share" iconTint="var(--blue)" title={t('Export with photos & videos (.zip)')} accessory="chevron" onClick={doExportZip} />}

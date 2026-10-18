@@ -20,6 +20,7 @@ import { previewOf, comingUp, recentDone, dayDistance, setsLeft } from '../lib/i
 import { exOr } from '../lib/exercises.js'
 import Elapsed from '../components/Elapsed.jsx'
 import IsoraMark from '../components/IsoraMark.jsx'
+import ThemeToggle from '../components/ThemeToggle.jsx'
 import { Avatar, profileSheet, recordsSheet, recordsOf, setText } from '../components/ProfileSheet.jsx'
 import { cleanProfile, greetingFor } from '../lib/profile.js'
 
@@ -134,7 +135,10 @@ export default function Home() {
         <div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}
           {prof.weekTarget > 0 && <span className={'wk-goal' + (doneThisWeek >= prof.weekTarget ? ' met' : '')}>{t('{0} of {1} this week', doneThisWeek, prof.weekTarget)}</span>}</div>
       </div>
-      <button className="iconbtn" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="gear" />{trouble && <span className="tab-dot" aria-hidden="true" />}</button>
+      <div className="hdr-actions-iso">
+        <ThemeToggle />
+        <button className="iconbtn" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="gear" />{trouble && <span className="tab-dot" aria-hidden="true" />}</button>
+      </div>
     </div>
 
     {/* The week as a row of story circles: ringed when planned, filled when done, today bold.
@@ -230,6 +234,12 @@ export default function Home() {
 
     <h3 className="inbox-h">{t('More')}</h3>
     <div className="inbox">
+      {/* what the first-run coach said to focus on (components/Onboarding.jsx) */}
+      {prof.focus && <div className="ib-row" {...tappable(profileSheet)}>
+        <span className="ib-av" style={{ background: 'var(--acc)' }}><Icon name="target" /></span>
+        <div className="ib-body"><div className="ib-t">{t('Your focus')}</div><div className="pv">{prof.focusAreas.length ? prof.focusAreas.join(' · ') : prof.focus}</div></div>
+        <div className="ib-side"><Icon name="chevronRight" className="chev" /></div>
+      </div>}
       {/* your personal records, newest first (components/ProfileSheet.jsx) */}
       {recs.length > 0 && <div className="ib-row" {...tappable(recordsSheet)}>
         <span className="ib-av" style={{ background: 'var(--record)', color: '#000' }}><Icon name="trophy" /></span>

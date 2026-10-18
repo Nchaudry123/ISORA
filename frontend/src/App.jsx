@@ -26,6 +26,8 @@ import Toast from './components/Toast.jsx'
 import SyncBanner from './components/SyncBanner.jsx'
 import RestTimer from './components/RestTimer.jsx'
 import RestGame from './components/RestGame.jsx'
+import Onboarding from './components/Onboarding.jsx'
+import CloudSync from './components/CloudSync.jsx'
 import TimerFlash from './components/TimerFlash.jsx'
 import { openDeviceLinkRedeem } from './components/Passkeys.jsx'
 import Login from './views/Login.jsx'
@@ -63,7 +65,7 @@ function applyPrefs(theme, accent) {
   de.dataset.theme = resolveTheme(theme)
   applyAccent(de, accent, de.dataset.theme)
   const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta) meta.content = de.dataset.theme === 'light' ? '#f2f2f7' : '#000000'
+  if (meta) meta.content = de.dataset.theme === 'light' ? '#f2f2f7' : '#0a0d12'
   if (MOBILE) setSystemBarsLight(de.dataset.theme === 'light')
 }
 
@@ -240,6 +242,8 @@ function Shell() {
       <SyncBanner />
       {!noTabs && <TabBar onStart={startFlow} />}
       <RestGame />
+      {authed && <Onboarding />}
+      <CloudSync />
       <RestTimer />
       <Modals />
       <Toast />

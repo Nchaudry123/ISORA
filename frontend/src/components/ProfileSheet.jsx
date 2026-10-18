@@ -40,6 +40,11 @@ function ProfileSheet({ close }) {
     <div className="pf-hero"><Avatar profile={{ ...p, name }} size={76} /></div>
     <TextField value={name} maxLength={40} placeholder={t('Your name')} aria-label={t('Your name')}
       onChange={e => setName(e.target.value)} onBlur={() => save({ name })} />
+    {p.focus && <div className="pf-focus">
+      <div className="pf-focus-t">{t('Your focus')}</div>
+      <p>{p.focus}</p>
+      {p.focusAreas.length > 0 && <div className="ob-areas">{p.focusAreas.map(a => <span key={a}>{a}</span>)}</div>}
+    </div>}
 
     <h2 className="sect-t pf-h">{t('Avatar')}</h2>
     <div className="pf-grid">

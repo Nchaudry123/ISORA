@@ -3,7 +3,7 @@ import { cleanProfile, emptyProfile, initialOf, greetingFor, personalRecords } f
 
 describe('the profile', () => {
   it('keeps what is valid and drops the rest', () => {
-    expect(cleanProfile({ name: '  Namir  ', avatar: '🔥', goal: 'strength', weekTarget: 4 })).toEqual({ name: 'Namir', avatar: '🔥', goal: 'strength', weekTarget: 4 })
+    expect(cleanProfile({ name: '  Namir  ', avatar: '🔥', goal: 'strength', weekTarget: 4 })).toEqual({ ...emptyProfile(), name: 'Namir', avatar: '🔥', goal: 'strength', weekTarget: 4 })
     expect(cleanProfile({ name: 42, avatar: '<img>', goal: 'fly', weekTarget: 9 })).toEqual(emptyProfile())
     expect(cleanProfile(null)).toEqual(emptyProfile())
     expect(cleanProfile({ name: 'x'.repeat(80) }).name).toHaveLength(40)
