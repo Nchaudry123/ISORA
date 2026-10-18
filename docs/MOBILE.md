@@ -245,8 +245,8 @@ into both native projects — re-run it after every web-code change before build
 
 ## App icons & splash screens
 
-`frontend/resources/icon.svg` is the single source: ISORA's balance glyph (two equal blocks on
-a beam over a fulcrum) on the app background. One script renders every icon from it, the PWA
+`frontend/resources/icon.svg` is the single source: ISORA's mark (a lime speech bubble
+holding an I of three blocks) on the app background. One script renders every icon from it, the PWA
 ones in `public/` and the PNG sources `@capacitor/assets` needs (`resources/icon-only.png`, the
 adaptive-icon `icon-foreground.png` / `icon-background.png`, `splash.png`, `splash-dark.png`);
 the generator then writes the native Android and iOS icons and splash screens:
@@ -254,7 +254,7 @@ the generator then writes the native Android and iOS icons and splash screens:
 ```sh
 cd frontend
 node scripts/build-icons.mjs
-npx @capacitor/assets generate --ios --android --iconBackgroundColor '#0c0e12' --splashBackgroundColor '#0c0e12' --iconBackgroundColorDark '#0c0e12' --splashBackgroundColorDark '#0c0e12'
+npx @capacitor/assets generate --ios --android --iconBackgroundColor '#0a0d12' --splashBackgroundColor '#0a0d12' --iconBackgroundColorDark '#0a0d12' --splashBackgroundColorDark '#0a0d12'
 ```
 
 The generator also rewrites the whitespace of `AndroidManifest.xml`, `mipmap-anydpi-v26/*.xml`

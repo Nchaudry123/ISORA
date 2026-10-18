@@ -2267,4 +2267,14 @@ export default {
   'All data stays on this device': 'Tüm veriler bu cihazda kalır',
   'Everything stays on this device.': 'Her şey bu cihazda kalır.',
   'ISORA updates itself the next time you open it after a new version is published.': 'ISORA, yeni bir sürüm yayınlandıktan sonra bir sonraki açılışta kendini günceller.',
+  // --- ISORA inbox ---
+  'Coming up': 'Sıradakiler',
+  'Tomorrow': 'Yarın',
+  'Yesterday': 'Dün',
+  '+{0} more': '+{0} daha',
+  'Last: {0}': 'Son: {0}',
+  'Log today’s weight': 'Bugünkü kilonu gir',
+  'No weigh-ins yet': 'Henüz tartım yok',
+  '{0} set left': '{0} set kaldı',
+  '{0} sets left': '{0} set kaldı',
 }

@@ -2346,4 +2346,14 @@ export default {
   'All data stays on this device': 'সব ডেটা এই ডিভাইসেই থাকে',
   'Everything stays on this device.': 'সবকিছু এই ডিভাইসেই থাকে।',
   'ISORA updates itself the next time you open it after a new version is published.': 'নতুন সংস্করণ প্রকাশের পর পরের বার খুললে ISORA নিজেই আপডেট হয়।',
+  // --- ISORA inbox ---
+  'Coming up': 'আসছে',
+  'Tomorrow': 'আগামীকাল',
+  'Yesterday': 'গতকাল',
+  '+{0} more': '+আরও {0}',
+  'Last: {0}': 'শেষ: {0}',
+  'Log today’s weight': 'আজকের ওজন লিখুন',
+  'No weigh-ins yet': 'এখনো কোনো ওজন নেই',
+  '{0} set left': '{0}টি সেট বাকি',
+  '{0} sets left': '{0}টি সেট বাকি',
 }

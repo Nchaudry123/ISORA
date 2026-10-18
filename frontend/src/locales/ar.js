@@ -2322,4 +2322,14 @@ export default {
   'All data stays on this device': 'تبقى كل البيانات على هذا الجهاز',
   'Everything stays on this device.': 'يبقى كل شيء على هذا الجهاز.',
   'ISORA updates itself the next time you open it after a new version is published.': 'يُحدِّث ISORA نفسه في المرة التالية التي تفتحه فيها بعد نشر إصدار جديد.',
+  // --- ISORA inbox ---
+  'Coming up': 'القادم',
+  'Tomorrow': 'غدًا',
+  'Yesterday': 'أمس',
+  '+{0} more': '+{0} أخرى',
+  'Last: {0}': 'الأخير: {0}',
+  'Log today’s weight': 'سجّل وزن اليوم',
+  'No weigh-ins yet': 'لا توجد أوزان بعد',
+  '{0} set left': 'تبقّت {0} مجموعة',
+  '{0} sets left': 'تبقّت {0} مجموعات',
 }

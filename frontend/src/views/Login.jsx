@@ -7,6 +7,7 @@ import { DEMO, PERSONAL, REPO } from '../lib/demo.js'
 import { guestAllowed } from '../lib/guest.js'
 import { useState, useRef, useEffect } from 'react'
 import Icon from '../components/Icon.jsx'
+import IsoraMark from '../components/IsoraMark.jsx'
 import { Button, Segmented } from '../components/ui.jsx'
 import { askAddDeviceData } from '../sheets.jsx'
 import { passwordOn, PasswordRegisterForm, openPasswordSignIn } from '../components/PasswordAuth.jsx'
@@ -77,7 +78,7 @@ export default function Login() {
   }
   const head = <>
     {PERSONAL
-      ? <img src="icon-512.png" alt="" width="88" height="88" style={{ display: 'block', margin: '0 auto', borderRadius: 20 }} />
+      ? <IsoraMark className="isora-mark login-mark" size={84} />
       : <div style={{ fontSize: 54, display: 'flex', justifyContent: 'center', color: 'var(--acc)' }}><Icon name="dumbbell" /></div>}
     <h1 style={{ fontSize: 34, fontWeight: 700, letterSpacing: '-.028em', margin: '10px 0 4px' }}>ISORA</h1>
   </>

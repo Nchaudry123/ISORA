@@ -1,17 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512">
-  <!-- ISORA app icon (Greek ισορροπία, "balance"): two equal puzzle blocks, one on each end of a
-       beam balanced on its fulcrum. Source for public/icon-180/192/512.png
-       (node scripts/build-icons.mjs). Content stays inside the central 80% so the maskable crop
-       never cuts it. -->
-  <rect width="512" height="512" fill="#0c0e12"/>
-    <rect x="104" y="167" width="40" height="40" rx="7" fill="#a3e635"/>
-    <rect x="150" y="167" width="40" height="40" rx="7" fill="#a3e635"/>
-    <rect x="104" y="213" width="40" height="40" rx="7" fill="#a3e635"/>
-    <rect x="150" y="213" width="40" height="40" rx="7" fill="#a3e635"/>
-    <rect x="322" y="167" width="40" height="40" rx="7" fill="#a3e635"/>
-    <rect x="368" y="167" width="40" height="40" rx="7" fill="#a3e635"/>
-    <rect x="322" y="213" width="40" height="40" rx="7" fill="#a3e635"/>
-    <rect x="368" y="213" width="40" height="40" rx="7" fill="#a3e635"/>
-    <rect x="96" y="259" width="320" height="22" rx="11" fill="#a3e635"/>
-    <path d="M256 289 L322 365 L190 365 Z" fill="#4d7c0f" stroke="#4d7c0f" stroke-width="14" stroke-linejoin="round"/>
+  <!-- ISORA app icon: a speech bubble (the app talks to you in a message-style inbox) holding an
+       I built from three blocks, its top and bottom bars equal: ισορροπία, balance, and the blocks
+       of Rest Blast. Source for every icon (node scripts/build-icons.mjs). Everything, the tail
+       too, stays inside the central circle the maskable crop keeps. -->
+  <rect width="512" height="512" fill="#0a0d12"/>
+  <path fill="#a3e635" d="M184 92h144a88 88 0 0 1 88 88v120a88 88 0 0 1-88 88H226l-70 40 10-48a88 88 0 0 1-70-86V180a88 88 0 0 1 88-88Z"/>
+  <g fill="#0a0d12">
+    <rect x="190" y="150" width="132" height="38" rx="11"/>
+    <rect x="237" y="199" width="38" height="82" rx="10"/>
+    <rect x="190" y="292" width="132" height="38" rx="11"/>
+  </g>
 </svg>

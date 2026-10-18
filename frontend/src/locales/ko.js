@@ -2267,4 +2267,14 @@ export default {
   'All data stays on this device': '모든 데이터는 이 기기에만 저장됩니다',
   'Everything stays on this device.': '모든 것이 이 기기에 남습니다.',
   'ISORA updates itself the next time you open it after a new version is published.': '새 버전이 나오면 다음에 열 때 ISORA가 스스로 업데이트됩니다.',
+  // --- ISORA inbox ---
+  'Coming up': '다가오는 운동',
+  'Tomorrow': '내일',
+  'Yesterday': '어제',
+  '+{0} more': '+{0}개 더',
+  'Last: {0}': '최근: {0}',
+  'Log today’s weight': '오늘 체중 기록',
+  'No weigh-ins yet': '아직 체중 기록 없음',
+  '{0} set left': '{0}세트 남음',
+  '{0} sets left': '{0}세트 남음',
 }

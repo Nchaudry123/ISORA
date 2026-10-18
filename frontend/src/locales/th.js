@@ -2278,4 +2278,14 @@ export default {
   'All data stays on this device': 'ข้อมูลทั้งหมดอยู่ในอุปกรณ์นี้',
   'Everything stays on this device.': 'ทุกอย่างอยู่ในอุปกรณ์นี้',
   'ISORA updates itself the next time you open it after a new version is published.': 'ISORA จะอัปเดตตัวเองเมื่อคุณเปิดครั้งถัดไปหลังมีเวอร์ชันใหม่',
+  // --- ISORA inbox ---
+  'Coming up': 'ถัดไป',
+  'Tomorrow': 'พรุ่งนี้',
+  'Yesterday': 'เมื่อวาน',
+  '+{0} more': '+อีก {0}',
+  'Last: {0}': 'ล่าสุด: {0}',
+  'Log today’s weight': 'บันทึกน้ำหนักวันนี้',
+  'No weigh-ins yet': 'ยังไม่มีการชั่งน้ำหนัก',
+  '{0} set left': 'เหลือ {0} เซ็ต',
+  '{0} sets left': 'เหลือ {0} เซ็ต',
 }

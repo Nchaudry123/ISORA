@@ -2270,4 +2270,14 @@ export default {
   'All data stays on this device': 'Minden adat ezen az eszközön marad',
   'Everything stays on this device.': 'Minden ezen az eszközön marad.',
   'ISORA updates itself the next time you open it after a new version is published.': 'Az ISORA a következő megnyitáskor frissül, ha új verzió jelent meg.',
+  // --- ISORA inbox ---
+  'Coming up': 'Következik',
+  'Tomorrow': 'Holnap',
+  'Yesterday': 'Tegnap',
+  '+{0} more': '+{0} további',
+  'Last: {0}': 'Utoljára: {0}',
+  'Log today’s weight': 'Mai súly rögzítése',
+  'No weigh-ins yet': 'Még nincs mérés',
+  '{0} set left': 'Még {0} sorozat',
+  '{0} sets left': 'Még {0} sorozat',
 }

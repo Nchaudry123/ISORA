@@ -2264,4 +2264,14 @@ export default {
   'All data stays on this device': 'Усі дані залишаються на цьому пристрої',
   'Everything stays on this device.': 'Усе залишається на цьому пристрої.',
   'ISORA updates itself the next time you open it after a new version is published.': 'ISORA оновиться під час наступного запуску після виходу нової версії.',
+  // --- ISORA inbox ---
+  'Coming up': 'Далі',
+  'Tomorrow': 'Завтра',
+  'Yesterday': 'Учора',
+  '+{0} more': '+ще {0}',
+  'Last: {0}': 'Останнє: {0}',
+  'Log today’s weight': 'Записати сьогоднішню вагу',
+  'No weigh-ins yet': 'Зважувань поки немає',
+  '{0} set left': 'Залишився {0} підхід',
+  '{0} sets left': { one: 'Залишився {0} підхід', few: 'Залишилося {0} підходи', many: 'Залишилося {0} підходів' },
 }

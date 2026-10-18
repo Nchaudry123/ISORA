@@ -1413,6 +1413,7 @@ export const PT_BR_OVERRIDES = {
   'Reset Rest Blast record?': 'Redefinir o recorde do Rest Blast?',
   'Your best score, rounds and lines go back to zero.': 'Sua melhor pontuação, rodadas e linhas voltam a zero.',
   'ISORA updates itself the next time you open it after a new version is published.': 'O ISORA se atualiza na próxima vez que você abrir depois que uma nova versão for publicada.',
+  'Log today’s weight': 'Registre o peso de hoje',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

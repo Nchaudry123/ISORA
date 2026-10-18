@@ -11,6 +11,10 @@ as a backend-free personal web app (`VITE_DEMO=1 VITE_PERSONAL=1`, `lib/demo.js`
 Vercel (`frontend/vercel.json`) and GitHub Pages. User-visible text says ISORA; internal
 identifiers (storage keys, backup file names, `Documents/openGym`) keep openGym names on purpose
 so data stays compatible. The exercise media is licensed for non-commercial forks only (NOTICE.md).
+UI: `frontend/src/isora.css` is ISORA's design layer over index.css (message-app style: one type
+scale, grouped lists, lime = effort, violet `--rest` = recovery). Home is an inbox built from
+`lib/inbox.js`; its row classes use the `ib-` prefix because coach.css already owns `.msg`.
+The logo source is `frontend/resources/icon.svg` (`components/IsoraMark.jsx` for in-app use).
 
 What follows is openGym's own guide, still accurate for the code.
 

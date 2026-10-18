@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { effectiveRoutines, effectiveRoutineIds, nextTrainingDay, streakWeeks, lastBW, setsDoneActive } from '../lib/history.js'
-import { fmtNum, fmtDate, todayISO, isoOf, weekStartOf, weekDayOffset, DAYS, DAYN } from '../lib/format.js'
+import { effectiveRoutines, effectiveRoutineIds, nextTrainingDay, streakWeeks, lastBW, setsDoneActive, setsDone } from '../lib/history.js'
+import { fmtNum, fmtDate, todayISO, isoOf, weekStartOf, weekDayOffset, DAYS, DAYN, exerciseNameText, durPart, fmtVol } from '../lib/format.js'
 import { t, tn, dateLocale } from '../lib/i18n.js'
-import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, starterPlanSheet, bwDeltaColor, weighInsSheet } from '../sheets.jsx'
+import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, starterPlanSheet, bwDeltaColor, weighInsSheet, workoutDetailSheet } from '../sheets.jsx'
 import LineChart from '../components/LineChart.jsx'
 import Icon from '../components/Icon.jsx'
 import QueueRow from '../components/QueueRow.jsx'
@@ -16,6 +16,10 @@ import { tappable } from '../lib/use-sheet-keyboard.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { dayNoteOf } from '../lib/day-notes.js'
 import { cleanStats } from '../lib/blockblast.js'
+import { previewOf, comingUp, recentDone, dayDistance, setsLeft } from '../lib/inbox.js'
+import { exOr } from '../lib/exercises.js'
+import Elapsed from '../components/Elapsed.jsx'
+import IsoraMark from '../components/IsoraMark.jsx'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
@@ -102,118 +106,143 @@ export default function Home() {
   // already in progress wins, as on the today row — starting another would overwrite it.
   const onQueueStart = id => { if (S.active) nav('/workout'); else startFlow([id]) }
 
-  return <div className="narrow">
+  // The inbox (lib/inbox.js): coming up and recently done, as message rows under today's.
+  const nameOf = id => exerciseNameText(exOr(id))
+  const previewText = r => { const p = previewOf(r, nameOf); return p.text + (p.more ? ' ' + t('+{0} more', p.more) : '') }
+  const ahead = rotating && !plannerQueue ? [] : comingUp(todayISO(), iso => effectiveRoutines(S, iso), { count: 4 })
+  const recent = recentDone(S.workouts, 3)
+  const when = iso => {
+    const k = dayDistance(iso, todayISO())
+    const d = new Date(iso + 'T12:00:00')
+    return k === 'today' ? t('Today') : k === 'tomorrow' ? t('Tomorrow') : k === 'yesterday' ? t('Yesterday')
+      : k === 'week' ? d.toLocaleDateString(dateLocale(), { weekday: 'short' }) : d.toLocaleDateString(dateLocale(), { day: 'numeric', month: 'short' })
+  }
+  const weighedToday = bw && bw.d === todayISO()
+  const left = setsLeft(S.active)
+
+  return <div className="narrow home-inbox">
     <div className="hdr">
-      <div><h1>{user ? t('Hi {0}', user.name) : <span className="brand"><Icon name="balance" />ISORA</span>}</h1><div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+      <div><h1>{user ? t('Hi {0}', user.name) : <span className="brand"><IsoraMark />ISORA</span>}</h1><div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
       <button className="iconbtn" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="gear" />{trouble && <span className="tab-dot" aria-hidden="true" />}</button>
     </div>
 
-    <div className="card">
-      {/* A coach week runs by order, not by weekday, so its progress row stands in for the
-          seven dots (components/QueueRow.jsx). The today row below stays as it is: the queue's
-          next session reaches it through effectiveRoutineIds like any planned routine. */}
-      {rotating ? (queue ? <QueueRow S={S} today={todayISO()} onStart={onQueueStart} managed={managedQueue} /> : <div className="empty">
+    {/* The week as a row of story circles: ringed when planned, filled when done, today bold.
+        A coach week or a rotation runs by order, not by weekday, so its progress row stands in
+        for the circles (components/QueueRow.jsx). */}
+    {rotating ? <div className="card">
+      {queue ? <QueueRow S={S} today={todayISO()} onStart={onQueueStart} managed={managedQueue} /> : <div className="empty">
         {t('No rotation yet. Add routines to it in Plan.')}
         <div style={{ marginTop: 10 }}><Button size="sm" variant="tinted" onClick={() => nav('/plan')}>{t('Set up in Plan')}</Button></div>
-      </div>) : <>
-        <div className="row between" style={{ marginBottom: 8 }}>
-          <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Previous week')}><Icon name="chevronLeft" /></button>
-          <div className="small muted" style={{ fontWeight: 500 }}>{wkLabel}</div>
-          <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next week')}><Icon name="chevronRight" /></button>
-        </div>
-        <div className="week">{strip}</div>
-      </>}
-      {/* Once today's session is logged the row stops asking for it. The week strip already
-          knew (its dot goes 'done'); this row did not, so a finished day kept showing the
-          routine name behind a green Start tag and read as still outstanding (issue #4).
-          An in-progress session still wins — that one is happening right now. Tapping the
-          row keeps working, so a second session in one day is a tap away, just not urged. */}
-      {/* The state class drives ISORA's hero treatment (isora.css): a lime block on a training
-          day, the recovery colour on a rest day. */}
-      <div className={'today-row ' + (S.active ? 'is-active' : doneToday ? 'is-done' : routine ? 'is-train' : 'is-rest')} {...tappable(onToday)}>
-        <div className="row" style={{ gap: 9, minWidth: 0 }}>
-          <span className="lrow-i" style={{ background: S.active ? 'var(--orange)' : doneToday ? 'var(--surface-3)' : routine ? 'var(--acc)' : 'var(--surface-3)' }}>
-            <Icon name={S.active ? (editingSaved ? 'pencil' : 'play') : doneToday ? 'checkCircle' : routine ? glyphOf(routine.emoji) : 'moon'}
-              style={doneToday && !S.active ? { color: 'var(--green)' } : undefined} />
-          </span>
-          <div style={{ minWidth: 0 }}>
-            <div className="lbl2">{t('Today')}</div>
-            <div className="ttl">{S.active ? (editingSaved ? S.active.name : t('{0} (in progress)', S.active.name))
-              : doneToday ? (doneToday.name ? t('{0} (done)', doneToday.name) : t('Workout done'))
-              : routine ? todayName : t('Rest day')}</div>
-            {/* A moved day says so on the small line, not in the hero title (isora.css). */}
-            {todayOvr && routine && !doneToday && !S.active && <div className="ss resch">{t('rescheduled')}</div>}
-            {next && !doneToday && <div className="ss">{t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name)}</div>}
-          </div>
-        </div>
-        {S.active ? <span className="tag" style={{ color: 'var(--orange)', background: 'color-mix(in srgb,var(--orange) 16%,transparent)' }}>{editingSaved ? t('Edit') : t('Resume')}</span>
-          : doneToday ? <span className="tag" style={{ color: 'var(--green)', background: 'color-mix(in srgb,var(--green) 16%,transparent)' }}>{t('Done')}</span>
-          : routine ? <span className="tag acc">{t('Start')}</span>
-          : <Icon name="plus" className="chev" />}
+      </div>}
+    </div> : <div className="stories">
+      <div className="stories-head">
+        <button className="iconbtn sm" onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Previous week')}><Icon name="chevronLeft" /></button>
+        <span className="stories-lbl">{wkLabel}</span>
+        <button className="iconbtn sm" onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next week')}><Icon name="chevronRight" /></button>
       </div>
-      {/* The row above starts today's plan in one tap, and so does the Start button in the tab
-          bar — which is the whole problem when you want something else. Both jump straight into
-          the planned session whenever there is one, so the Start screen (a freestyle session,
-          and your other routines) is only reachable on a day with nothing planned. The one other
-          way in, "Choose a different workout" on the weigh-in sheet, does not exist when the
-          weigh-in is switched off. This is that door, and it starts nothing on its own. */}
-      {!S.active && <div style={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
-        <Button size="sm" variant="ghost" className="dim" icon="swap" onClick={() => nav('/workout')}>
-          {t('Choose a different workout')}
-        </Button>
+      <div className="week">{strip}</div>
+    </div>}
+
+    <h3 className="inbox-h">{t('Today')}</h3>
+    <div className="inbox">
+      {/* Once today's session is logged the row stops asking for it (issue #4); a session in
+          progress wins, and an open editor on a saved workout reads as an edit. */}
+      <div className={'today-row ib-row ' + (S.active ? 'is-active' : doneToday ? 'is-done' : routine ? 'is-train' : 'is-rest')} {...tappable(onToday)}>
+        <span className="ib-av">
+          <Icon name={S.active ? (editingSaved ? 'pencil' : 'play') : doneToday ? 'checkCircle' : routine ? glyphOf(routine.emoji) : 'moon'} />
+        </span>
+        <div className="ib-body">
+          <div className="ttl">{S.active ? (editingSaved ? S.active.name : t('{0} (in progress)', S.active.name))
+            : doneToday ? (doneToday.name ? t('{0} (done)', doneToday.name) : t('Workout done'))
+            : routine ? todayName : t('Rest day')}</div>
+          {next && !doneToday && <div className="ss">{t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name)}</div>}
+          {/* A moved day says so on the small line, not in the title. */}
+          {todayOvr && routine && !doneToday && !S.active && <div className="ss resch">{t('rescheduled')}</div>}
+          {S.active && !editingSaved && left > 0 && <div className="pv">{tn('{0} set left', '{0} sets left', left)}</div>}
+          {!S.active && routine && !doneToday && <div className="pv">{previewText(routine)}</div>}
+        </div>
+        <div className="ib-side">
+          <span className="ib-time">{S.active && !editingSaved ? <Elapsed start={S.active.start} /> : t('Today')}</span>
+          {S.active ? <span className="tag act">{editingSaved ? t('Edit') : t('Resume')}</span>
+            : doneToday ? <span className="tag ok">{t('Done')}</span>
+            : routine ? <span className="tag acc">{t('Start')}</span>
+            : <Icon name="plus" className="chev" />}
+        </div>
+      </div>
+      {/* the weigh-in as a to-do, until today's is logged */}
+      {S.showWeightCard !== false && !weighedToday && <div className="ib-row" {...tappable(() => bwSheet())}>
+        <span className="ib-av" style={{ background: 'var(--teal)' }}><Icon name="scale" /></span>
+        <div className="ib-body"><div className="ib-t">{t('Log today’s weight')}</div>
+          <div className="pv">{bw ? t('Last: {0}', fmtNum(bw.w) + ' ' + S.unit + ' · ' + when(bw.d)) : t('No weigh-ins yet')}</div></div>
+        <div className="ib-side"><span className="ib-dot" aria-hidden="true" /></div>
       </div>}
     </div>
-
-    {/* Rest Blast: the puzzle that fills every rest. Its record (lib/blockblast.js) and whether
-        it is on; a tap goes to the switch in Settings → Workout. */}
-    <div className="card tappable rb-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/settings/workout'))}>
-      <div className="row between">
-        <div className="row" style={{ gap: 9, minWidth: 0 }}>
-          <span className="lrow-i" style={{ background: S.restGame !== false ? 'var(--rest)' : 'var(--surface-3)' }}><Icon name="balance" /></span>
-          <div style={{ minWidth: 0 }}>
-            <div className="lbl2">{t('Rest Blast')}</div>
-            <div className="ttl">{S.restGame !== false ? t('A 3:00 round in every rest') : t('Off')}</div>
-          </div>
-        </div>
-        <Icon name="chevronRight" className="chev" />
-      </div>
-      {blast.games > 0 && <div className="rb-home-stats">
-        <div><b>{blast.best}</b><span>{t('Best')}</span></div>
-        <div><b>{blast.games}</b><span>{t('Rounds')}</span></div>
-        <div><b>{blast.lines}</b><span>{t('Lines')}</span></div>
-      </div>}
-    </div>
-
-    {/* Jump to the gym check-in cards (QR membership codes). Shown here as a quick tap on
-        arrival at the gym; folds away per user via the "Gym check-in" switch in Settings. */}
-    {S.checkIn !== false && (
-      <div className="card tappable" style={{ cursor: 'pointer' }} {...tappable(() => nav('/checkin'))}>
-        <div className="row between">
-          <div className="row" style={{ gap: 9 }}>
-            <span className="lrow-i" style={{ background: 'var(--blue)' }}><Icon name="qr" /></span>
-            <div>
-              <div className="lbl2">{t('At the gym')}</div>
-              <div className="ttl">{t('Check in')}</div>
-            </div>
-          </div>
-          <Icon name="chevronRight" className="chev" />
-        </div>
-      </div>
-    )}
+    {/* Start something else than the plan: the only way to the Start screen on a planned day. */}
+    {!S.active && <div className="inbox-door">
+      <Button size="sm" variant="ghost" className="dim" icon="swap" onClick={() => nav('/workout')}>
+        {t('Choose a different workout')}
+      </Button>
+    </div>}
 
     {!S.routines.length && !S.active && (
-      <div className="card">
-        <div className="row" style={{ gap: 10, marginBottom: 6 }}>
-          <span className="lrow-i"><Icon name="calendar" /></span>
-          <div className="big" style={{ fontSize: 22 }}>{t('Welcome!')}</div>
-        </div>
-        <div className="muted small" style={{ marginBottom: 12 }}>{t('Set up your weekly routine to get going, or grab a ready-made starter plan.')}</div>
+      <div className="card welcome">
+        <div className="big">{t('Welcome!')}</div>
+        <div className="muted small" style={{ margin: '6px 0 14px' }}>{t('Set up your weekly routine to get going, or grab a ready-made starter plan.')}</div>
         <Button variant="primary" icon="clipboard" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
         <div style={{ height: 8 }} /><Button onClick={() => nav('/plan')}>{t('Build my own plan')}</Button>
       </div>
     )}
 
-    {S.showWeightCard !== false && <div className="card">
+    {ahead.length > 0 && <>
+      <h3 className="inbox-h">{t('Coming up')}</h3>
+      <div className="inbox">
+        {ahead.map(({ iso, routines }) => <div key={iso} className="ib-row" {...tappable(() => dayOverrideSheet(iso))}>
+          <span className="ib-av ghost"><Icon name={glyphOf(routines[0].emoji)} /></span>
+          <div className="ib-body"><div className="ib-t">{routines.map(r => r.name).join(' + ')}</div><div className="pv">{previewText(routines[0])}</div></div>
+          <div className="ib-side"><span className="ib-time">{when(iso)}</span></div>
+        </div>)}
+      </div>
+    </>}
+
+    {recent.length > 0 && <>
+      <h3 className="inbox-h">{t('Recent workouts')}</h3>
+      <div className="inbox">
+        {recent.map(w => <div key={w.id} className="ib-row" {...tappable(() => workoutDetailSheet(w))}>
+          <span className="ib-av done"><Icon name="checkCircle" /></span>
+          <div className="ib-body"><div className="ib-t">{w.name || t('Workout')}</div>
+            <div className="pv">{[...durPart((w.end || 0) - (w.start || 0)), tn('{0} set', '{0} sets', setsDone(w)), w.vol ? fmtVol(w.vol, S.unit) : null].filter(Boolean).join(' · ')}</div></div>
+          <div className="ib-side"><span className="ib-time">{when(w.d)}</span>
+            {w.prs?.length > 0 && <span className="ib-badge pr"><Icon name="trophy" />{w.prs.length}</span>}</div>
+        </div>)}
+      </div>
+    </>}
+
+    <h3 className="inbox-h">{t('More')}</h3>
+    <div className="inbox">
+      {/* Rest Blast: the puzzle in every rest, and its record (lib/blockblast.js). */}
+      <div className="ib-row rb-home" {...tappable(() => nav('/settings/workout'))}>
+        <span className="ib-av" style={{ background: S.restGame !== false ? 'var(--rest)' : 'var(--surface-3)' }}><Icon name="balance" /></span>
+        <div className="ib-body"><div className="ib-t">{t('Rest Blast')}</div>
+          <div className="pv">{S.restGame !== false
+            ? (blast.games ? t('Best {0} · {1} rounds', blast.best, blast.games) : t('A 3:00 round in every rest'))
+            : t('Off')}</div></div>
+        <div className="ib-side"><Icon name="chevronRight" className="chev" /></div>
+      </div>
+      {/* the gym check-in cards (QR membership codes); folds away via Settings → Gym check-in */}
+      {S.checkIn !== false && <div className="ib-row" {...tappable(() => nav('/checkin'))}>
+        <span className="ib-av" style={{ background: 'var(--blue)' }}><Icon name="qr" /></span>
+        <div className="ib-body"><div className="ib-t">{t('Check in')}</div><div className="pv">{t('At the gym')}</div></div>
+        <div className="ib-side"><Icon name="chevronRight" className="chev" /></div>
+      </div>}
+      <div className="ib-row" {...tappable(() => calendarSheet())}>
+        <span className="ib-av" style={{ background: 'var(--orange)' }}><Icon name="flame" /></span>
+        <div className="ib-body"><div className="ib-t">{t('{0} week streak', streakWeeks(S))}</div>
+          <div className="pv">{doneThisWeek}{plannedPerWeek ? ' / ' + plannedPerWeek : ''} {t('this week')} · {tn('{0} workout total', '{0} workouts total', S.workouts.length)}</div></div>
+        <div className="ib-side"><Icon name="calendar" className="chev" /></div>
+      </div>
+    </div>
+
+    {S.showWeightCard !== false && <div className="card bw-card">
       <div className="row between bw-head" style={{ marginBottom: 6 }}>
         <h2 style={{ margin: 0 }}>{t('Body weight')}</h2>
         <div className="row" style={{ gap: 8 }}>
@@ -248,18 +277,5 @@ export default function Home() {
         ? t('No weigh-ins yet. Log your weight to start the curve.')
         : t("No weigh-ins yet. Log your weight to start the curve (we also ask before every workout).")}</div>}
     </div>}
-
-    <div className="card tappable" style={{ cursor: 'pointer' }} {...tappable(() => calendarSheet())}>
-      <div className="row between">
-        <div>
-          <div className="row" style={{ gap: 7, fontSize: 22, fontWeight: 600, letterSpacing: '-.021em' }}>
-            <Icon name="flame" style={{ color: 'var(--orange)' }} />
-            {t('{0} week streak', streakWeeks(S))}
-          </div>
-          <div className="muted small" style={{ marginTop: 2 }}>{doneThisWeek}{plannedPerWeek ? ' / ' + plannedPerWeek : ''} {t('this week')} · {tn('{0} workout total', '{0} workouts total', S.workouts.length)}</div>
-        </div>
-        <Icon name="calendar" className="chev" style={{ fontSize: 20 }} />
-      </div>
-    </div>
   </div>
 }

@@ -2267,4 +2267,14 @@ export default {
   'All data stays on this device': 'सारा डेटा इसी डिवाइस पर रहता है',
   'Everything stays on this device.': 'सब कुछ इसी डिवाइस पर रहता है।',
   'ISORA updates itself the next time you open it after a new version is published.': 'नया वर्ज़न आने के बाद अगली बार खोलने पर ISORA खुद अपडेट हो जाता है।',
+  // --- ISORA inbox ---
+  'Coming up': 'आगे',
+  'Tomorrow': 'आने वाला कल',
+  'Yesterday': 'बीता कल',
+  '+{0} more': '+{0} और',
+  'Last: {0}': 'पिछला: {0}',
+  'Log today’s weight': 'आज का वज़न दर्ज करें',
+  'No weigh-ins yet': 'अभी कोई वज़न दर्ज नहीं',
+  '{0} set left': '{0} सेट बाकी',
+  '{0} sets left': '{0} सेट बाकी',
 }

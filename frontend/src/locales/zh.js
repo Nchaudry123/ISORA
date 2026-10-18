@@ -2267,4 +2267,14 @@ export default {
   'All data stays on this device': '所有数据都保存在此设备上',
   'Everything stays on this device.': '一切都保存在此设备上。',
   'ISORA updates itself the next time you open it after a new version is published.': '发布新版本后，下次打开时 ISORA 会自动更新。',
+  // --- ISORA inbox ---
+  'Coming up': '即将进行',
+  'Tomorrow': '明天',
+  'Yesterday': '昨天',
+  '+{0} more': '另外 {0} 个',
+  'Last: {0}': '上次：{0}',
+  'Log today’s weight': '记录今天的体重',
+  'No weigh-ins yet': '还没有称重记录',
+  '{0} set left': '还剩 {0} 组',
+  '{0} sets left': '还剩 {0} 组',
 }
