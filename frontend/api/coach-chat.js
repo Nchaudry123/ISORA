@@ -8,6 +8,8 @@
 // and the app runs the scripted version of the same chat. OPENROUTER_MODELS (comma-separated)
 // overrides the model list without a code change.
 
+import { limited } from './_limit.js'
+
 const ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
 // Tried in order: DeepSeek V4.1 Flash (about a twentieth of the cost of the others), Gemini Flash if
 // it is down or busy, then a second cheap provider. Every one supports strict JSON-schema output
@@ -90,6 +92,8 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ error: 'method' }) }
   const key = process.env.OPENROUTER_API_KEY
   if (!key) return res.status(503).json({ error: 'not-configured' })
+  // a whole onboarding is about ten requests; forty in ten minutes is someone scripting it
+  if (limited(req, { max: 40, windowMs: 10 * 60 * 1000 })) return res.status(429).json({ error: 'busy' })
   const messages = clean(req.body)
   if (!messages) return res.status(400).json({ error: 'bad-request' })
 

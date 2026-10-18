@@ -10,6 +10,9 @@ import { SCRIPT, normalizeProfile, scriptedFocus, pickPlan } from '../lib/onboar
 import { normalizeCode, download, saveCode } from '../lib/cloud.js'
 import { loadStarterPlan, PLAN_COPY } from '../sheets.jsx'
 import IsoraMark from './IsoraMark.jsx'
+import Buddy from './Buddy.jsx'
+import { BuddyPicker, currentLevel } from './BuddyParts.jsx'
+import { cleanBuddy } from '../lib/buddy.js'
 import Icon from './Icon.jsx'
 import { Button } from './ui.jsx'
 
@@ -19,7 +22,8 @@ import { Button } from './ui.jsx'
 // The coach is an LLM behind /api/coach-chat; when that is not available (no key, offline) the
 // same chat runs from the script, so the first open never depends on the network.
 
-const OPENER = (lang, unit) => `[ISORA was just opened for the first time. App language: ${lang}. Weight unit: ${unit}. Greet me and start.]`
+const KIND_DESC = { block: 'a square lime block', drop: 'a round violet drop', bolt: 'a tall blue block with an antenna', ember: 'a little orange flame' }
+const OPENER = (lang, unit, buddy) => `[ISORA was just opened for the first time. App language: ${lang}. Weight unit: ${unit}. In this chat you are ${buddy.name}, my ISORA buddy (${KIND_DESC[buddy.kind] || 'a small block creature'}) that I just picked and named: speak as ${buddy.name}, a warm, playful companion. Greet me and start.]`
 
 export default function Onboarding() {
   const show = useStore(s => PERSONAL && !s.S.onboarded && !s.S.routines.length && !s.S.workouts.length && !s.S.active)
@@ -36,7 +40,9 @@ function OnboardingChat() {
   const [result, setResult] = useState(null)       // the profile once the chat has it all
   const [restoring, setRestoring] = useState(false)
   const mode = useRef('ai')
-  const history = useRef([{ role: 'user', content: OPENER(getLang(), S.unit) }])
+  const [picked, setPicked] = useState(() => !!cleanBuddy(S.buddy).kind)
+  const buddy = cleanBuddy(S.buddy)
+  const history = useRef(null)
   const script = useRef({ i: 0, answers: {} })
   const end = useRef(null)
 
@@ -46,7 +52,8 @@ function OnboardingChat() {
   // --- the scripted coach -------------------------------------------------
   const askScript = () => {
     const st = SCRIPT[script.current.i]
-    say('coach', t(st.ask, script.current.answers.name || ''))
+    // the buddy introduces itself by its own name; the rest of the script uses yours
+    say('coach', script.current.i === 0 ? t('Hi, I’m {0}, your ISORA buddy. What should I call you?', cleanBuddy(useStore.getState().S.buddy).name) : t(st.ask, script.current.answers.name || ''))
     setQuick(st.quick.map(q => t(q)))
   }
   const toScript = () => {
@@ -92,9 +99,14 @@ function OnboardingChat() {
     } finally { setBusy(false) }
   }
 
-  // once per mount, even where React runs effects twice (dev StrictMode)
+  // once the buddy is chosen, and once per mount even where React runs effects twice (StrictMode)
   const started = useRef(false)
-  useEffect(() => { if (started.current) return; started.current = true; askAI() }, [])
+  useEffect(() => {
+    if (!picked || started.current) return
+    started.current = true
+    history.current = [{ role: 'user', content: OPENER(getLang(), S.unit, cleanBuddy(useStore.getState().S.buddy)) }]
+    askAI()
+  }, [picked])
 
   const send = text => {
     const v = String(text || '').trim()
@@ -144,10 +156,23 @@ function OnboardingChat() {
     } finally { setBusy(false) }
   }
 
-  return <div className="ob" role="dialog" aria-label={t('Welcome to ISORA')}>
+  // first: choose your buddy and name it; it then runs the chat as itself
+  if (!picked) return <div className="ob" role="dialog" aria-label={t('Welcome to ISORA')}>
     <div className="ob-head">
       <span className="ob-av"><IsoraMark size={24} /></span>
-      <div className="ob-head-t"><div className="ob-name">{t('ISORA coach')}</div><div className="ob-sub">{busy ? t('typing…') : t('Sets up your training')}</div></div>
+      <div className="ob-head-t"><div className="ob-name">{t('Welcome to ISORA')}</div><div className="ob-sub">{t('Pick a buddy to train with')}</div></div>
+      <button type="button" className="ob-skip" onClick={skip}>{t('Skip')}</button>
+    </div>
+    <div className="ob-thread ob-pick">
+      <p className="ob-pick-intro">{t('Your buddy cheers you on, keeps an eye on your week and grows as you train. Who’s it going to be?')}</p>
+      <BuddyPicker onDone={(kind, name) => { update(s => { s.buddy = { ...cleanBuddy(s.buddy), kind, name, born: todayISO(), level: currentLevel() } }); setPicked(true) }} />
+    </div>
+  </div>
+
+  return <div className="ob" role="dialog" aria-label={t('Welcome to ISORA')}>
+    <div className="ob-head">
+      <span className="ob-av buddy-av"><Buddy kind={buddy.kind} mood={busy ? 'active' : result ? 'proud' : 'hyped'} size={44} /></span>
+      <div className="ob-head-t"><div className="ob-name">{buddy.name}</div><div className="ob-sub">{busy ? t('typing…') : t('Your ISORA buddy')}</div></div>
       <button type="button" className="ob-skip" onClick={skip}>{t('Skip')}</button>
     </div>
 
@@ -159,7 +184,7 @@ function OnboardingChat() {
         <div className="ob-card-plan">{PLAN_COPY[pickPlan(result)]().name} · {t('{0} days a week', result.daysPerWeek)}</div>
         {result.focusAreas.length > 0 && <div className="ob-areas">{result.focusAreas.map(a => <span key={a}>{a}</span>)}</div>}
         <Button variant="primary" icon="check" onClick={apply}>{t('Set me up')}</Button>
-        <Button variant="ghost" onClick={() => { setResult(null); setMsgs([]); history.current = history.current.slice(0, 1); mode.current === 'ai' ? askAI() : toScript() }}>{t('Start over')}</Button>
+        <Button variant="ghost" onClick={() => { setResult(null); setMsgs([]); history.current = history.current.slice(0, 1); script.current = { i: 0, answers: {} }; mode.current === 'ai' ? askAI() : toScript() }}>{t('Start over')}</Button>
       </div>}
       <div ref={end} />
     </div>

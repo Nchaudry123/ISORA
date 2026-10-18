@@ -1448,6 +1448,20 @@ export const PT_BR_OVERRIDES = {
   'Sets up your training': 'Prepara seu treino',
   'Back up now': 'Fazer backup agora',
   'Back up to the cloud': 'Backup na nuvem',
+  'Hi, I’m {0}, your ISORA buddy. What should I call you?': 'Oi, eu sou o {0}, seu companheiro do ISORA. Como posso te chamar?',
+  'Your buddy cheers you on, keeps an eye on your week and grows as you train. Who’s it going to be?': 'Seu companheiro te anima, acompanha sua semana e cresce com seu treino. Quem vai ser?',
+  'Headphones': 'Fones de ouvido',
+  'Your ISORA buddy': 'Seu companheiro do ISORA',
+  'Your buddy': 'Seu companheiro',
+  'Choose your buddy': 'Escolha seu companheiro',
+  'Name your buddy': 'Dê um nome ao seu companheiro',
+  'Meet your buddy': 'Conheça seu companheiro',
+  '{0} is growing with you.': '{0} está crescendo com você.',
+  'You’ve got this, {0}. One set at a time.': 'Você consegue, {0}. Uma série de cada vez.',
+  'That’s today done, {0}. I’m proud of you.': 'Hoje está feito, {0}. Tenho orgulho de você.',
+  'Rest up, {0}. Big things tomorrow.': 'Descanse, {0}. Amanhã tem mais.',
+  'Take it easy today, {0}. You’ve earned it.': 'Vá com calma hoje, {0}. Você merece.',
+  'Workout logged. Now we recover, {0}.': 'Treino registrado. Agora vamos recuperar, {0}.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

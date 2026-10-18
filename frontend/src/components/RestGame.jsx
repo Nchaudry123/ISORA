@@ -7,6 +7,8 @@ import {
   cleanStats, recordRound,
 } from '../lib/blockblast.js'
 import { Button } from './ui.jsx'
+import Buddy from './Buddy.jsx'
+import { cleanBuddy } from '../lib/buddy.js'
 
 // Rest Blast: the block puzzle that fills a rest between sets. It opens with every rest (not
 // the short switch-sides pause) while Settings → Rest Blast is on, plays over the page with the
@@ -38,6 +40,7 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
   const [tray, setTray] = useState(() => dealTray(emptyBoard(), secondsLeft))
   const [score, setScore] = useState(0)
   const saved = useStore(s => s.S.restBlast)
+  const bud = cleanBuddy(useStore(s => s.S.buddy))
   const update = useStore(s => s.update)
   const best = Math.max(cleanStats(saved).best, oldBest())
   const [combo, setCombo] = useState(0)
@@ -157,7 +160,8 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
           <div className="rb-score">{score}</div>
           <div className="rb-best">{t('Best')} {Math.max(best, score)}</div>
         </div>
-        <div className="rb-title">{t('Rest Blast')}</div>
+        {/* your buddy watches the round with you (components/Buddy.jsx) */}
+        <div className="rb-title">{bud.kind && <Buddy kind={bud.kind} mood={over ? (over === 'time' ? 'proud' : 'missing') : 'active'} level={bud.level} size={34} />}{t('Rest Blast')}</div>
         <Button size="sm" variant="ghost" onClick={onHide}>{t('Hide')}</Button>
       </div>
 

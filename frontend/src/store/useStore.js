@@ -85,7 +85,7 @@ const gainedWorkoutMedia = (prev, next) => {
   return workoutMediaHashes(next).some(h => !had.has(h))
 }
 export const DEF = {
-  unit: 'kg', restSec: 90, restGame: true, restBlast: { best: 0, games: 0, lines: 0 }, profile: { name: '', avatar: '', goal: null, weekTarget: 0, heightCm: null, experience: null, focus: '', focusAreas: [] }, onboarded: false, restPauseSec: 15, sound: true, soundOnSilent: false, vibrateOnSilent: false, timerFlash: false, timedSetOvertime: false, keepAwake: true, lang: 'en',
+  unit: 'kg', restSec: 90, restGame: true, restBlast: { best: 0, games: 0, lines: 0 }, profile: { name: '', avatar: '', goal: null, weekTarget: 0, heightCm: null, experience: null, focus: '', focusAreas: [] }, onboarded: false, buddy: { kind: null, name: '', born: null, level: 1, line: null }, restPauseSec: 15, sound: true, soundOnSilent: false, vibrateOnSilent: false, timerFlash: false, timedSetOvertime: false, keepAwake: true, lang: 'en',
   theme: 'dark', accent: 'lime', body: 'male', targetW: null,
   bodyweight: [], routines: [], week: {}, dayPlan: {},
   // A note per day off (#261): { [iso]: { tag, text, _ts } } (lib/day-notes.js). A noted day is

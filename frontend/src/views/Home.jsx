@@ -21,6 +21,7 @@ import { exOr } from '../lib/exercises.js'
 import Elapsed from '../components/Elapsed.jsx'
 import IsoraMark from '../components/IsoraMark.jsx'
 import ThemeToggle from '../components/ThemeToggle.jsx'
+import { BuddyCard } from '../components/BuddyParts.jsx'
 import { Avatar, profileSheet, recordsSheet, recordsOf, setText } from '../components/ProfileSheet.jsx'
 import { cleanProfile, greetingFor } from '../lib/profile.js'
 
@@ -140,6 +141,10 @@ export default function Home() {
         <button className="iconbtn" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="gear" />{trouble && <span className="tab-dot" aria-hidden="true" />}</button>
       </div>
     </div>
+
+    {/* your buddy: its mood, its line of the day, its level (components/BuddyParts.jsx) */}
+    <BuddyCard doneToday={!!doneToday} plannedToday={!!routine && !doneToday} todayName={routine && !doneToday ? todayName : ''}
+      facts={{ weekDone: doneThisWeek, lastRecord: recs[0] ? exerciseNameText(exOr(recs[0].exId)) + ' ' + setText(recs[0].set, S.unit) : null }} />
 
     {/* The week as a row of story circles: ringed when planned, filled when done, today bold.
         A coach week or a rotation runs by order, not by weekday, so its progress row stands in

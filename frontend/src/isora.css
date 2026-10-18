@@ -362,3 +362,64 @@ button.avatar:active{transform:scale(.94)}
 .pf-focus{margin-top:14px;padding:14px;border-radius:16px;background:var(--surface-2)}
 .pf-focus-t{font-size:13px;font-weight:600;color:var(--label-2);margin-bottom:6px}
 .pf-focus p{font-size:15px;line-height:1.4;margin:0 0 10px}
+
+/* ------------------------------------------------------------- the buddy -- */
+.buddy{display:block;overflow:visible;flex:none}
+.buddy.alive .bd-body{animation:bd-bob 3.2s ease-in-out infinite;transform-origin:60px 106px}
+.buddy.alive .bd-shadow{animation:bd-shadow 3.2s ease-in-out infinite;transform-origin:60px 110px}
+.buddy.alive .bd-eye{animation:bd-blink 5.5s infinite}
+.buddy.alive .bd-z{animation:bd-z 2.4s ease-in-out infinite}
+.buddy.alive .bd-z2{animation-delay:.6s}
+.buddy.alive .bd-spark{animation:bd-spark 1.8s ease-in-out infinite;transform-origin:24px 41px}
+@keyframes bd-bob{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-4px) scaleY(1.02)}}
+@keyframes bd-shadow{0%,100%{transform:scaleX(1);opacity:.18}50%{transform:scaleX(.86);opacity:.12}}
+@keyframes bd-blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes bd-z{0%{opacity:0;transform:translateY(4px)}40%{opacity:1}100%{opacity:0;transform:translateY(-8px)}}
+@keyframes bd-spark{0%,100%{transform:scale(.6) rotate(0);opacity:.4}50%{transform:scale(1.1) rotate(20deg);opacity:1}}
+@media (prefers-reduced-motion:reduce){ .buddy.alive *{animation:none !important} }
+/* the buddy card on Home: the buddy, its speech bubble, its level */
+.bcard{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:var(--surface);border:0;border-radius:var(--r-card);padding:12px 14px 12px 8px;margin:4px 0 16px;color:var(--label);cursor:pointer}
+.bcard:active{background:var(--surface-2)}
+.bcard-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.bcard-bubble{position:relative;background:var(--surface-2);border-radius:16px 16px 16px 6px;padding:9px 12px;font-size:15px;line-height:1.35}
+.bcard-meta{display:flex;align-items:baseline;gap:8px;font-size:13px}
+.bcard-meta b{font-weight:700}
+.bcard-meta span{color:var(--label-2)}
+.bcard-bar{height:5px;border-radius:99px;background:var(--surface-3);overflow:hidden}
+.bcard-bar i{display:block;height:100%;border-radius:99px;background:var(--acc);transition:width .6s var(--ease)}
+.bcard-bar.big{height:8px;margin-top:8px}
+.bcard.meet .bcard-name{font-size:17px;font-weight:700}
+.bcard.meet .bcard-line{font-size:14px;color:var(--label-2)}
+/* choosing a buddy */
+.bpick{display:flex;flex-direction:column}
+.bpick-stage{display:flex;justify-content:center;padding:6px 0 10px}
+.bpick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.bpick-opt{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border-radius:16px;background:var(--surface);border:0;color:var(--label-2);font-size:13px;font-weight:600}
+.bpick-opt.on{background:var(--surface-2);color:var(--label);box-shadow:inset 0 0 0 2px var(--acc)}
+.bpick .field{text-align:center;font-size:18px;font-weight:600}
+.ob-pick{padding-top:20px}
+.ob-pick-intro{font-size:16px;line-height:1.4;color:var(--label-2);text-align:center;margin:0 8px 6px}
+.ob-av.buddy-av{background:none;overflow:visible}
+/* its sheet */
+.bsheet-stage{display:flex;justify-content:center;margin:2px 0 8px}
+.bsheet .field{text-align:center;font-size:18px;font-weight:600}
+.bsheet-level{margin-top:14px;padding:14px;border-radius:16px;background:var(--surface-2)}
+.bsheet-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.bsheet-stats > div{background:var(--surface-2);border-radius:14px;padding:10px;display:flex;flex-direction:column;align-items:center}
+.bsheet-stats b{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.bsheet-stats span{font-size:12px;color:var(--label-2)}
+.bsheet-gear{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bsheet-gear > div{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px;border-radius:14px;background:var(--surface-2);color:var(--label-3);font-size:13px;font-weight:600}
+.bsheet-gear > div.on{color:var(--label)}
+.bsheet-gear > div.on .icn{color:var(--acc)}
+.bsheet-gear small{font-size:11px;font-weight:500;color:var(--label-3)}
+/* the level-up moment */
+.lvlup{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:10px 4px 4px;position:relative}
+.lvlup-t{font-family:var(--display);font-stretch:112%;font-size:30px;font-weight:800;color:var(--acc)}
+.lvlup .btn{width:100%}
+.lvlup-burst{position:absolute;left:50%;top:84px;width:0;height:0;pointer-events:none}
+.lvlup-burst i{position:absolute;width:8px;height:8px;border-radius:2px;background:var(--acc);transform:rotate(var(--a)) translateY(0);animation:lvl-burst 1.1s var(--ease) forwards}
+.lvlup-burst i:nth-child(3n){background:var(--rest)}.lvlup-burst i:nth-child(3n+1){background:var(--yellow)}
+@keyframes lvl-burst{0%{opacity:1;transform:rotate(var(--a)) translateY(0) scale(.6)}100%{opacity:0;transform:rotate(var(--a)) translateY(-110px) scale(1)}}
+@media (prefers-reduced-motion:reduce){ .lvlup-burst{display:none} }
+.rb-title{display:inline-flex;align-items:center;gap:6px}
