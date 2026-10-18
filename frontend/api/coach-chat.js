@@ -121,9 +121,10 @@ export default async function handler(req, res) {
   if (r.status === 429) return res.status(429).json({ error: 'busy' })
   if (!r.ok) return res.status(502).json({ error: 'upstream', status: r.status })
 
-  let data
+  let data, model = null
   try {
     const body = await r.json()
+    model = typeof body?.model === 'string' ? body.model : null
     const text = body?.choices?.[0]?.message?.content
     data = JSON.parse(typeof text === 'string' ? text.replace(/^```(?:json)?\s*|\s*```$/g, '') : '')
   } catch {
@@ -135,5 +136,6 @@ export default async function handler(req, res) {
     quickReplies: Array.isArray(data.quickReplies) ? data.quickReplies.filter(q => typeof q === 'string').slice(0, 5) : [],
     done: data.done,
     profile: data.done && data.profile && typeof data.profile === 'object' ? data.profile : null,
+    model,   // which model in the list answered (OpenRouter's own report)
   })
 }
