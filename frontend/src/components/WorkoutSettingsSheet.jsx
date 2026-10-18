@@ -39,6 +39,10 @@ export function WorkoutSettings({ close }) {
           footer: t('Scroll to 0:00 to turn the rest timer off.'),
           onDone: v => update(s => { s.restSec = v }),
         })} />
+      <Row icon="timer" iconTint="var(--green)" title={t('Rest Blast')}
+        subtitle={t('A block puzzle during every rest. Rests become 3:00, and the game ends when the rest does.')}>
+        <Switch aria-label={t('Rest Blast')} checked={S.restGame !== false} onChange={v => update(s => { s.restGame = v })} />
+      </Row>
       <Row icon="speaker" iconTint="var(--pink)" title={t('Play a sound')}>
         {/* A tap: unlock the audio now so a rest ending before the next tick can sound (iOS, #152). */}
         <Switch checked={!!S.sound} onChange={v => { if (v) unlock(true); update(s => { s.sound = v }) }} />

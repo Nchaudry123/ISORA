@@ -45,6 +45,7 @@ import { canMoveActiveWorkoutUnit, moveActiveWorkoutUnit, canMoveActiveWorkoutEn
 import { nextOpenSet, workoutKeyAction } from '../lib/workout-keys.js'
 import { MUSCLE_NAME } from '../lib/muscles.js'
 import FocusView from './FocusView.jsx'
+import { REST_GAME_SEC } from '../lib/blockblast.js'
 import { withMeaning, historyAs, dbLoadFor, entryDbLoad, bellsIn, ownedWeightsFor, stepOwned } from '../lib/dumbbells.js'
 
 // How long after a key starts a hold the same key is not yet its "Done" (#133). A USB button
@@ -1685,7 +1686,10 @@ function ActiveWorkout() {
       const restSec = restSecFor(fresh.entries, freshUnit || [idx], S.restSec, setRest)
       // A warm-up ramp set may rest shorter than a work set (the exercise's warmupRestSec); the
       // last ramp set, into the first work set, still gets the working rest.
-      const restAfter = warmupRestSecFor(fresh.entries[idx], i, restSec)
+      // Rest Blast on: every rest between sets is the game's fixed 3:00 (lib/blockblast.js), as
+      // long as there is a rest at all — a rest timer set to Off still means no rest.
+      const plainRest = warmupRestSecFor(fresh.entries[idx], i, restSec)
+      const restAfter = S.restGame !== false && plainRest > 0 ? REST_GAME_SEC : plainRest
 
       // A re-check of finished work must not navigate or reopen a sheet, but it may still owe
       // you a rest — see restOnRecheck, and the other half of issue #3. A rest that already ran
