@@ -31,4 +31,4 @@ frontend/bundle-size.json
 # Local planning notes
 docs/superpowers/plans/
 .vercel
-.env*
+.env.local
