@@ -53,7 +53,7 @@ const S = () => useStore.getState().S
 describe('the in-workout settings sheet', () => {
   it('has the rows people change at the gym, then All settings', () => {
     expect([...host.querySelectorAll('.lrow-t')].map(e => e.textContent)).toEqual([
-      'Rest timer', 'Play a sound', 'Vibrate', 'Flash the screen', 'Keep screen awake',
+      'Rest timer', 'Rest Blast', 'Play a sound', 'Vibrate', 'Flash the screen', 'Keep screen awake',
       'Layout', 'Effort per set', 'Swipe actions', 'Exercise animations', 'All settings',
     ])
     expect(row('Rest timer').querySelector('.lrow-v').textContent).toBe('1:30')
