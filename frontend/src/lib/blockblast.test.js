@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   SIZE, SHAPES, JUNK, emptyBoard, canPlace, place, placements, fitsAnywhere, anyMove,
-  badness, dealTray, doomBoard, doomTray, emptyStats, cleanStats, recordRound,
+  badness, dealTray, dealOne, doomBoard, doomTray, emptyStats, cleanStats, recordRound, PERFECT_BONUS,
 } from './blockblast.js'
 
 // A small deterministic PRNG so the dealer's choices are repeatable.
@@ -32,8 +32,9 @@ describe('board and placing', () => {
     expect(res.lines).toBe(2)
     expect(res.combo).toBe(1)
     expect(res.board.flat().every(v => v === 0)).toBe(true)
-    expect(res.points).toBe(1 + 2 * 2 * 10)
-    expect(place(b, dot, 7, 7, 2, 2).points).toBe(1 + 2 * 2 * 10 * 3)
+    expect(res.perfect).toBe(true)
+    expect(res.points).toBe(1 + 2 * 2 * 10 + PERFECT_BONUS)
+    expect(place(b, dot, 7, 7, 2, 2).points).toBe(1 + 2 * 2 * 10 * 3 + PERFECT_BONUS)
   })
 })
 
@@ -114,5 +115,45 @@ describe('the Rest Blast record', () => {
     expect(cleanStats(undefined)).toEqual(emptyStats())
     expect(cleanStats({ best: 'x', games: -3, lines: 2.7 })).toEqual({ best: 0, games: 0, lines: 2 })
     expect(recordRound(null, { score: 10, lines: 1 })).toEqual({ best: 10, games: 1, lines: 1 })
+  })
+})
+
+describe('dealing every turn', () => {
+  it('in the good half refills with the piece that finishes a line', () => {
+    const b = emptyBoard()
+    for (let c = 0; c < SIZE - 2; c++) b[3][c] = 1   // a row two cells short
+    for (let k = 0; k < 10; k++) {
+      const p = dealOne(b, [], 160, seeded(k + 1))
+      const best = Math.max(...placements(b, p.shape).map(([r, c]) => place(b, p.shape, r, c, 1).lines))
+      expect(best).toBeGreaterThan(0)
+    }
+  })
+
+  it('never deals a piece that leaves no room for the ones held', () => {
+    const rng = seeded(21)
+    for (let trial = 0; trial < 30; trial++) {
+      const b = emptyBoard()
+      for (let i = 0; i < 30; i++) b[Math.floor(rng() * SIZE)][Math.floor(rng() * SIZE)] = 1
+      const held = dealTray(b, 170, rng).slice(0, 2).filter(p => fitsAnywhere(b, p.shape))
+      const p = dealOne(b, held, 170, rng)
+      const spots = placements(b, p.shape)
+      if (!spots.length) continue  // a board too full for anything: nothing to promise
+      expect(spots.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('at 0:00 refills with a piece that fits nowhere', () => {
+    const b = emptyBoard()
+    for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) if ((r + c) % 3) b[r][c] = 1
+    expect(fitsAnywhere(b, dealOne(b, [], 0, seeded(4)).shape)).toBe(false)
+  })
+
+  it('pays a perfect clear', () => {
+    const b = emptyBoard()
+    for (let c = 0; c < SIZE - 1; c++) b[0][c] = 1
+    const dot = { cells: [[0, 0]], h: 1, w: 1 }
+    const res = place(b, dot, 0, SIZE - 1, 2)
+    expect(res.perfect).toBe(true)
+    expect(res.points).toBe(1 + 10 + PERFECT_BONUS)
   })
 })

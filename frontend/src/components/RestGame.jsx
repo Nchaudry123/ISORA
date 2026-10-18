@@ -3,7 +3,7 @@ import { useUI } from '../store/useUI.js'
 import { useStore } from '../store/useStore.js'
 import { t } from '../lib/i18n.js'
 import {
-  SIZE, JUNK, emptyBoard, canPlace, place, linesAfter, anyMove, dealTray, doomBoard, doomTray,
+  SIZE, JUNK, emptyBoard, canPlace, place, linesAfter, anyMove, dealTray, dealOne, doomBoard, doomTray,
   cleanStats, recordRound,
 } from '../lib/blockblast.js'
 import { Button } from './ui.jsx'
@@ -19,6 +19,9 @@ import { Button } from './ui.jsx'
 const OLD_BEST_KEY = 'og_restblast_best'
 const oldBest = () => { try { return Number(localStorage.getItem(OLD_BEST_KEY)) || 0 } catch { return 0 } }
 const LIFT = 1.4   // a dragged piece rides this many of its own cells above the finger
+// A tap of the phone for a piece put down, a longer one for a clear, a flourish for a perfect
+// clear; only where the phone vibrates and the Vibrate setting is on.
+const buzz = pattern => { try { if (useStore.getState().S.vibrate !== false && navigator.vibrate) navigator.vibrate(pattern) } catch {} }
 
 function Cells({ shape, color, cell, className = '' }) {
   return (
@@ -88,8 +91,11 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
     if (!spot) return
     const p = tray[d.idx]
     const res = place(board, p.shape, spot.r, spot.c, p.color, combo)
-    let next = tray.map((x, i) => (i === d.idx ? null : x))
-    if (next.every(x => !x)) next = dealTray(res.board, secsRef.current)
+    // Every turn the slot just played is dealt again from a fresh scan of the board, with the two
+    // pieces still in hand (lib/blockblast.js dealOne): the most obvious piece early in the rest.
+    const held = tray.map((x, i) => (i === d.idx ? null : x))
+    const next = held.map((x, i) => (i === d.idx ? dealOne(res.board, held, secsRef.current) : x))
+    buzz(res.perfect ? [30, 40, 60] : res.lines ? [14, 30, 14] : 8)
     setBoard(res.board)
     setTray(next)
     setScore(s => s + res.points)
@@ -99,7 +105,7 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
     if (res.lines) {
       const id = Date.now()
       setFlash({ rows: res.rows, cols: res.cols, id })
-      setPop({ text: '+' + res.points + (res.combo > 1 ? ' · ' + t('Combo') + ' ×' + res.combo : ''), id })
+      setPop({ text: (res.perfect ? t('Perfect clear!') + ' ' : '') + '+' + res.points + (res.combo > 1 ? ' · ' + t('Combo') + ' ×' + res.combo : ''), id, perfect: res.perfect })
       setTimeout(() => setFlash(f => (f?.id === id ? null : f)), 320)
       setTimeout(() => setPop(x => (x?.id === id ? null : x)), 900)
     }
@@ -164,7 +170,7 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
                 : flashed.has(k) ? ' rb-flash' : ''
           return <i key={k} className={'rb-cell' + cls} />
         }))}
-        {pop && <div key={pop.id} className="rb-pop">{pop.text}</div>}
+        {pop && <div key={pop.id} className={'rb-pop' + (pop.perfect ? ' perfect' : '')}>{pop.text}</div>}
         {over && (
           <div className="rb-over">
             <div className="rb-over-t">{over === 'time' ? t('Time’s up. Next set!') : t('No moves left')}</div>

@@ -9,6 +9,8 @@ import { copyText } from '../lib/clipboard.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, ACCENT_NAMES, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY, fmtPlate } from '../lib/format.js'
 import { cleanStats, emptyStats } from '../lib/blockblast.js'
+import { cleanProfile } from '../lib/profile.js'
+import { Avatar, profileSheet } from '../components/ProfileSheet.jsx'
 import { inventoryFor, ownsPlates } from '../lib/plates.js'
 import { dumbbellsOf } from '../lib/dumbbells.js'
 import { effortOf } from '../lib/history.js'
@@ -935,13 +937,14 @@ export default function Settings({ page = null, find = null, via = null }) {
 }
 
 function SettingsRoot({ ctx, preview, open, user, sync, home, go }) {
+  const S = useStore(s => s.S)
   // The router's key for this history entry (what useLocation().key reads), taken once.
   const [key] = useState(() => window.history.state?.key || null)
   const [q, setQ] = useState(() => (key && lastQuery.key === key ? lastQuery.q : ''))
   const set = v => { lastQuery = { q: v, key }; setQ(v) }
   const hits = q.trim() ? searchSettings(q, ctx) : null
   // The account card: who this is, and the one line that matters about it.
-  const acct = PERSONAL ? { title: t('This device'), sub: t('All data stays on this device') }
+  const acct = PERSONAL ? { title: cleanProfile(S.profile).name || t('Your profile'), sub: cleanProfile(S.profile).name ? t('Profile, avatar and weekly target') : t('Add your name, an avatar and a weekly target') }
     : DEMO ? { title: t('Demo'), sub: t('Example data, only in this browser.') }
     : user ? {
       title: user.name || t('Account'),
@@ -965,8 +968,10 @@ function SettingsRoot({ ctx, preview, open, user, sync, home, go }) {
       ))}
     </Section> : <div className="sp-empty">{t('No setting matches “{0}”.', q.trim())}</div>) : <>
       <Section>
-        <button className="lrow tap sp-acct" onClick={() => open('account')}>
-          <span className={'sp-avatar' + (initial ? ' on' : '')} aria-hidden="true">{initial || <Icon name="personCircle" />}</span>
+        {/* In the personal app the card is you: your avatar, and a tap opens the profile. */}
+        <button className="lrow tap sp-acct" onClick={() => (PERSONAL ? profileSheet() : open('account'))}>
+          {PERSONAL ? <Avatar profile={S.profile} size={52} />
+            : <span className={'sp-avatar' + (initial ? ' on' : '')} aria-hidden="true">{initial || <Icon name="personCircle" />}</span>}
           <span className="lrow-m"><span className="lrow-t">{acct.title}</span><span className="lrow-s">{acct.sub}</span></span>
           <Icon name="chevronRight" className="lrow-c" />
         </button>

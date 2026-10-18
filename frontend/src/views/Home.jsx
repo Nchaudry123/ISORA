@@ -20,6 +20,8 @@ import { previewOf, comingUp, recentDone, dayDistance, setsLeft } from '../lib/i
 import { exOr } from '../lib/exercises.js'
 import Elapsed from '../components/Elapsed.jsx'
 import IsoraMark from '../components/IsoraMark.jsx'
+import { Avatar, profileSheet, recordsSheet, recordsOf, setText } from '../components/ProfileSheet.jsx'
+import { cleanProfile, greetingFor } from '../lib/profile.js'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
@@ -118,11 +120,20 @@ export default function Home() {
       : k === 'week' ? d.toLocaleDateString(dateLocale(), { weekday: 'short' }) : d.toLocaleDateString(dateLocale(), { day: 'numeric', month: 'short' })
   }
   const weighedToday = bw && bw.d === todayISO()
+  const prof = cleanProfile(S.profile)
+  const recs = recordsOf(S)
   const left = setsLeft(S.active)
 
   return <div className="narrow home-inbox">
-    <div className="hdr">
-      <div><h1>{user ? t('Hi {0}', user.name) : <span className="brand"><IsoraMark />ISORA</span>}</h1><div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+    {/* You at the top: your avatar (tap for the profile), a greeting by name once you have
+        given one, and how far along your weekly target you are (lib/profile.js). */}
+    <div className="hdr home-hdr">
+      <Avatar profile={S.profile} size={44} onClick={profileSheet} label={t('Your profile')} />
+      <div className="home-hdr-txt">
+        <h1 className={!user && prof.name ? 'greet' : undefined}>{user ? t('Hi {0}', user.name) : prof.name ? t(greetingFor(today.getHours()), prof.name) : <span className="brand"><IsoraMark />ISORA</span>}</h1>
+        <div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}
+          {prof.weekTarget > 0 && <span className={'wk-goal' + (doneThisWeek >= prof.weekTarget ? ' met' : '')}>{t('{0} of {1} this week', doneThisWeek, prof.weekTarget)}</span>}</div>
+      </div>
       <button className="iconbtn" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="gear" />{trouble && <span className="tab-dot" aria-hidden="true" />}</button>
     </div>
 
@@ -219,6 +230,13 @@ export default function Home() {
 
     <h3 className="inbox-h">{t('More')}</h3>
     <div className="inbox">
+      {/* your personal records, newest first (components/ProfileSheet.jsx) */}
+      {recs.length > 0 && <div className="ib-row" {...tappable(recordsSheet)}>
+        <span className="ib-av" style={{ background: 'var(--record)', color: '#000' }}><Icon name="trophy" /></span>
+        <div className="ib-body"><div className="ib-t">{t('Personal records')}</div>
+          <div className="pv">{exerciseNameText(exOr(recs[0].exId))} · {setText(recs[0].set, S.unit)}</div></div>
+        <div className="ib-side"><span className="ib-time">{when(recs[0].d)}</span><span className="ib-badge pr">{recs.length}</span></div>
+      </div>}
       {/* Rest Blast: the puzzle in every rest, and its record (lib/blockblast.js). */}
       <div className="ib-row rb-home" {...tappable(() => nav('/settings/workout'))}>
         <span className="ib-av" style={{ background: S.restGame !== false ? 'var(--rest)' : 'var(--surface-3)' }}><Icon name="balance" /></span>

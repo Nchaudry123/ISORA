@@ -12,6 +12,7 @@ export const REST_GAME_SEC = 180
 export const GOOD_UNTIL = 90   // seconds left: above this, only helpful pieces
 export const COLORS = 7        // colour indices 1..COLORS; JUNK marks the doom fill
 export const JUNK = 99
+export const PERFECT_BONUS = 300
 
 // Each shape is a list of [row, col] cells, normalised to start at 0,0.
 const RAW = [
@@ -94,8 +95,10 @@ export function place(board, shape, r, c, color, combo = 0) {
   for (const j of cols) for (let i = 0; i < SIZE; i++) b[i][j] = 0
   const lines = rows.length + cols.length
   const nextCombo = lines ? combo + 1 : 0
-  const points = shape.cells.length + (lines ? lines * lines * 10 * nextCombo : 0)
-  return { board: b, lines, rows, cols, points, combo: nextCombo }
+  // a clear that leaves the board empty is a perfect clear, worth a bonus of its own
+  const perfect = lines > 0 && b.every(row => row.every(v => !v))
+  const points = shape.cells.length + (lines ? lines * lines * 10 * nextCombo : 0) + (perfect ? PERFECT_BONUS : 0)
+  return { board: b, lines, rows, cols, points, combo: nextCombo, perfect }
 }
 
 // 0 while the rest is in its good half, rising to 1 at 0:00.
@@ -135,14 +138,20 @@ function goodTray(board, rng, slack) {
   for (let k = 0; k < 3; k++) {
     const scored = SHAPES.map(shape => ({ shape, spot: bestSpot(sim, shape) })).filter(x => x.spot)
     if (!scored.length) { tray.push(piece(pick(SHAPES, rng), rng)); continue }
-    scored.sort((a, b) => b.spot.value - a.spot.value)
-    // slack widens the pool as the rest goes on: from the top few to most of the fitting shapes
-    const top = scored.slice(0, Math.max(3, Math.round(3 + slack * scored.length)))
-    const { shape, spot } = pick(top, rng)
+    const { shape, spot } = pick(obviousPool(scored, slack), rng)
     tray.push(piece(shape, rng))
     sim = place(sim, shape, spot.r, spot.c, 1).board
   }
   return tray
+}
+
+// The pool a kind dealer picks from: at full kindness only the most obvious pieces (every shape
+// tied for the best spot value — the line it finishes, how snugly it sits), widening towards most
+// of the fitting shapes as the rest runs down (slack 0 → 1).
+function obviousPool(scored, slack) {
+  scored.sort((a, b) => b.spot.value - a.spot.value)
+  if (slack <= 0) return scored.filter(x => x.spot.value === scored[0].spot.value)
+  return scored.slice(0, Math.max(1, Math.round(1 + slack * scored.length)))
 }
 
 // The worst fitting shape: fewest places it can go, largest first, never one that clears.
@@ -187,6 +196,29 @@ export function dealTray(board, secondsLeft, rng = Math.random) {
     if (shape) tray[k] = piece(shape, rng)
   }
   return tray
+}
+
+// One piece for the slot just played, dealt every turn: the board is scanned again with the two
+// pieces still in hand. While the rest is young that is the most obvious piece for the board as
+// it stands now — and one that leaves room for the pieces held — then, as the rest runs down, a
+// looser pick, more and more often a bad one, and at 0:00 one that fits nowhere.
+export function dealOne(board, held, secondsLeft, rng = Math.random) {
+  if (secondsLeft <= 0) {
+    const dead = unfitting(board).filter(s => s.cells.length > 1)
+    return piece(dead.length ? pick(dead, rng) : pick(SHAPES, rng), rng)
+  }
+  const bad = badness(secondsLeft)
+  if (bad > 0 && rng() < bad) {
+    const dead = bad > 0.5 && rng() < (bad - 0.5) * 2 ? unfitting(board) : []
+    const shape = dead.length ? pick(dead, rng) : worstFitting(board, rng)
+    if (shape) return piece(shape, rng)
+  }
+  const keep = held.filter(Boolean).map(p => p.shape)
+  const scored = SHAPES.map(shape => ({ shape, spot: bestSpot(board, shape) })).filter(x => x.spot)
+    // it must leave the held pieces somewhere to go
+    .filter(x => { const after = place(board, x.shape, x.spot.r, x.spot.c, 1).board; return keep.every(k => fitsAnywhere(after, k)) })
+  if (!scored.length) return piece(pick(SHAPES, rng), rng)
+  return piece(pick(obviousPool(scored, bad), rng).shape, rng)
 }
 
 // The Rest Blast record kept in the profile (S.restBlast), so it travels with backups like the

@@ -1414,6 +1414,15 @@ export const PT_BR_OVERRIDES = {
   'Your best score, rounds and lines go back to zero.': 'Sua melhor pontuação, rodadas e linhas voltam a zero.',
   'ISORA updates itself the next time you open it after a new version is published.': 'O ISORA se atualiza na próxima vez que você abrir depois que uma nova versão for publicada.',
   'Log today’s weight': 'Registre o peso de hoje',
+  'Your profile': 'Seu perfil',
+  'Your initial': 'Sua inicial',
+  'What you train for': 'Seu objetivo',
+  'Home shows how far along the week you are.': 'O início mostra em que ponto da semana você está.',
+  'Your records show up here once a workout beats your best.': 'Seus recordes aparecem aqui quando um treino superar o seu melhor.',
+  'Add your name, an avatar and a weekly target': 'Adicione seu nome, um avatar e uma meta semanal',
+  'Profile, avatar and weekly target': 'Perfil, avatar e meta semanal',
+  'Stay active': 'Ficar ativo',
+  'Up late, {0}': 'Ainda acordado, {0}?',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }
