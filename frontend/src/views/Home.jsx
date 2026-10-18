@@ -128,7 +128,9 @@ export default function Home() {
           routine name behind a green Start tag and read as still outstanding (issue #4).
           An in-progress session still wins — that one is happening right now. Tapping the
           row keeps working, so a second session in one day is a tap away, just not urged. */}
-      <div className="today-row" {...tappable(onToday)}>
+      {/* The state class drives ISORA's hero treatment (isora.css): a lime block on a training
+          day, the recovery colour on a rest day. */}
+      <div className={'today-row ' + (S.active ? 'is-active' : doneToday ? 'is-done' : routine ? 'is-train' : 'is-rest')} {...tappable(onToday)}>
         <div className="row" style={{ gap: 9, minWidth: 0 }}>
           <span className="lrow-i" style={{ background: S.active ? 'var(--orange)' : doneToday ? 'var(--surface-3)' : routine ? 'var(--acc)' : 'var(--surface-3)' }}>
             <Icon name={S.active ? (editingSaved ? 'pencil' : 'play') : doneToday ? 'checkCircle' : routine ? glyphOf(routine.emoji) : 'moon'}
@@ -165,7 +167,7 @@ export default function Home() {
     <div className="card tappable rb-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/settings/workout'))}>
       <div className="row between">
         <div className="row" style={{ gap: 9, minWidth: 0 }}>
-          <span className="lrow-i" style={{ background: S.restGame !== false ? 'var(--acc)' : 'var(--surface-3)', color: S.restGame !== false ? 'var(--on-acc)' : undefined }}><Icon name="balance" /></span>
+          <span className="lrow-i" style={{ background: S.restGame !== false ? 'var(--rest)' : 'var(--surface-3)' }}><Icon name="balance" /></span>
           <div style={{ minWidth: 0 }}>
             <div className="lbl2">{t('Rest Blast')}</div>
             <div className="ttl">{S.restGame !== false ? t('A 3:00 round in every rest') : t('Off')}</div>

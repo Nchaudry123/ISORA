@@ -1403,6 +1403,16 @@ export const PT_BR_OVERRIDES = {
   'Gentle, for headphones or a quiet room.': 'Suave, para fones de ouvido ou um lugar silencioso.',
   'Fewer than two workouts in this period. Pick a longer one.': 'Menos de dois treinos neste período. Escolha um mais longo.',
   'Releases are checked on GitHub. The download is verified against its checksum before the installer opens.': 'As versões são verificadas no GitHub. O download é conferido pela soma de verificação antes de abrir o instalador.',
+  // --- ISORA ---
+  'A 3:00 round in every rest': 'Uma rodada de 3:00 em cada descanso',
+  'Every rest becomes 3:00 with a block puzzle. Good pieces for the first half, worse ones after, and nothing fits at 0:00: time for your next set.': 'Cada descanso vira 3:00 com um quebra-cabeça de blocos. Peças boas na primeira metade, piores depois, e às 0:00 nada mais encaixa: hora da sua próxima série.',
+  'A block puzzle during every rest. Rests become 3:00, and the game ends when the rest does.': 'Um quebra-cabeça de blocos em cada descanso. Os descansos viram 3:00, e o jogo acaba junto com o descanso.',
+  'Best {0} · {1} rounds': 'Recorde {0} · {1} rodadas',
+  'Rounds': 'Rodadas',
+  'Reset Rest Blast record': 'Redefinir recorde do Rest Blast',
+  'Reset Rest Blast record?': 'Redefinir o recorde do Rest Blast?',
+  'Your best score, rounds and lines go back to zero.': 'Sua melhor pontuação, rodadas e linhas voltam a zero.',
+  'ISORA updates itself the next time you open it after a new version is published.': 'O ISORA se atualiza na próxima vez que você abrir depois que uma nova versão for publicada.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

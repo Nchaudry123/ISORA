@@ -450,7 +450,7 @@ export default function Settings({ page = null, find = null, via = null }) {
     workout: () => <>
       {/* ISORA's own: the puzzle in every rest (components/RestGame.jsx, lib/blockblast.js). */}
       <Section title={t('Rest Blast')} footer={t('Every rest becomes 3:00 with a block puzzle. Good pieces for the first half, worse ones after, and nothing fits at 0:00: time for your next set.')}>
-        <Row icon="balance" iconTint="var(--acc)" title={t('Rest Blast')}
+        <Row icon="balance" iconTint="var(--rest)" title={t('Rest Blast')}
           subtitle={cleanStats(S.restBlast).games ? t('Best {0} · {1} rounds', cleanStats(S.restBlast).best, cleanStats(S.restBlast).games) : null}>
           <Switch aria-label={t('Rest Blast')} checked={S.restGame !== false} onChange={v => update(s => { s.restGame = v })} />
         </Row>
