@@ -185,3 +185,89 @@ h4.sec,.card h2,.sect-t,.inbox-h{font-size:13px;font-weight:600;letter-spacing:0
 /* rows that stand for a thing (a routine, a workout, a day) wear round avatars like the inbox;
    Settings rows keep their small rounded-square icons, as a settings list does */
 .list .item .lrow-i,.item > .lrow-i{border-radius:50% !important;width:40px !important;height:40px !important;font-size:20px !important}
+
+/* ================================================== workout: a conversation ==
+   The session reads as a chat thread with the routine: a chat header (avatar, name, time and
+   progress), the exercises as a row of contacts, what ISORA has to say about an exercise (the
+   plan, the progression) as incoming bubbles, and each set as a message — the open ones are the
+   composer, a logged one becomes an outgoing lime bubble. Only styling: the logging controls,
+   their order and their behaviour are openGym's. */
+
+/* chat header */
+.whdr-bar{gap:6px}
+.whdr-mid{display:flex;align-items:center;justify-content:center;gap:9px;text-align:start}
+.whdr-av{width:34px;height:34px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;background:var(--acc);color:var(--on-acc);font-size:18px}
+.whdr-av .icn{--icon-stroke:2}
+.whdr-txt{min-width:0;display:flex;flex-direction:column}
+.whdr-name{font-size:17px;font-weight:700;letter-spacing:-.012em}
+.whdr-mid .sub{font-size:13px;color:var(--label-2);text-wrap:nowrap;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.whdr-finish{border-radius:99px}
+.wprog{height:3px;border-radius:99px}
+
+/* the exercises as a row of contacts */
+.wchips{gap:8px;padding-block:4px}
+.wchip{min-width:34px;height:34px;padding:0 10px;font-size:14px;font-weight:700;background:var(--surface);box-shadow:none;color:var(--label-2)}
+.wchip.done{background:var(--acc);color:var(--on-acc)}
+.wchip.partial{background:conic-gradient(var(--acc) 0 50%,var(--surface) 0);box-shadow:none;color:var(--label)}
+.wchip.cur{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--label);color:var(--label)}
+.wchip.partial.cur{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--label)}
+.wchip.done.cur{color:var(--on-acc)}
+
+/* the exercise: a contact photo, its name, then muscles and equipment as a quiet subtitle */
+.exhd{gap:12px;margin-top:4px}
+.wthumb,.wthumb .thumb{width:52px;height:52px;border-radius:50%}
+.exhd .capitalize{font-size:20px;font-weight:700;letter-spacing:-.016em;line-height:1.2}
+.workout-swipe-card > .row:has(> .tag){gap:6px;margin:8px 0 0}
+.workout-swipe-card > .row > .tag{background:none;padding:0;color:var(--label-2);font-size:13px;font-weight:500}
+.workout-swipe-card > .row > .tag + .tag::before{content:'·';margin-inline-end:6px;color:var(--label-3)}
+
+/* what ISORA says: incoming bubbles, the second one tucked under the first */
+.planline,.progline{
+  display:block;width:auto;max-width:88%;margin:10px 0 0;padding:9px 13px;
+  background:var(--surface-2);color:var(--label);border-radius:18px 18px 18px 6px;
+  font-size:15px;line-height:1.35;text-align:start;opacity:1;
+}
+.planline + .progline{margin-top:3px;border-top-left-radius:6px}
+.progline{display:flex;gap:7px}
+.progline svg,.progline .icn{color:var(--acc)}
+.progline.warn{background:color-mix(in srgb,var(--yellow) 14%,var(--surface-2));color:var(--label)}
+.progline b,.progline strong{color:var(--acc)}
+
+/* the sets: the card becomes the thread */
+.workout-swipe-card > .card{background:none;box-shadow:none;padding:14px 0 0;margin:0}
+.sethead{padding:0 12px 6px}
+.setrow{padding:6px 10px;margin:0 0 6px;border-radius:18px;background:var(--surface)}
+.setrow+.setrow::before,.swrow+.swrow .setrow::before{display:none}
+.swfront{background:var(--bg) !important}
+/* a logged set is a message you sent */
+.setrow.done{background:color-mix(in srgb,var(--acc) 18%,var(--surface));border-bottom-right-radius:6px}
+.setrow.done .n{background:var(--acc);color:var(--on-acc)}
+.setrow.done .num{font-weight:700}
+.setrow .n{width:26px;height:26px;font-weight:700}
+.chk{width:32px;height:32px}
+.chk.on{box-shadow:0 0 0 2px color-mix(in srgb,var(--acc) 35%,transparent)}
+/* "Add set" is the composer */
+.workout-swipe-card > .card > .btn.plain.sm{
+  width:100%;justify-content:flex-start;border-radius:99px;padding:11px 16px;margin-top:2px;
+  background:var(--surface);color:var(--label-2);font-weight:500;
+}
+.workout-swipe-card > .card > .btn.plain.sm .icn{color:var(--acc)}
+.swhint{border-radius:14px}
+/* a sent message is not faded (index.css drew logged sets at 45%): full strength, the value
+   boxes melt into the lime bubble and their ± step back */
+.setrow.done{opacity:1}
+.setrow.done .stp{background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.setrow.done .stp button{opacity:.45}
+.setrow.done .chk.on{background:var(--acc);color:var(--on-acc);box-shadow:none}
+/* the same thread on any surface (the List layout nests the exercise in a card): bubbles and set
+   rows are translucent, the swipe front no longer paints the page colour behind a row (its panes
+   stay hidden at zero width until a swipe), and the sets card is the thread in every layout */
+.planline,.progline{background:color-mix(in srgb,var(--label) 8%,transparent)}
+.setrow{background:color-mix(in srgb,var(--label) 6%,transparent)}
+.swfront{background:transparent !important}
+.card:has(> .sethead){background:none;box-shadow:none;padding:14px 0 0;margin:0}
+.card:has(> .sethead) > .btn.plain.sm{width:100%;justify-content:flex-start;border-radius:99px;padding:11px 16px;margin-top:2px;background:color-mix(in srgb,var(--label) 6%,transparent);color:var(--label-2);font-weight:500}
+.card:has(> .sethead) > .btn.plain.sm .icn{color:var(--acc)}
+.exhd + .row:has(> .tag){gap:6px;margin:8px 0 0}
+.exhd + .row > .tag{background:none;padding:0;color:var(--label-2);font-size:13px;font-weight:500}
+.exhd + .row > .tag + .tag::before{content:'·';margin-inline-end:6px;color:var(--label-3)}
