@@ -262,7 +262,8 @@ describe('Home — a session pinned to a day', () => {
     expect(chips()[2].className).toBe('chip on')
     expect(status()).toBe('Next: US W1 D3, today')
     // Home reads any per-date override on today as a reschedule — a pin is one.
-    expect(todayTitle()).toBe('US W1 D3 · rescheduled')
+    expect(todayTitle()).toBe('US W1 D3')
+    expect(host.querySelector('.today-row .ss.resch')?.textContent).toBe('rescheduled')
   })
 
   it('every session pinned ahead: no chip is lit, the line names the soonest with its day, today rests', () => {

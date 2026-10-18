@@ -142,3 +142,4 @@
 #rest-game .rb-tray{flex:none;min-height:0;height:132px;margin-top:18px;margin-bottom:auto}
 #rest-game .rb-slot{min-height:0;height:100%;border-radius:18px}
 #rest-game .rb-slot:has(.rb-piece){background:color-mix(in srgb,var(--surface) 70%,transparent)}
+.today-row .ss.resch::first-letter{text-transform:uppercase}
