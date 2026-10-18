@@ -8,6 +8,7 @@ import { formulaOf, FORMULA_NAMES } from '../lib/onerm.js'
 import { copyText } from '../lib/clipboard.js'
 import { useUI } from '../store/useUI.js'
 import { ACCENTS, ACCENT_NAMES, todayISO, localTZ, weekStartOf, MONDAY, SUNDAY, fmtPlate } from '../lib/format.js'
+import { cleanStats, emptyStats } from '../lib/blockblast.js'
 import { inventoryFor, ownsPlates } from '../lib/plates.js'
 import { dumbbellsOf } from '../lib/dumbbells.js'
 import { effortOf } from '../lib/history.js'
@@ -403,7 +404,7 @@ export default function Settings({ page = null, find = null, via = null }) {
   const themeLabel = { dark: t('Dark'), light: t('Light'), system: t('System') }[S.theme || 'dark'] || t('Dark')
   // The value a root row shows, so most questions are answered without opening the page.
   const preview = {
-    workout: () => (S.restSec > 0 ? t('{0} rest', fmtRest(S.restSec)) : t('No rest timer')) + ' · ' + layoutLabel,
+    workout: () => (S.restGame !== false && S.restSec > 0 ? t('Rest Blast') : S.restSec > 0 ? t('{0} rest', fmtRest(S.restSec)) : t('No rest timer')) + ' · ' + layoutLabel,
     alerts: () => [S.sound ? t('Sound') : null, canVibrate && S.vibrate !== false ? t('Vibrate') : null, S.timerFlash ? t('Flash') : null].filter(Boolean).join(' · ') || t('Silent'),
     reminders: () => (S.reminder?.on ? (S.reminder.time || DEF.reminder?.time || '') : t('Off')),
     plan: () => (mode === 'rotation' ? t('Rotation') : t('Fixed Week')) + ' · ' + shortWeekday(weekStartOf(S) === SUNDAY ? 0 : 1),
@@ -447,6 +448,15 @@ export default function Settings({ page = null, find = null, via = null }) {
 
   const pages = {
     workout: () => <>
+      {/* ISORA's own: the puzzle in every rest (components/RestGame.jsx, lib/blockblast.js). */}
+      <Section title={t('Rest Blast')} footer={t('Every rest becomes 3:00 with a block puzzle. Good pieces for the first half, worse ones after, and nothing fits at 0:00: time for your next set.')}>
+        <Row icon="balance" iconTint="var(--acc)" title={t('Rest Blast')}
+          subtitle={cleanStats(S.restBlast).games ? t('Best {0} · {1} rounds', cleanStats(S.restBlast).best, cleanStats(S.restBlast).games) : null}>
+          <Switch aria-label={t('Rest Blast')} checked={S.restGame !== false} onChange={v => update(s => { s.restGame = v })} />
+        </Row>
+        {cleanStats(S.restBlast).games > 0 && <Row icon="reset" iconTint="var(--grey)" title={t('Reset Rest Blast record')} accessory="chevron"
+          onClick={() => confirmSheet({ title: t('Reset Rest Blast record?'), message: t('Your best score, rounds and lines go back to zero.'), confirmText: t('Reset'), onConfirm: () => update(s => { s.restBlast = emptyStats() }) })} />}
+      </Section>
       <Section title={t('Rest')} footer={t('Each exercise can have its own rest too. Set it in the exercise settings of a routine.')}>
         {restRow}
         {restPauseRow}
@@ -593,7 +603,7 @@ export default function Settings({ page = null, find = null, via = null }) {
         {/* The buzz at the end of a rest or a hold and on a set tick, on its own switch like the
             sound (Discord, asierlama). iOS has no navigator.vibrate: the row stays, greyed out,
             and says so, instead of an iPhone user looking for a setting that is not there. */}
-        <Section footer={!canVibrate && iPhone ? t('iPhone doesn’t let openGym vibrate. A sound or a flash does the job.') : null}>
+        <Section footer={!canVibrate && iPhone ? t('iPhone doesn’t let ISORA vibrate. A sound or a flash does the job.') : null}>
           <Row icon="vibrate" iconTint="var(--indigo)" title={t('Vibrate')} className={canVibrate ? '' : 'dis'}
             subtitle={canVibrate ? null : iPhone ? t('Not on iPhone') : t('Not supported in this browser.')}>
             <Switch checked={canVibrate && S.vibrate !== false} disabled={!canVibrate} onChange={v => update(s => { s.vibrate = v })} />
@@ -808,15 +818,15 @@ export default function Settings({ page = null, find = null, via = null }) {
       {/* Updates. On Android the row is always there: it checks on demand and installs when a
           release is newer (checksum verified, see onUpdateRowClick). On the web the app updates
           with its server, so the row points at the APK for the phone instead. iOS has no APK. */}
-      <Section footer={MOBILE ? (android ? t('Releases are checked on GitHub. The download is verified against its checksum before the installer opens.') : null) : t('The web app updates together with your server. The Android app installs its own updates from here.')}>
+      <Section footer={MOBILE ? (android ? t('Releases are checked on GitHub. The download is verified against its checksum before the installer opens.') : null) : PERSONAL ? t('ISORA updates itself the next time you open it after a new version is published.') : t('The web app updates together with your server. The Android app installs its own updates from here.')}>
         <Row icon="info" iconTint="var(--grey)" title={t('Version')} value={'v' + __APP_VERSION__} />
         {MOBILE
           ? android && <Row icon="download" iconTint="var(--green)"
-              title={updateInfo?.hasUpdate ? t('Update to openGym v{0}', updateInfo.latestVersion) : t('Check for updates')}
+              title={updateInfo?.hasUpdate ? t('Update to ISORA v{0}', updateInfo.latestVersion) : t('Check for updates')}
               subtitle={checking ? t('Checking…') : t('You have v{0}', __APP_VERSION__)}
               accessory="chevron"
               onClick={() => (updateInfo?.hasUpdate ? onUpdateRowClick() : checkNow())} />
-          : <Row icon="download" iconTint="var(--green)" title={t('Get the Android app')}
+          : !PERSONAL && <Row icon="download" iconTint="var(--green)" title={t('Get the Android app')}
               subtitle={t('Download the APK from opengym.ch')} accessory="chevron"
               onClick={() => window.open('https://opengym.ch/#download', '_blank', 'noopener')} />}
       </Section>
@@ -824,14 +834,16 @@ export default function Settings({ page = null, find = null, via = null }) {
       {!MOBILE && !standalone() && <Section title={t('Tip')}>
         <Row icon="share" iconTint="var(--blue)"
           title={IS_ANDROID ? t('In Chrome: ⋮ menu → Add to Home screen') : t('In Safari: Share → Add to Home Screen')}
-          subtitle={t('to install openGym as a full-screen app.') + ' ' + (user ? t('Your data syncs with your profile. Sign in anywhere and it’s there.') : t('Guest data stays on this device, so export a backup now and then!'))} />
+          subtitle={t('to install ISORA as a full-screen app.') + ' ' + (user ? t('Your data syncs with your profile. Sign in anywhere and it’s there.') : t('Guest data stays on this device, so export a backup now and then!'))} />
       </Section>}
       {/* The version, where the support template tells people to look for it. On the phone
           build there is no address bar and no about box, so without this there is no way to tell
           which build you are running, or whether an update actually installed. */}
       <div className="dim small sp-version">
-        openGym v{__APP_VERSION__} · {t('free & open source (AGPL v3)')}<br />
-        <a href="https://github.com/DuarteSantos8/openGym" target="_blank" rel="noopener">{t('Source code')}</a><br />
+        ISORA v{__APP_VERSION__} · {t('free & open source (AGPL v3)')}<br />
+        <a href="https://github.com/Nchaudry123/ISORA" target="_blank" rel="noopener">{t('Source code')}</a><br />
+        {/* AGPL attribution: ISORA is a modified openGym. Kept in English like the media line. */}
+        Built on <a href="https://github.com/DuarteSantos8/openGym" target="_blank" rel="noopener">openGym</a> by Duarte Santos.<br />
         {/* Attribution the media licence asks for word for word (agreement §8c), so it is not translated */}
         Exercise media © Aliaksandr Makatserchyk, <a href="https://gymvisual.com/" target="_blank" rel="noopener">Gym visual</a>, gymvisual.com.
         Media licensed for use in openGym only; see <a href="https://github.com/DuarteSantos8/openGym/blob/main/NOTICE.md" target="_blank" rel="noopener">NOTICE.md</a>
@@ -853,7 +865,7 @@ export default function Settings({ page = null, find = null, via = null }) {
       {!(MOBILE && user) && <Section title={MOBILE || PERSONAL ? t('Your data') : DEMO ? t('Demo') : t('Account')}>
         {MOBILE ? <>
           <Row icon="lock" iconTint="var(--acc)" title={t('All data stays on this phone')} subtitle={t('No account, no cloud. Back it up anytime in Data & backup.')} />
-          <Row icon="cloud" iconTint="var(--indigo)" title={t('Connect to my server')} subtitle={t('Sync this device to your own self-hosted openGym instead.')} accessory="chevron"
+          <Row icon="cloud" iconTint="var(--indigo)" title={t('Connect to my server')} subtitle={t('Sync this device to your own self-hosted ISORA instead.')} accessory="chevron"
             onClick={connectServer} />
           <KeptChangesRows />
         </> : PERSONAL ? <>
@@ -862,13 +874,13 @@ export default function Settings({ page = null, find = null, via = null }) {
           <Row icon="info" iconTint="var(--acc)" title={t('You’re in the demo')} subtitle={t('Example data, stored only in this browser. Go wild and change anything you like.')} />
           <Row icon="reset" iconTint="var(--blue)" title={t('Reset demo data')} accessory="chevron"
             onClick={() => confirmSheet({ title: t('Reset demo data?'), message: t('Puts the example plan, workouts and weigh-ins back the way they started.'), confirmText: t('Reset'), onConfirm: () => { resetDemo(); nav('/home'); toast(t('Demo data reset')) } })} />
-          <Row icon="rocket" iconTint="var(--indigo)" title={t('Self-host openGym')} subtitle={t('Passkey sign-in, sync across your devices, your own data.')} accessory="chevron"
+          <Row icon="rocket" iconTint="var(--indigo)" title={t('Self-host ISORA')} subtitle={t('Passkey sign-in, sync across your devices, your own data.')} accessory="chevron"
             onClick={() => window.open(REPO, '_blank', 'noopener')} />
         </> : user ? <>
           {user.admin && <Row icon="crown" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
           <PasskeysRow state={passkeys.st} changed={credsChanged} />
           <DeviceLinkRow state={passkeys.st} />
-          <Row icon="qr" iconTint="var(--blue)" title={t('Pair the mobile app')} subtitle={t('Connect the openGym app on your phone to this account.')} accessory="chevron"
+          <Row icon="qr" iconTint="var(--blue)" title={t('Pair the mobile app')} subtitle={t('Connect the ISORA app on your phone to this account.')} accessory="chevron"
             onClick={() => useUI.getState().openSheet(close => <PairSheet close={close} />)} />
           {pwOn && <PasswordRow version={credsV} />}
           <Row icon="signOut" iconTint="var(--red)" title={t('Sign out')} danger onClick={signOutHere} />
@@ -965,7 +977,7 @@ function SettingsRoot({ ctx, preview, open, user, sync, home, go }) {
             value={preview[id]?.() || null} accessory="chevron" onClick={() => open(id)} className="sp-root-row" />)}
         </Section>
       ))}
-      <div className="dim small sp-version">openGym v{__APP_VERSION__}</div>
+      <div className="dim small sp-version">ISORA v{__APP_VERSION__}</div>
     </>}
   </div>
 }
@@ -1167,7 +1179,7 @@ function PushCard({ S, update, toast }) {
           nudgeNote(S)
         : null}
     >
-      <Row icon="bell" iconTint="var(--red)" title={t('Push notifications')} subtitle={t('Rest-timer alerts, even if openGym is closed.')}>
+      <Row icon="bell" iconTint="var(--red)" title={t('Push notifications')} subtitle={t('Rest-timer alerts, even if ISORA is closed.')}>
         <Switch checked={on} disabled={busy} onChange={toggle} />
       </Row>
       {on && (
@@ -1256,7 +1268,7 @@ function AccentSwatches({ S, update }) {
   // The input is not controlled (React would put the saved colour back after every drag step);
   // a colour changed elsewhere (sync, another tab) is put in by hand.
   useEffect(() => {
-    if (!pending.current && inputRef.current) inputRef.current.value = own || '#30d158'
+    if (!pending.current && inputRef.current) inputRef.current.value = own || '#a3e635'
   }, [own])
   const ownLabel = t('Your own color')
   const grey = own && isGrey(own)
@@ -1274,7 +1286,7 @@ function AccentSwatches({ S, update }) {
         ? <button className="swatch swatch-own" style={{ background: own }} onClick={() => pickOwn(own)} aria-label={ownLabel} />
         : <span className={'swatch swatch-own' + (own ? ' on' : ' unset')} style={own ? { background: own, color: inkOn(own) } : undefined}>
           {own ? <Icon name="pencil" /> : <Icon name="plus" />}
-          <input ref={inputRef} type="color" className="swatch-input" defaultValue={own || '#30d158'}
+          <input ref={inputRef} type="color" className="swatch-input" defaultValue={own || '#a3e635'}
             onChange={e => preview(e.target.value)}
             aria-label={own ? t('Change your own color') : t('Pick your own color')} />
         </span>}
@@ -1387,7 +1399,7 @@ function PairSheet({ close }) {
   return <>
     <h3>{t('Pair the mobile app')}</h3>
     <div className="muted small" style={{ marginBottom: 14 }}>
-      {t('On the openGym app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.')}
+      {t('On the ISORA app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.')}
     </div>
     {err ? <div className="dim small">{err}</div> : (
       <div className="card" style={{ textAlign: 'center', fontSize: 30, fontWeight: 700, letterSpacing: '.16em', padding: '18px 0' }}>
@@ -1478,7 +1490,7 @@ function HealthConnectCard({ S, toast }) {
   // Off can mean two things for what is already there, so it asks; closing the sheet keeps it on.
   const askOff = () => menuSheet({
     title: t('Stop writing to Health Connect?'),
-    subtitle: t('What openGym already wrote can stay in Health Connect as your data, or be removed from it.'),
+    subtitle: t('What ISORA already wrote can stay in Health Connect as your data, or be removed from it.'),
     items: [
       { icon: 'check', label: t('Stop, keep what it wrote'), onClick: turnOff(false) },
       { icon: 'trash', label: t('Stop and remove what it wrote'), danger: true, onClick: turnOff(true) },
@@ -1487,7 +1499,7 @@ function HealthConnectCard({ S, toast }) {
 
   return (
     <Section title={t('Health Connect')}
-      footer={h.on ? t('Workouts and weigh-ins go to Health Connect when you finish or change them. openGym reads nothing back.') : null}>
+      footer={h.on ? t('Workouts and weigh-ins go to Health Connect when you finish or change them. ISORA reads nothing back.') : null}>
       <Row icon="heart" iconTint="var(--red)" title={t('Write to Health Connect')}
         subtitle={t('Finished workouts and weigh-ins, from this phone only.')}>
         <Switch checked={!!h.on} disabled={busy} onChange={v => (v ? turnOn() : askOff())} />

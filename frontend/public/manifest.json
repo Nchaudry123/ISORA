@@ -1,7 +1,7 @@
 {
   "name": "ISORA",
   "short_name": "ISORA",
-  "description": "Personal gym & body weight tracker",
+  "description": "Lift, rest, play. A gym tracker with a block puzzle in every rest.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

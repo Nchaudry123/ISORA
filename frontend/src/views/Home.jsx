@@ -15,6 +15,7 @@ import { Button } from '../components/ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { glyphOf } from '../lib/glyphs.js'
 import { dayNoteOf } from '../lib/day-notes.js'
+import { cleanStats } from '../lib/blockblast.js'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
@@ -92,6 +93,7 @@ export default function Home() {
   // The streak card's fraction: this calendar week's workouts over the weekdays with a plan, or,
   // in a coach week, the queue's sessions and your own days together (lib/queue.js weekTally).
   const { done: doneThisWeek, planned: plannedPerWeek } = weekTally(S, todayISO())
+  const blast = cleanStats(S.restBlast)
   const bwPoints = S.bodyweight.slice(-30).map(b => ({ t: b.t || new Date(b.d).getTime(), y: b.w, d: b.d }))
 
   // today's session shown right under the week strip
@@ -102,7 +104,7 @@ export default function Home() {
 
   return <div className="narrow">
     <div className="hdr">
-      <div><h1>{user ? t('Hi {0}', user.name) : 'openGym'}</h1><div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
+      <div><h1>{user ? t('Hi {0}', user.name) : <span className="brand"><Icon name="balance" />ISORA</span>}</h1><div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</div></div>
       <button className="iconbtn" onClick={() => nav('/settings')} aria-label={trouble ? t('Settings') + ', ' + t('Connection problem') : t('Settings')}><Icon name="gear" />{trouble && <span className="tab-dot" aria-hidden="true" />}</button>
     </div>
 
@@ -155,6 +157,26 @@ export default function Home() {
         <Button size="sm" variant="ghost" className="dim" icon="swap" onClick={() => nav('/workout')}>
           {t('Choose a different workout')}
         </Button>
+      </div>}
+    </div>
+
+    {/* Rest Blast: the puzzle that fills every rest. Its record (lib/blockblast.js) and whether
+        it is on; a tap goes to the switch in Settings → Workout. */}
+    <div className="card tappable rb-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/settings/workout'))}>
+      <div className="row between">
+        <div className="row" style={{ gap: 9, minWidth: 0 }}>
+          <span className="lrow-i" style={{ background: S.restGame !== false ? 'var(--acc)' : 'var(--surface-3)', color: S.restGame !== false ? 'var(--on-acc)' : undefined }}><Icon name="balance" /></span>
+          <div style={{ minWidth: 0 }}>
+            <div className="lbl2">{t('Rest Blast')}</div>
+            <div className="ttl">{S.restGame !== false ? t('A 3:00 round in every rest') : t('Off')}</div>
+          </div>
+        </div>
+        <Icon name="chevronRight" className="chev" />
+      </div>
+      {blast.games > 0 && <div className="rb-home-stats">
+        <div><b>{blast.best}</b><span>{t('Best')}</span></div>
+        <div><b>{blast.games}</b><span>{t('Rounds')}</span></div>
+        <div><b>{blast.lines}</b><span>{t('Lines')}</span></div>
       </div>}
     </div>
 

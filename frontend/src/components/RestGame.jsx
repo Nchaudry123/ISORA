@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { t } from '../lib/i18n.js'
 import {
   SIZE, JUNK, emptyBoard, canPlace, place, linesAfter, anyMove, dealTray, doomBoard, doomTray,
+  cleanStats, recordRound,
 } from '../lib/blockblast.js'
 import { Button } from './ui.jsx'
 
@@ -13,9 +14,10 @@ import { Button } from './ui.jsx'
 // (lib/blockblast.js): good pieces for the first half, worse ones after, and nothing that fits
 // at 0:00 — the game is over exactly when the next set is due.
 
-const BEST_KEY = 'og_restblast_best'
-const readBest = () => { try { return Number(localStorage.getItem(BEST_KEY)) || 0 } catch { return 0 } }
-const saveBest = n => { try { localStorage.setItem(BEST_KEY, String(n)) } catch {} }
+// The best score lived in this browser's storage before the record moved into the profile
+// (S.restBlast); read once so nobody's best goes back to zero.
+const OLD_BEST_KEY = 'og_restblast_best'
+const oldBest = () => { try { return Number(localStorage.getItem(OLD_BEST_KEY)) || 0 } catch { return 0 } }
 const LIFT = 1.4   // a dragged piece rides this many of its own cells above the finger
 
 function Cells({ shape, color, cell, className = '' }) {
@@ -32,7 +34,9 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
   const [board, setBoard] = useState(emptyBoard)
   const [tray, setTray] = useState(() => dealTray(emptyBoard(), secondsLeft))
   const [score, setScore] = useState(0)
-  const [best, setBest] = useState(readBest)
+  const saved = useStore(s => s.S.restBlast)
+  const update = useStore(s => s.update)
+  const best = Math.max(cleanStats(saved).best, oldBest())
   const [combo, setCombo] = useState(0)
   const [over, setOver] = useState(null)        // null | 'stuck' | 'time'
   const [drag, setDrag] = useState(null)        // { idx, x, y }
@@ -52,7 +56,17 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
     setDrag(null)
   }, [secondsLeft > 0])
 
-  useEffect(() => { if (score > best) { setBest(score); saveBest(score) } }, [score])
+  // This round, for the record: counted once, when it ends (no moves, 0:00) or when the rest
+  // closes under it (Skip), whichever comes first.
+  const round = useRef({ score: 0, lines: 0, done: false })
+  const record = () => {
+    const r = round.current
+    if (r.done) return
+    r.done = true
+    if (r.score > 0) update(s => { s.restBlast = recordRound(s.restBlast, r) })
+  }
+  useEffect(() => { if (over) record() }, [over])
+  useEffect(() => record, [])
 
   const cellSize = () => (boardRef.current ? boardRef.current.getBoundingClientRect().width / SIZE : 36)
 
@@ -79,6 +93,8 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
     setBoard(res.board)
     setTray(next)
     setScore(s => s + res.points)
+    round.current.score += res.points
+    round.current.lines += res.lines
     setCombo(res.combo)
     if (res.lines) {
       const id = Date.now()
@@ -107,6 +123,7 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
 
   const restart = () => {
     const b = emptyBoard()
+    round.current = { score: 0, lines: 0, done: false }
     setBoard(b); setTray(dealTray(b, secsRef.current)); setScore(0); setCombo(0); setOver(null)
   }
 
@@ -132,7 +149,7 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
       <div className="rb-head">
         <div>
           <div className="rb-score">{score}</div>
-          <div className="rb-best">{t('Best')} {best}</div>
+          <div className="rb-best">{t('Best')} {Math.max(best, score)}</div>
         </div>
         <div className="rb-title">{t('Rest Blast')}</div>
         <Button size="sm" variant="ghost" onClick={onHide}>{t('Hide')}</Button>

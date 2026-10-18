@@ -1,4 +1,4 @@
-// openGym control set.
+// ISORA control set (from openGym's).
 //
 // Every input in the app is built here rather than styled on top of a native
 // widget. Native controls are the single loudest "unfinished" tell: a checkbox

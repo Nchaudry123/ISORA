@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   SIZE, SHAPES, JUNK, emptyBoard, canPlace, place, placements, fitsAnywhere, anyMove,
-  badness, dealTray, doomBoard, doomTray,
+  badness, dealTray, doomBoard, doomTray, emptyStats, cleanStats, recordRound,
 } from './blockblast.js'
 
 // A small deterministic PRNG so the dealer's choices are repeatable.
@@ -98,5 +98,21 @@ describe('the dealer', () => {
     expect(anyMove(b, doomTray(b, seeded(1)))).toBe(false)
     expect(doomBoard(emptyBoard()).flat().filter(v => v === JUNK)).toHaveLength(32)
     expect(shape(0).cells).toHaveLength(2)
+  })
+})
+
+describe('the Rest Blast record', () => {
+  it('counts rounds that scored, keeps the best, adds up lines', () => {
+    let s = emptyStats()
+    s = recordRound(s, { score: 120, lines: 4 })
+    s = recordRound(s, { score: 80, lines: 2 })
+    s = recordRound(s, { score: 0, lines: 0 })   // nothing placed: not a round
+    expect(s).toEqual({ best: 120, games: 2, lines: 6 })
+  })
+
+  it('starts from zero on a missing or malformed record', () => {
+    expect(cleanStats(undefined)).toEqual(emptyStats())
+    expect(cleanStats({ best: 'x', games: -3, lines: 2.7 })).toEqual({ best: 0, games: 0, lines: 2 })
+    expect(recordRound(null, { score: 10, lines: 1 })).toEqual({ best: 10, games: 1, lines: 1 })
   })
 })

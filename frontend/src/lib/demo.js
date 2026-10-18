@@ -15,4 +15,4 @@ export const DEMO = import.meta.env.VITE_DEMO === '1'
 // reset, and says "on this device" where the demo says "demo".
 export const PERSONAL = DEMO && import.meta.env.VITE_PERSONAL === '1'
 export const DEMO_SEEDED = 'gym_demo_seeded_v1'
-export const REPO = 'https://gitlab.com/DuarteSantos8/opengym'
+export const REPO = 'https://github.com/Nchaudry123/ISORA'

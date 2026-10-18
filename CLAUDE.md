@@ -4,6 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
+**ISORA** is a modified openGym (AGPL, credited in About and NOTICE.md): the same tracker, renamed
+and recoloured (lime `#a3e635`, the icon), plus **Rest Blast**, a block puzzle in every rest
+(`frontend/src/lib/blockblast.js`, `components/RestGame.jsx`, record in `S.restBlast`). It ships
+as a backend-free personal web app (`VITE_DEMO=1 VITE_PERSONAL=1`, `lib/demo.js` PERSONAL) on
+Vercel (`frontend/vercel.json`) and GitHub Pages. User-visible text says ISORA; internal
+identifiers (storage keys, backup file names, `Documents/openGym`) keep openGym names on purpose
+so data stays compatible. The exercise media is licensed for non-commercial forks only (NOTICE.md).
+
+What follows is openGym's own guide, still accurate for the code.
+
 openGym is a self-hosted gym & body-weight tracker PWA. Two containers (`api` + `web`) plus a
 `./data` folder the user owns — no third-party account, no telemetry. Passkey (WebAuthn) login,
 installable as a home-screen app, optional Capacitor shells for standalone Android/iOS builds.

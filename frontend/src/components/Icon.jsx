@@ -1,4 +1,4 @@
-// openGym icon set — hand-drawn on a 24×24 grid, stroke-based, single weight.
+// ISORA icon set (from openGym's) — hand-drawn on a 24×24 grid, stroke-based, single weight.
 //
 // Everything is one <svg> primitive with `currentColor`, so an icon inherits the
 // text colour and optical size of whatever it sits in. No emoji anywhere in the
@@ -149,6 +149,8 @@ const P = {
   swap: <path d="M4.4 8.2h14.4M15.2 4.6l3.6 3.6-3.6 3.6M19.6 15.8H5.2M8.8 12.2l-3.6 3.6 3.6 3.6" />,
   // the workout layout, and its Cards option: two stacked cards
   layout: <><rect x="4" y="4" width="16" height="7" rx="2" /><rect x="4" y="13" width="16" height="7" rx="2" /></>,
+  // ISORA's mark in line form: two equal blocks balanced on a beam (Rest Blast, the app icon)
+  balance: <><rect x="4" y="6" width="5.5" height="5.5" rx="1.2" /><rect x="14.5" y="6" width="5.5" height="5.5" rx="1.2" /><path d="M3.5 14h17M12 14l-3.6 6h7.2Z" /></>,
   // per side: one line down the middle, an arrow out to each side
   sides: <><path d="M12 3.6v16.8" /><path d="M8.6 8.4 5.2 12l3.4 3.6M15.4 8.4l3.4 3.6-3.4 3.6" /></>,
   hourglass: <path d="M6.8 3.8h10.4M6.8 20.2h10.4M8 3.8v2.6c0 2.2 4 3.6 4 5.6s-4 3.4-4 5.6v2.6M16 3.8v2.6c0 2.2-4 3.6-4 5.6s4 3.4 4 5.6v2.6" />,

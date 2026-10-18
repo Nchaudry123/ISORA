@@ -188,3 +188,17 @@ export function dealTray(board, secondsLeft, rng = Math.random) {
   }
   return tray
 }
+
+// The Rest Blast record kept in the profile (S.restBlast), so it travels with backups like the
+// rest of your data: best score, rounds played and lines cleared in all of them. A round counts
+// once it scored anything; a malformed record (an old backup, another device) starts from zero.
+export const emptyStats = () => ({ best: 0, games: 0, lines: 0 })
+const count = v => (Number.isFinite(v) && v > 0 ? Math.floor(v) : 0)
+export function cleanStats(s) {
+  return s && typeof s === 'object' ? { best: count(s.best), games: count(s.games), lines: count(s.lines) } : emptyStats()
+}
+export function recordRound(stats, { score, lines }) {
+  const s = cleanStats(stats)
+  if (!(score > 0)) return s
+  return { best: Math.max(s.best, count(score)), games: s.games + 1, lines: s.lines + count(lines) }
+}

@@ -1,5 +1,11 @@
 # Third-party notices
 
+**ISORA** is a modified version of openGym, by Nchaudry123 (2026): renamed, recoloured, with a new
+icon and the Rest Blast rest-timer game added. The modifications are licensed under the same
+GNU AGPL v3.0. Everything below about openGym and its third-party material applies to ISORA
+unchanged, including the exercise-media terms: ISORA is a non-commercial fork and keeps the
+unmodified 180 px media with this notice.
+
 openGym — Copyright (C) 2026 Duarte Santos.
 openGym's own code is licensed under the **GNU AGPL v3.0** (see [LICENSE](LICENSE)).
 

@@ -49,7 +49,7 @@ globalThis.__APP_VERSION__ ??= 'test'
 let host, root
 beforeEach(() => {
   mocks.S = {
-    unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, vibrate: true, effort: 'none', gifSize: 'full', lang: 'en',
+    unit: 'kg', restSec: 90, restGame: false, restPauseSec: 15, sound: true, vibrate: true, effort: 'none', gifSize: 'full', lang: 'en',
     workouts: [], routines: [], exWeights: {}, equipProfiles: [{ id: 'p1', name: 'Home', equipment: [] }], activeEquipId: 'p1',
     reminder: { on: false, time: '17:30' },
   }
@@ -273,8 +273,8 @@ describe('the pages', () => {
 
   it('every old row has a home: the Workout page holds the rest, logging and the before/during rows', () => {
     mount('workout')
-    expect([...host.querySelectorAll('.sect-t')].map(e => e.textContent)).toEqual(['Rest', 'Logging', 'Before and during'])
-    expect(titles()).toEqual(['Rest timer', 'Rest-pause rest', 'Effort per set', 'Shown under each exercise', 'Layout',
+    expect([...host.querySelectorAll('.sect-t')].map(e => e.textContent)).toEqual(['Rest Blast', 'Rest', 'Logging', 'Before and during'])
+    expect(titles()).toEqual(['Rest Blast', 'Rest timer', 'Rest-pause rest', 'Effort per set', 'Shown under each exercise', 'Layout',
       'Collapse completed exercises', 'Weigh in before workouts', 'Keep screen awake', 'Exercise animations', 'Fine-tuning'])
     // QA 10-05: the "screen stays on" line is the awake row's own subtitle, not a section footer
     // that read as if it explained the animations above it.

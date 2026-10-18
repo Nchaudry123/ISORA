@@ -42,7 +42,7 @@
   --purple:#bf5af2; --mint:#63e6e2; --brown:#ac8e68; --grey:#8e8e93;
 
   /* accent (per-account, synced) */
-  --acc:  var(--green);
+  --acc:  #a3e635;
   --acc-2:#248a3d;
   --on-acc:#000000;
   --acc-soft: color-mix(in srgb, var(--acc) 16%, transparent);
@@ -92,7 +92,9 @@
 }
 
 /* accents — Apple's system colours, so a recolour never looks off-system */
-:root[data-accent="lime"]  { --acc:var(--green);  --acc-2:#248a3d; --on-acc:#000 }
+/* lime is ISORA's own colour, the icon's (#a3e635), and the default; green is the old default. */
+:root[data-accent="lime"]  { --acc:#a3e635;       --acc-2:#65a30d; --on-acc:#000 }
+:root[data-accent="green"] { --acc:var(--green);  --acc-2:#248a3d; --on-acc:#000 }
 :root[data-accent="sky"]   { --acc:var(--blue);   --acc-2:#0060df; --on-acc:#fff }
 :root[data-accent="orange"]{ --acc:var(--orange); --acc-2:#c76b00; --on-acc:#000 }
 :root[data-accent="violet"]{ --acc:var(--purple); --acc-2:#8944ab; --on-acc:#fff }
@@ -106,8 +108,11 @@
    DEFAULT accent, so every primary button in light mode was failing. Black scores
    9.46 / 8.16 there. Blue, purple, pink and red keep white (3.5–4.1:1), which both
    passes and matches the platform convention. */
-:root[data-theme="light"][data-accent="lime"],
+:root[data-theme="light"][data-accent="green"],
 :root[data-theme="light"][data-accent="teal"]  { --on-acc:#000 }
+/* The icon's lime is unreadable on white, so light mode takes the same hue darker (6.1:1 on
+   #fff for text) with white labels on filled buttons (5.4:1). */
+:root[data-theme="light"][data-accent="lime"]  { --acc:#4d7c0f; --acc-2:#3f6212; --on-acc:#fff }
 :root[data-theme="light"][data-accent="sky"],
 :root[data-theme="light"][data-accent="violet"],
 :root[data-theme="light"][data-accent="pink"],
@@ -2197,3 +2202,10 @@ body.rest-game{overflow:hidden}
   box-shadow:0 8px 24px -6px rgba(0,0,0,.5);
 }
 body.no-tabbar .rb-reopen{bottom:calc(100px + var(--sab))}
+.rb-home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.rb-home-stats > div{background:var(--surface-2);border-radius:var(--r);padding:8px 10px;display:flex;flex-direction:column}
+.rb-home-stats b{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.rb-home-stats span{font-size:12px;color:var(--label-2)}
+/* The ISORA wordmark on Home: the balance mark in the accent, then the name, tracked a little wide. */
+.brand{display:inline-flex;align-items:center;gap:8px;letter-spacing:.04em}
+.brand .icn{color:var(--acc);font-size:.8em;--icon-stroke:2.2}
