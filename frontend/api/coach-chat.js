@@ -9,9 +9,10 @@
 // overrides the model list without a code change.
 
 const ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
-// Tried in order: a fast chat model, a second provider if it is down or busy, a cheap last resort.
-// Every one supports strict JSON-schema output (checked against openrouter.ai/api/v1/models).
-const DEFAULT_MODELS = ['google/gemini-3.8-flash', '~openai/gpt-mini-latest', 'deepseek/deepseek-v4.1-flash']
+// Tried in order: DeepSeek V4.1 Flash (about a twentieth of the cost of the others), Gemini Flash if
+// it is down or busy, then a second cheap provider. Every one supports strict JSON-schema output
+// (checked against openrouter.ai/api/v1/models).
+const DEFAULT_MODELS = ['deepseek/deepseek-v4.1-flash', 'google/gemini-3.8-flash', 'qwen/qwen3.8-flash']
 const MAX_TURNS = 24          // messages per conversation, both sides
 const MAX_CHARS = 600         // per message from the app
 const GOALS = ['strength', 'muscle', 'fitness', 'active']
