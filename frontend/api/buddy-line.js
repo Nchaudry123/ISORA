@@ -45,7 +45,10 @@ export default async function handler(req, res) {
         models: models.length ? models : DEFAULT_MODELS,
         messages: [{ role: 'system', content: SYSTEM }, { role: 'user', content: JSON.stringify(facts) }],
         provider: { data_collection: 'deny' },
-        max_tokens: 80,
+        // models that think first spend part of max_tokens on it: room for that, kept short and
+        // left out of the reply
+        reasoning: { effort: 'low', exclude: true },
+        max_tokens: 600,
         temperature: 0.9,
       }),
       signal: AbortSignal.timeout(15000),
@@ -53,7 +56,8 @@ export default async function handler(req, res) {
   } catch { return res.status(504).json({ error: 'timeout' }) }
   if (!r.ok) return res.status(r.status === 429 ? 429 : 502).json({ error: 'upstream' })
   const body = await r.json().catch(() => null)
-  const line = str(body?.choices?.[0]?.message?.content, 200).replace(/^["'“”]+|["'“”]+$/g, '').replace(/\s+/g, ' ')
-  if (!line) return res.status(502).json({ error: 'bad-output' })
+  const raw = String(body?.choices?.[0]?.message?.content || '').replace(/<think>[\s\S]*?<\/think>/g, '')
+  const line = str(raw, 200).replace(/^["'“”]+|["'“”]+$/g, '').replace(/\s+/g, ' ')
+  if (!line) return res.status(502).json({ error: 'bad-output', finish: body?.choices?.[0]?.finish_reason || null })
   return res.status(200).json({ line, model: typeof body?.model === 'string' ? body.model : null })
 }
