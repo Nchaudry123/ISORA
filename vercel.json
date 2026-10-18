@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm ci --prefix frontend",
+  "buildCommand": "cd frontend && VITE_DEMO=1 VITE_PERSONAL=1 npm run build && cd .. && node scripts/catalogue/stage-media.mjs frontend/dist",
+  "outputDirectory": "frontend/dist",
+  "framework": null,
+  "git": { "deploymentEnabled": { "main": true } }
+}
