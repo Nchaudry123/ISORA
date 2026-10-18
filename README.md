@@ -2,6 +2,8 @@
 
 **Lift. Rest. Play. Repeat.**
 
+Open it on your phone and add it to your home screen: **https://isora-six.vercel.app**
+
 ISORA takes its name from the Greek *ισορροπία* (isorropía), "balance": the balance between
 effort and recovery. It is a self-hosted gym and body-weight tracker with a game built into the rest.
 
