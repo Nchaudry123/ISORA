@@ -7,7 +7,6 @@ import { limited } from './_limit.js'
 const ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
 const DEFAULT_MODELS = ['deepseek/deepseek-v4.1-flash', 'google/gemini-3.8-flash', 'qwen/qwen3.8-flash']
 const MOODS = ['active', 'proud', 'hyped', 'sleepy', 'missing', 'new', 'chill']
-const KINDS = { block: 'a square lime block', drop: 'a round violet drop', bolt: 'a tall blue block with an antenna', ember: 'a little orange flame' }
 
 const SYSTEM = `You are a small, warm companion character living in ISORA, a gym tracking app. You are the user's buddy: encouraging, playful, a bit cheeky, never preachy. You speak in first person as the buddy.
 
@@ -24,7 +23,7 @@ export default async function handler(req, res) {
   const b = req.body || {}
   const mood = MOODS.includes(b.mood) ? b.mood : 'chill'
   const facts = {
-    buddy: `${str(b.buddyName, 20) || 'Iso'}, ${KINDS[b.kind] || KINDS.block}, level ${int(b.level) ?? 1}`,
+    buddy: `${str(b.buddyName, 20) || 'Iso'}, a little square blue block creature, level ${int(b.level) ?? 1}`,
     user: str(b.userName, 40) || null,
     mood,
     language: str(b.lang, 10) || 'en',

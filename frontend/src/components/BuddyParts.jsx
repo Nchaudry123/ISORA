@@ -6,7 +6,7 @@ import { todayISO } from '../lib/format.js'
 import { setsDone, streakWeeks } from '../lib/history.js'
 import { PERSONAL } from '../lib/demo.js'
 import { cleanProfile } from '../lib/profile.js'
-import { KINDS, KIND_NAME, DEFAULT_NAMES, cleanBuddy, totalXP, levelOf, gearFor, moodOf, daysBetween, fallbackLine, lineKey } from '../lib/buddy.js'
+import { KIND, DEFAULT_NAME, cleanBuddy, totalXP, levelOf, gearFor, moodOf, daysBetween, fallbackLine, lineKey } from '../lib/buddy.js'
 import Buddy from './Buddy.jsx'
 import { Button, TextField } from './ui.jsx'
 import Icon from './Icon.jsx'
@@ -19,23 +19,15 @@ const update = fn => useStore.getState().update(fn)
 export const currentLevel = () => levelOf(totalXP(useStore.getState().S.workouts, setsDone)).level
 const setBuddy = patch => update(s => { s.buddy = { ...cleanBuddy(s.buddy), ...patch } })
 
-/** Choose one of the four and name it. `onDone(kind, name)` after "Meet …". */
-export function BuddyPicker({ initialKind = 'block', initialName = '', onDone, cta }) {
-  const [kind, setKind] = useState(initialKind)
+/** Meet the buddy and name it. `onDone(name)` after "Meet …". */
+export function BuddyPicker({ initialName = '', onDone, cta }) {
   const [name, setName] = useState(initialName)
-  const shown = name.trim() || DEFAULT_NAMES[kind]
+  const shown = name.trim() || DEFAULT_NAME
   return <div className="bpick">
-    <div className="bpick-stage"><Buddy kind={kind} mood="hyped" size={150} /></div>
-    <div className="bpick-grid" role="radiogroup" aria-label={t('Choose your buddy')}>
-      {KINDS.map(k => <button type="button" key={k} role="radio" aria-checked={kind === k} className={'bpick-opt' + (kind === k ? ' on' : '')}
-        onClick={() => { setKind(k); if (!name.trim() || Object.values(DEFAULT_NAMES).includes(name.trim())) setName('') }}>
-        <Buddy kind={k} mood={kind === k ? 'proud' : 'chill'} size={58} still />
-        <span>{t(KIND_NAME[k])}</span>
-      </button>)}
-    </div>
-    <TextField value={name} maxLength={20} placeholder={DEFAULT_NAMES[kind]} aria-label={t('Name your buddy')} onChange={e => setName(e.target.value)} />
+    <div className="bpick-stage"><Buddy mood="hyped" size={170} /></div>
+    <TextField value={name} maxLength={20} placeholder={DEFAULT_NAME} aria-label={t('Name your buddy')} onChange={e => setName(e.target.value)} />
     <div style={{ height: 12 }} />
-    <Button variant="primary" onClick={() => onDone(kind, shown)}>{cta || t('Meet {0}', shown)}</Button>
+    <Button variant="primary" onClick={() => onDone(shown)}>{cta || t('Meet {0}', shown)}</Button>
   </div>
 }
 
@@ -85,17 +77,17 @@ export function BuddyCard({ doneToday, plannedToday, todayName, facts = {} }) {
     if (!bud.kind || lv.level <= bud.level) return
     const from = bud.level
     setBuddy({ level: lv.level })
-    if (lv.level > from) levelUpSheet(bud.kind, bud.name, lv.level)
+    if (lv.level > from) levelUpSheet(bud.name, lv.level)
   }, [lv.level, bud.kind])
 
   if (!bud.kind) return <button type="button" className="bcard meet" onClick={() => meetSheet()}>
-    <Buddy kind="block" mood="new" size={64} />
+    <Buddy mood="new" size={64} />
     <div className="bcard-body"><div className="bcard-name">{t('Meet your buddy')}</div><div className="bcard-line">{t('A companion that cheers you on and grows as you train.')}</div></div>
     <Icon name="chevronRight" className="chev" />
   </button>
 
   return <button type="button" className="bcard" onClick={buddySheet} aria-label={t('{0}, level {1}', bud.name, lv.level)}>
-    <Buddy kind={bud.kind} mood={mood} level={lv.level} size={76} />
+    <Buddy mood={mood} level={lv.level} size={76} />
     <div className="bcard-body">
       <div className="bcard-bubble">{line}</div>
       <div className="bcard-meta"><b>{bud.name}</b><span>{t('Level {0}', lv.level)}</span></div>
@@ -112,10 +104,10 @@ function BuddySheet({ close }) {
   return <div className="bsheet">
     <div className="row between" style={{ marginBottom: 4 }}>
       <h3 style={{ margin: 0 }}>{t('Your buddy')}</h3>
-      <Button size="sm" variant="ghost" onClick={() => { setBuddy({ name: name.trim() || DEFAULT_NAMES[bud.kind] }); close() }}>{t('Done')}</Button>
+      <Button size="sm" variant="ghost" onClick={() => { setBuddy({ name: name.trim() || DEFAULT_NAME }); close() }}>{t('Done')}</Button>
     </div>
-    <div className="bsheet-stage"><Buddy kind={bud.kind} mood={mood === 'missing' ? 'missing' : 'proud'} level={lv.level} size={160} /></div>
-    <TextField value={name} maxLength={20} aria-label={t('Name your buddy')} onChange={e => setName(e.target.value)} onBlur={() => setBuddy({ name: name.trim() || DEFAULT_NAMES[bud.kind] })} />
+    <div className="bsheet-stage"><Buddy mood={mood === 'missing' ? 'missing' : 'proud'} level={lv.level} size={160} /></div>
+    <TextField value={name} maxLength={20} aria-label={t('Name your buddy')} onChange={e => setName(e.target.value)} onBlur={() => setBuddy({ name: name.trim() || DEFAULT_NAME })} />
     <div className="bsheet-level">
       <div className="row between"><b>{t('Level {0}', lv.level)}</b><span className="muted small">{t('{0} / {1} XP', lv.into, lv.need)}</span></div>
       <div className="bcard-bar big"><i style={{ width: lv.pct + '%' }} /></div>
@@ -131,31 +123,27 @@ function BuddySheet({ close }) {
       {[['band', 3, t('Sweatband')], ['phones', 6, t('Headphones')], ['crown', 10, t('Crown')]].map(([k, at, label]) =>
         <div key={k} className={gear[k] ? 'on' : ''}><Icon name={gear[k] ? 'checkCircle' : 'lock'} /><span>{label}</span><small>{t('Level {0}', at)}</small></div>)}
     </div>
-    <div style={{ height: 14 }} />
-    <Button icon="swap" onClick={() => { close(); meetSheet(true) }}>{t('Change buddy')}</Button>
   </div>
 }
 export const buddySheet = () => useUI.getState().openSheet(close => <BuddySheet close={close} />)
 
-function MeetSheet({ close, change }) {
-  const bud = cleanBuddy(useStore.getState().S.buddy)
+function MeetSheet({ close }) {
   return <>
-    <h3>{change ? t('Change buddy') : t('Meet your buddy')}</h3>
-    <BuddyPicker initialKind={bud.kind || 'block'} initialName={change ? bud.name : ''}
-      onDone={(kind, name) => { setBuddy({ kind, name, born: bud.born || todayISO(), level: Math.max(bud.level, currentLevel()) }); close() }} cta={change ? t('Save') : undefined} />
+    <h3>{t('Meet your buddy')}</h3>
+    <BuddyPicker onDone={name => { setBuddy({ kind: KIND, name, born: todayISO(), level: currentLevel() }); close() }} />
   </>
 }
-export const meetSheet = (change = false) => useUI.getState().openSheet(close => <MeetSheet close={close} change={change} />)
+export const meetSheet = () => useUI.getState().openSheet(close => <MeetSheet close={close} />)
 
-function LevelUp({ close, kind, name, level }) {
+function LevelUp({ close, name, level }) {
   const g = gearFor(level), before = gearFor(level - 1)
   const unlocked = g.crown && !before.crown ? t('Crown') : g.phones && !before.phones ? t('Headphones') : g.band && !before.band ? t('Sweatband') : null
   return <div className="lvlup">
     <div className="lvlup-burst" aria-hidden="true">{Array.from({ length: 12 }, (_, i) => <i key={i} style={{ '--a': i * 30 + 'deg' }} />)}</div>
-    <Buddy kind={kind} mood="proud" level={level} size={150} />
+    <Buddy mood="proud" level={level} size={150} />
     <div className="lvlup-t">{t('Level {0}!', level)}</div>
     <p className="muted">{unlocked ? t('New gear for {0}: {1}', name, unlocked) : t('{0} is growing with you.', name)}</p>
     <Button variant="primary" onClick={close}>{t('Nice!')}</Button>
   </div>
 }
-export const levelUpSheet = (kind, name, level) => useUI.getState().openSheet(close => <LevelUp close={close} kind={kind} name={name} level={level} />, { kind: 'center' })
+export const levelUpSheet = (name, level) => useUI.getState().openSheet(close => <LevelUp close={close} name={name} level={level} />, { kind: 'center' })

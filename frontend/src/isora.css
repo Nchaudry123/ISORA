@@ -8,8 +8,9 @@
    SIL OFL), is kept for the few places that are type as image: the wordmark, the rest clock and
    the Rest Blast score.
 
-   Colour carries meaning, never decoration: lime is effort (start, done, primary), violet is
-   recovery (rest days, the rest bar, Rest Blast), amber is records only. */
+   Colour carries meaning, never decoration: blue is effort (start, done, primary) and ISORA itself,
+   lavender is recovery (rest days, the rest bar, Rest Blast), amber is records only. The page is
+   true black or white; cards are neutral greys. */
 
 @font-face{
   font-family:'Archivo';font-style:normal;font-weight:100 900;font-stretch:62% 125%;font-display:swap;
@@ -24,12 +25,13 @@
 
 /* ---------------------------------------------------------------- tokens -- */
 :root{
-  --bg:#0a0d12; --bg-el:#10141b;
-  --surface:#151a22; --surface-2:#1d232d; --surface-3:#29303c;
-  --label-2:rgba(226,232,240,.62); --label-3:rgba(226,232,240,.38); --label-4:rgba(226,232,240,.2);
-  --sep:rgba(148,163,184,.18); --sep-op:rgba(148,163,184,.14);
+  /* true black, neutral greys: the blue is the only colour the chrome carries */
+  --bg:#000000; --bg-el:#0c0c0e;
+  --surface:#151517; --surface-2:#1f1f22; --surface-3:#2c2c30;
+  --label-2:rgba(235,235,245,.62); --label-3:rgba(235,235,245,.38); --label-4:rgba(235,235,245,.2);
+  --sep:rgba(84,84,88,.55); --sep-op:rgba(84,84,88,.4);
 
-  --rest:#8b7cf6;
+  --rest:#a78bfa;
   --rest-soft:color-mix(in srgb,var(--rest) 16%,transparent);
   --record:#ffb547;
 
@@ -37,7 +39,12 @@
   --display:'Archivo',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;
   --av:46px;
 }
-:root[data-theme="light"]{ --rest:#6a58e6; --record:#b26a00 }
+/* white page, light grey cards, so a card still reads as one on the white */
+:root[data-theme="light"]{
+  --bg:#ffffff; --bg-el:#ffffff;
+  --surface:#f2f2f5; --surface-2:#e8e8ed; --surface-3:#dcdce2;
+  --rest:#7c5cf0; --record:#b26a00;
+}
 
 /* -------------------------------------------------------- one type scale -- */
 .hdr{margin:10px 0 16px}

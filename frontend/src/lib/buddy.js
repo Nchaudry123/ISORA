@@ -2,19 +2,19 @@
 // how your training is going and grows with it. Pure helpers here — who it is, its mood, its level
 // and the words it falls back on when the line of the day cannot come from the server.
 
-// The four buddies to choose from: a shape and its colour (a CSS custom property of the theme).
-export const KINDS = ['block', 'drop', 'bolt', 'ember']
-export const KIND_COLOR = { block: 'var(--acc)', drop: 'var(--rest)', bolt: 'var(--blue)', ember: 'var(--orange)' }
-export const KIND_NAME = { block: 'Block', drop: 'Drop', bolt: 'Bolt', ember: 'Ember' }
-export const DEFAULT_NAMES = { block: 'Iso', drop: 'Remi', bolt: 'Zap', ember: 'Blaze' }
+// One buddy: a square block creature in the app's blue (the accent), like the blocks of the logo
+// and of Rest Blast. Earlier versions offered four; any of them now reads as this one.
+export const KIND = 'block'
+export const KIND_COLOR = 'var(--acc)'
+export const DEFAULT_NAME = 'Iso'
 
 export const emptyBuddy = () => ({ kind: null, name: '', born: null, level: 1, line: null })
 
-/** A stored buddy made safe. `kind` null means none was chosen yet (onboarding asks). */
+/** A stored buddy made safe. `kind` null means it has not been met yet (onboarding names it). */
 export function cleanBuddy(b) {
   const o = b && typeof b === 'object' ? b : {}
-  const kind = KINDS.includes(o.kind) ? o.kind : null
-  const name = typeof o.name === 'string' && o.name.trim() ? o.name.trim().slice(0, 20) : (kind ? DEFAULT_NAMES[kind] : '')
+  const kind = typeof o.kind === 'string' && o.kind ? KIND : null
+  const name = typeof o.name === 'string' && o.name.trim() ? o.name.trim().slice(0, 20) : (kind ? DEFAULT_NAME : '')
   const lvl = Number(o.level)
   const line = o.line && typeof o.line === 'object' && typeof o.line.text === 'string' && typeof o.line.key === 'string'
     ? { key: o.line.key.slice(0, 40), text: o.line.text.slice(0, 200) } : null

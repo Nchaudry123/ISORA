@@ -42,7 +42,7 @@
   --purple:#bf5af2; --mint:#63e6e2; --brown:#ac8e68; --grey:#8e8e93;
 
   /* accent (per-account, synced) */
-  --acc:  #a3e635;
+  --acc:  var(--blue);
   --acc-2:#248a3d;
   --on-acc:#000000;
   --acc-soft: color-mix(in srgb, var(--acc) 16%, transparent);
@@ -92,10 +92,10 @@
 }
 
 /* accents — Apple's system colours, so a recolour never looks off-system */
-/* lime is ISORA's own colour, the icon's (#a3e635), and the default; green is the old default. */
+/* sky (blue) is ISORA's colour and the default; lime was ISORA's first colour, green openGym's. */
 :root[data-accent="lime"]  { --acc:#a3e635;       --acc-2:#65a30d; --on-acc:#000 }
 :root[data-accent="green"] { --acc:var(--green);  --acc-2:#248a3d; --on-acc:#000 }
-:root[data-accent="sky"]   { --acc:var(--blue);   --acc-2:#0060df; --on-acc:#fff }
+:root[data-accent="sky"]   { --acc:var(--blue);   --acc-2:#0064d6; --on-acc:#fff }
 :root[data-accent="orange"]{ --acc:var(--orange); --acc-2:#c76b00; --on-acc:#000 }
 :root[data-accent="violet"]{ --acc:var(--purple); --acc-2:#8944ab; --on-acc:#fff }
 :root[data-accent="pink"]  { --acc:var(--pink);   --acc-2:#d70036; --on-acc:#fff }

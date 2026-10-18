@@ -2448,4 +2448,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': 'التمرين الأول هو الأصعب يا {0}. لنبدأ.',
   'Rest day, {0}. Muscles grow while you recover.': 'يوم راحة يا {0}. العضلات تنمو أثناء الاستشفاء.',
   'Take it easy today, {0}. You’ve earned it.': 'خذها بهدوء اليوم يا {0}. لقد استحققت ذلك.',
+  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'تعرّف على رفيقك. يشجعك ويتابع أسبوعك وينمو مع تمرينك. ماذا ستسميه؟',
 }

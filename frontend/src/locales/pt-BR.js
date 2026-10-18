@@ -1462,6 +1462,7 @@ export const PT_BR_OVERRIDES = {
   'Rest up, {0}. Big things tomorrow.': 'Descanse, {0}. Amanhã tem mais.',
   'Take it easy today, {0}. You’ve earned it.': 'Vá com calma hoje, {0}. Você merece.',
   'Workout logged. Now we recover, {0}.': 'Treino registrado. Agora vamos recuperar, {0}.',
+  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'Conheça seu companheiro. Ele te anima, acompanha sua semana e cresce com seu treino. Como você vai chamá-lo?',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

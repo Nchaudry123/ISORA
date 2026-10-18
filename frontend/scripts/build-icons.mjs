@@ -5,7 +5,7 @@
 //                                       Android and iOS icons and splash screens
 // Run after changing the SVG:
 //   node scripts/build-icons.mjs
-//   npx @capacitor/assets generate --ios --android --iconBackgroundColor '#0a0d12' --splashBackgroundColor '#0a0d12' --iconBackgroundColorDark '#0a0d12' --splashBackgroundColorDark '#0a0d12'
+//   npx @capacitor/assets generate --ios --android --iconBackgroundColor '#000000' --splashBackgroundColor '#000000' --iconBackgroundColorDark '#000000' --splashBackgroundColorDark '#000000'
 import sharp from 'sharp'
 import { readFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const res = join(root, 'resources')
-const BG = '#0a0d12'
+const BG = '#000000'
 const svg = readFileSync(join(res, 'icon.svg'), 'utf8')
 
 // The glyph alone (everything but the background square), on a 512 canvas scaled about its centre.

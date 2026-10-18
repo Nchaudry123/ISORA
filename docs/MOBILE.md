@@ -254,7 +254,7 @@ the generator then writes the native Android and iOS icons and splash screens:
 ```sh
 cd frontend
 node scripts/build-icons.mjs
-npx @capacitor/assets generate --ios --android --iconBackgroundColor '#0a0d12' --splashBackgroundColor '#0a0d12' --iconBackgroundColorDark '#0a0d12' --splashBackgroundColorDark '#0a0d12'
+npx @capacitor/assets generate --ios --android --iconBackgroundColor '#000000' --splashBackgroundColor '#000000' --iconBackgroundColorDark '#000000' --splashBackgroundColorDark '#000000'
 ```
 
 The generator also rewrites the whitespace of `AndroidManifest.xml`, `mipmap-anydpi-v26/*.xml`

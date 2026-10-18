@@ -1,16 +1,12 @@
 import { KIND_COLOR, gearFor } from '../lib/buddy.js'
 
-// Your buddy, drawn (lib/buddy.js): one of four block creatures in its own colour, with a face for
+// Your buddy, drawn (lib/buddy.js): a block creature in the app's blue, with a face for
 // its mood and the gear its level has earned. Plain SVG; it bobs and blinks through CSS
 // (isora.css), still under reduced motion. The face and gear are drawn in the page background so
 // they read on every body colour and both themes.
 
-const BODY = {
-  block: { d: 'M40 28h40a20 20 0 0 1 20 20v32a20 20 0 0 1-20 20H40a20 20 0 0 1-20-20V48a20 20 0 0 1 20-20Z', top: 28 },
-  drop: { d: 'M60 20C78 40 100 54 100 74a40 40 0 0 1-80 0c0-20 22-34 40-54Z', top: 34 },
-  bolt: { d: 'M54 24h12a24 24 0 0 1 24 24v32a24 24 0 0 1-24 24H54a24 24 0 0 1-24-24V48a24 24 0 0 1 24-24Z', top: 24, antenna: true },
-  ember: { d: 'M60 16c10 18 36 30 36 58a36 36 0 0 1-72 0c0-18 12-24 18-38 5 9 12 10 18-20Z', top: 32 },
-}
+// The buddy's body: a rounded block, like the blocks of the logo and of Rest Blast.
+const BODY = { d: 'M40 28h40a20 20 0 0 1 20 20v32a20 20 0 0 1-20 20H40a20 20 0 0 1-20-20V48a20 20 0 0 1 20-20Z', top: 28 }
 const INK = 'var(--bg)'
 
 function Face({ mood }) {
@@ -70,14 +66,13 @@ function Gear({ level, top }) {
   </g>
 }
 
-export default function Buddy({ kind = 'block', mood = 'chill', level = 1, size = 96, still = false, className = '' }) {
-  const b = BODY[kind] || BODY.block
+export default function Buddy({ mood = 'chill', level = 1, size = 96, still = false, className = '' }) {
+  const b = BODY
   return (
     <svg className={'buddy' + (still ? '' : ' alive') + ' ' + className} viewBox="0 0 120 120" width={size} height={size}
-      style={{ color: KIND_COLOR[kind] || KIND_COLOR.block }} aria-hidden="true" focusable="false">
+      style={{ color: KIND_COLOR }} aria-hidden="true" focusable="false">
       <ellipse cx="60" cy="110" rx="30" ry="4" fill="currentColor" opacity=".18" className="bd-shadow" />
       <g className="bd-body">
-        {b.antenna && <g><path d="M60 24V12" stroke="currentColor" strokeWidth="4" strokeLinecap="round" /><circle cx="60" cy="10" r="5" fill="currentColor" /></g>}
         <path d={b.d} fill="currentColor" />
         <rect x="38" y="98" width="14" height="8" rx="4" fill="currentColor" /><rect x="68" y="98" width="14" height="8" rx="4" fill="currentColor" />
         <path d={b.d} fill="#fff" opacity=".08" transform="translate(4 -4) scale(.93)" style={{ transformOrigin: '60px 60px' }} />

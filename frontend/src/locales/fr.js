@@ -2393,4 +2393,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': 'La première séance est la plus dure, {0}. On y va.',
   'Rest day, {0}. Muscles grow while you recover.': 'Jour de repos, {0}. Les muscles grandissent pendant la récup.',
   'Take it easy today, {0}. You’ve earned it.': 'Vas-y doucement aujourd’hui, {0}. Tu l’as mérité.',
+  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'Rencontre ton compagnon. Il t’encourage, garde un œil sur ta semaine et grandit avec ton entraînement. Comment vas-tu l’appeler ?',
 }

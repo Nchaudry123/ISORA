@@ -2397,4 +2397,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': 'Первая тренировка самая трудная, {0}. Вперёд.',
   'Rest day, {0}. Muscles grow while you recover.': 'День отдыха, {0}. Мышцы растут во время восстановления.',
   'Take it easy today, {0}. You’ve earned it.': 'Сегодня полегче, {0}. Ты это заслужил.',
+  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'Познакомься с напарником. Он подбадривает тебя, следит за неделей и растёт вместе с тренировками. Как ты его назовёшь?',
 }

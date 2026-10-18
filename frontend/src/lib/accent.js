@@ -16,8 +16,9 @@
 // A grey goes further, so it never looks like a switched-off button (THEMES below, accent.test.js).
 import { ACCENTS, ACCENT_INK } from './format.js'
 
-export const DEFAULT_ACCENT = 'lime'
+export const DEFAULT_ACCENT = 'sky'
 export const CUSTOM = 'custom'
+export const ACCENT_V = 2
 
 const HEX = /^#[0-9a-f]{6}$/i
 // What a stored `accent` may be at all: a short lowercase word. One this version does not know
@@ -40,6 +41,10 @@ export function sanitizeAccent(s) {
     if (hex) s.accentCustom = hex; else delete s.accentCustom
   }
   if ('accent' in s && !(typeof s.accent === 'string' && KEY.test(s.accent))) s.accent = DEFAULT_ACCENT
+  // ISORA's colour went from lime to blue: a profile still on lime without the mark of a choice
+  // (accentV, set when a colour is picked in Settings) moves to blue once, and is marked. Every
+  // other profile is left exactly as it is, so the move adds nothing to sync.
+  if (s.accent === 'lime' && s.accentV !== ACCENT_V) { s.accent = DEFAULT_ACCENT; s.accentV = ACCENT_V }
   return s
 }
 

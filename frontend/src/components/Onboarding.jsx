@@ -12,7 +12,7 @@ import { loadStarterPlan, PLAN_COPY } from '../sheets.jsx'
 import IsoraMark from './IsoraMark.jsx'
 import Buddy from './Buddy.jsx'
 import { BuddyPicker, currentLevel } from './BuddyParts.jsx'
-import { cleanBuddy } from '../lib/buddy.js'
+import { cleanBuddy, KIND } from '../lib/buddy.js'
 import Icon from './Icon.jsx'
 import { Button } from './ui.jsx'
 
@@ -22,8 +22,7 @@ import { Button } from './ui.jsx'
 // The coach is an LLM behind /api/coach-chat; when that is not available (no key, offline) the
 // same chat runs from the script, so the first open never depends on the network.
 
-const KIND_DESC = { block: 'a square lime block', drop: 'a round violet drop', bolt: 'a tall blue block with an antenna', ember: 'a little orange flame' }
-const OPENER = (lang, unit, buddy) => `[ISORA was just opened for the first time. App language: ${lang}. Weight unit: ${unit}. In this chat you are ${buddy.name}, my ISORA buddy (${KIND_DESC[buddy.kind] || 'a small block creature'}) that I just picked and named: speak as ${buddy.name}, a warm, playful companion. Greet me and start.]`
+const OPENER = (lang, unit, buddy) => `[ISORA was just opened for the first time. App language: ${lang}. Weight unit: ${unit}. In this chat you are ${buddy.name}, my ISORA buddy (a little square blue block creature) that I just met and named: speak as ${buddy.name}, a warm, playful companion. Greet me and start.]`
 
 export default function Onboarding() {
   const show = useStore(s => PERSONAL && !s.S.onboarded && !s.S.routines.length && !s.S.workouts.length && !s.S.active)
@@ -160,18 +159,18 @@ function OnboardingChat() {
   if (!picked) return <div className="ob" role="dialog" aria-label={t('Welcome to ISORA')}>
     <div className="ob-head">
       <span className="ob-av"><IsoraMark size={24} /></span>
-      <div className="ob-head-t"><div className="ob-name">{t('Welcome to ISORA')}</div><div className="ob-sub">{t('Pick a buddy to train with')}</div></div>
+      <div className="ob-head-t"><div className="ob-name">{t('Welcome to ISORA')}</div><div className="ob-sub">{t('Your ISORA buddy')}</div></div>
       <button type="button" className="ob-skip" onClick={skip}>{t('Skip')}</button>
     </div>
     <div className="ob-thread ob-pick">
-      <p className="ob-pick-intro">{t('Your buddy cheers you on, keeps an eye on your week and grows as you train. Who’s it going to be?')}</p>
-      <BuddyPicker onDone={(kind, name) => { update(s => { s.buddy = { ...cleanBuddy(s.buddy), kind, name, born: todayISO(), level: currentLevel() } }); setPicked(true) }} />
+      <p className="ob-pick-intro">{t('Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?')}</p>
+      <BuddyPicker onDone={name => { update(s => { s.buddy = { ...cleanBuddy(s.buddy), kind: KIND, name, born: todayISO(), level: currentLevel() } }); setPicked(true) }} />
     </div>
   </div>
 
   return <div className="ob" role="dialog" aria-label={t('Welcome to ISORA')}>
     <div className="ob-head">
-      <span className="ob-av buddy-av"><Buddy kind={buddy.kind} mood={busy ? 'active' : result ? 'proud' : 'hyped'} size={44} /></span>
+      <span className="ob-av buddy-av"><Buddy mood={busy ? 'active' : result ? 'proud' : 'hyped'} size={44} /></span>
       <div className="ob-head-t"><div className="ob-name">{buddy.name}</div><div className="ob-sub">{busy ? t('typing…') : t('Your ISORA buddy')}</div></div>
       <button type="button" className="ob-skip" onClick={skip}>{t('Skip')}</button>
     </div>

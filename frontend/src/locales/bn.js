@@ -2472,4 +2472,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': 'প্রথম ওয়ার্কআউটই সবচেয়ে কঠিন, {0}। চলুন শুরু করি।',
   'Rest day, {0}. Muscles grow while you recover.': 'বিশ্রামের দিন, {0}। বিশ্রামের সময় পেশি বাড়ে।',
   'Take it easy today, {0}. You’ve earned it.': 'আজ ধীরে চলুন, {0}। এটা আপনার প্রাপ্য।',
+  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'আপনার সঙ্গীর সাথে পরিচিত হোন। সে উৎসাহ দেয়, সপ্তাহের খেয়াল রাখে এবং আপনার ট্রেনিংয়ের সাথে বড় হয়। ওর নাম কী রাখবেন?',
 }

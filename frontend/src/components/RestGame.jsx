@@ -161,7 +161,7 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
           <div className="rb-best">{t('Best')} {Math.max(best, score)}</div>
         </div>
         {/* your buddy watches the round with you (components/Buddy.jsx) */}
-        <div className="rb-title">{bud.kind && <Buddy kind={bud.kind} mood={over ? (over === 'time' ? 'proud' : 'missing') : 'active'} level={bud.level} size={34} />}{t('Rest Blast')}</div>
+        <div className="rb-title">{bud.kind && <Buddy mood={over ? (over === 'time' ? 'proud' : 'missing') : 'active'} level={bud.level} size={34} />}{t('Rest Blast')}</div>
         <Button size="sm" variant="ghost" onClick={onHide}>{t('Hide')}</Button>
       </div>
 

@@ -5,14 +5,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 **ISORA** is a modified openGym (AGPL, credited in About and NOTICE.md): the same tracker, renamed
-and recoloured (lime `#a3e635`, the icon), plus **Rest Blast**, a block puzzle in every rest
+and recoloured (blue, the `sky` accent `#0A84FF` on true black or white, the icon), plus **Rest Blast**, a block puzzle in every rest
 (`frontend/src/lib/blockblast.js`, `components/RestGame.jsx`, record in `S.restBlast`). It ships
 as a backend-free personal web app (`VITE_DEMO=1 VITE_PERSONAL=1`, `lib/demo.js` PERSONAL) on
 Vercel (`frontend/vercel.json`) and GitHub Pages. User-visible text says ISORA; internal
 identifiers (storage keys, backup file names, `Documents/openGym`) keep openGym names on purpose
 so data stays compatible. The exercise media is licensed for non-commercial forks only (NOTICE.md).
 UI: `frontend/src/isora.css` is ISORA's design layer over index.css (message-app style: one type
-scale, grouped lists, lime = effort, violet `--rest` = recovery). Home is an inbox built from
+scale, grouped lists, blue accent = effort, lavender `--rest` = recovery). Home is an inbox built from
 `lib/inbox.js`; its row classes use the `ib-` prefix because coach.css already owns `.msg`.
 The logo source is `frontend/resources/icon.svg` (`components/IsoraMark.jsx` for in-app use).
 

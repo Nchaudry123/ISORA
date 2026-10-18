@@ -2393,4 +2393,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': '第一次训练最难，{0}。我们开始吧。',
   'Rest day, {0}. Muscles grow while you recover.': '休息日，{0}。肌肉在恢复时生长。',
   'Take it easy today, {0}. You’ve earned it.': '今天放轻松，{0}。这是你应得的。',
+  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': '认识你的伙伴。它会为你加油、关注你的一周，并随你的训练一起成长。给它起什么名字？',
 }

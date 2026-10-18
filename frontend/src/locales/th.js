@@ -2404,4 +2404,5 @@ export default {
   'Your first workout is the hardest one, {0}. Let’s do it.': 'การฝึกครั้งแรกยากที่สุด {0} ลุยกันเลย',
   'Rest day, {0}. Muscles grow while you recover.': 'วันพัก {0} กล้ามเนื้อโตตอนพักฟื้น',
   'Take it easy today, {0}. You’ve earned it.': 'วันนี้ทำสบายๆ {0} คุณสมควรได้รับ',
+  'Meet your buddy. It cheers you on, keeps an eye on your week and grows as you train. What will you call it?': 'มารู้จักเพื่อนคู่หูของคุณ เขาคอยเชียร์ ดูแลสัปดาห์ของคุณ และเติบโตไปกับการฝึก จะตั้งชื่อว่าอะไรดี',
 }
