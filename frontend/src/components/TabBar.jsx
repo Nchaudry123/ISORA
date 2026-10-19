@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { effectiveRoutineIds, effectiveRoutines } from '../lib/history.js'
@@ -33,7 +34,19 @@ export default function TabBar({ onStart }) {
   const on = k => cur === k || (cur === 'history' && k === 'stats') || (cur === 'settings' && k === 'home') || (cur === 'muscles' && k === 'library') || (cur === 'structural-balance' && k === 'stats')
 
   const running = !!S.active && cur !== 'workout' && !S.active.editingWorkoutId && !S.active.backfill && S.active.start > 0
+  // Hold Start (about half a second) for the routine chooser, the way past today's plan without
+  // starting it; the tap that follows the hold does nothing.
+  const hold = useRef({ timer: null, held: false })
+  const holdStart = () => {
+    const h = hold.current
+    h.held = false
+    clearTimeout(h.timer)
+    if (S.active) return
+    h.timer = setTimeout(() => { h.held = true; try { navigator.vibrate?.(10) } catch {} nav('/workout') }, 480)
+  }
+  const holdEnd = () => clearTimeout(hold.current.timer)
   const startWorkout = () => {
+    if (hold.current.held) { hold.current.held = false; return }
     if (!S.active) {
       // A weekday can hold several routines; start the combined session if any of them has
       // exercises, otherwise fall through to the picker.
@@ -54,6 +67,7 @@ export default function TabBar({ onStart }) {
           button still named Resume; a past workout being edited or logged after the fact has no
           clock to run. */}
       <button className={'start' + (S.active ? ' rec' : '') + (S.active && cur === 'workout' ? ' on' : '')} onClick={startWorkout}
+        onPointerDown={holdStart} onPointerUp={holdEnd} onPointerLeave={holdEnd} onPointerCancel={holdEnd} onContextMenu={e => e.preventDefault()}
         aria-label={running ? t('Resume') : undefined}>
         <span className="cir"><Icon name="play" /></span>
         {running ? <span className="tab-time"><Elapsed start={S.active.start} /></span>

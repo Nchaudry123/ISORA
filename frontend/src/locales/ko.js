@@ -2402,4 +2402,7 @@ export default {
   'Easy pieces': '쉬운 조각',
   'Getting harder': '점점 어려워요',
   'Last chance': '마지막 기회',
+  'Hints': '힌트',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': '조각을 들고 있으면 가장 좋은 자리가 빛나고, 잠시 후엔 저절로 빛나요. 한 번 탭하면 조각이 그곳으로 가요.',
+  'Time’s up': '시간 종료',
 }

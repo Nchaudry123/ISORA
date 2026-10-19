@@ -457,6 +457,9 @@ export default function Settings({ page = null, find = null, via = null }) {
           subtitle={cleanStats(S.restBlast).games ? t('Best {0} · {1} rounds', cleanStats(S.restBlast).best, cleanStats(S.restBlast).games) : null}>
           <Switch aria-label={t('Rest Blast')} checked={S.restGame !== false} onChange={v => update(s => { s.restGame = v })} />
         </Row>
+        {S.restGame !== false && <Row icon="lightbulb" iconTint="var(--yellow)" title={t('Hints')} subtitle={t('The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.')}>
+          <Switch aria-label={t('Hints')} checked={S.restHints !== false} onChange={v => update(s => { s.restHints = v })} />
+        </Row>}
         {cleanStats(S.restBlast).games > 0 && <Row icon="reset" iconTint="var(--grey)" title={t('Reset Rest Blast record')} accessory="chevron"
           onClick={() => confirmSheet({ title: t('Reset Rest Blast record?'), message: t('Your best score, rounds and lines go back to zero.'), confirmText: t('Reset'), onConfirm: () => update(s => { s.restBlast = emptyStats() }) })} />}
       </Section>

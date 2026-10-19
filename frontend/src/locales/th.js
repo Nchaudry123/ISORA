@@ -2413,4 +2413,7 @@ export default {
   'Easy pieces': 'ชิ้นง่าย',
   'Getting harder': 'ยากขึ้นเรื่อย ๆ',
   'Last chance': 'โอกาสสุดท้าย',
+  'Hints': 'คำใบ้',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'จุดที่ดีที่สุดจะสว่างขึ้นขณะที่คุณถือชิ้นส่วน และสักครู่ก็สว่างเอง แตะหนึ่งครั้งเพื่อส่งชิ้นส่วนไปที่นั่น',
+  'Time’s up': 'หมดเวลา',
 }

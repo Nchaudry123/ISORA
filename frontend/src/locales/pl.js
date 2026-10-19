@@ -2402,4 +2402,7 @@ export default {
   'Easy pieces': 'Łatwe klocki',
   'Getting harder': 'Coraz trudniej',
   'Last chance': 'Ostatnia szansa',
+  'Hints': 'Podpowiedzi',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'Najlepsze miejsce podświetla się, gdy trzymasz klocek, a po chwili samo. Dotknięcie wysyła tam klocek.',
+  'Time’s up': 'Koniec czasu',
 }

@@ -1469,6 +1469,7 @@ export const PT_BR_OVERRIDES = {
   'Getting harder': 'Ficando difícil',
   'Last chance': 'Última chance',
   'Change what’s planned on one day': 'Mudar o que está planejado em um dia',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'O melhor lugar acende enquanto você segura uma peça e, depois de um momento, sozinho. Um toque envia a peça para lá.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

@@ -2406,4 +2406,7 @@ export default {
   'Easy pieces': 'Лёгкие фигуры',
   'Getting harder': 'Всё сложнее',
   'Last chance': 'Последний шанс',
+  'Hints': 'Подсказки',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'Лучшее место подсвечивается, пока держишь фигуру, а через мгновение — само. Нажатие отправляет фигуру туда.',
+  'Time’s up': 'Время вышло',
 }

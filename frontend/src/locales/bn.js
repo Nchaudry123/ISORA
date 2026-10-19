@@ -2481,4 +2481,7 @@ export default {
   'Easy pieces': 'সহজ টুকরো',
   'Getting harder': 'কঠিন হচ্ছে',
   'Last chance': 'শেষ সুযোগ',
+  'Hints': 'ইঙ্গিত',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'টুকরো ধরে থাকলে সেরা জায়গাটি জ্বলে ওঠে, আর একটু পরে নিজে থেকেই। একটি ট্যাপ টুকরোটিকে সেখানে পাঠায়।',
+  'Time’s up': 'সময় শেষ',
 }

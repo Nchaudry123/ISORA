@@ -2395,4 +2395,7 @@ export default {
   'Easy pieces': '簡單方塊',
   'Getting harder': '越來越難',
   'Last chance': '最後機會',
+  'Hints': '提示',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': '按住方塊時最佳位置會亮起，稍等片刻也會自動亮起。輕點一下即可把方塊放到那裡。',
+  'Time’s up': '時間到',
 }

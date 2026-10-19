@@ -542,3 +542,7 @@ button.avatar:active{transform:scale(.94)}
 .rb-reopen .buddy{margin:-6px 0}
 .rb-reopen b{font-variant-numeric:tabular-nums;opacity:.85;font-weight:600}
 @media (prefers-reduced-motion:reduce){ #rest-game,#timer,.rb-cell,.rb-ghost .rb-piece,.rb-combo,.rb-slot-hint .rb-piece,.rb-phase-bar i{animation:none !important} }
+/* which set is up next, so the walk back to the bar is planned while you play */
+.rb-next{width:100%;max-width:420px;display:flex;align-items:center;gap:8px;margin:-4px 0 10px;padding:8px 12px;border-radius:12px;background:var(--surface);font-size:13px;color:var(--label-2);white-space:nowrap;overflow:hidden}
+.rb-next b{color:var(--label);font-weight:600;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
+.rb-next > span:last-child{font-variant-numeric:tabular-nums;flex:none}

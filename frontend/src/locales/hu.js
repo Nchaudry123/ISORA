@@ -2405,4 +2405,7 @@ export default {
   'Easy pieces': 'Könnyű elemek',
   'Getting harder': 'Egyre nehezebb',
   'Last chance': 'Utolsó esély',
+  'Hints': 'Tippek',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'A legjobb hely világít, amíg egy elemet tartasz, és egy pillanat múlva magától is. Egy koppintás odaküldi az elemet.',
+  'Time’s up': 'Lejárt az idő',
 }

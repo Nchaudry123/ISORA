@@ -2422,4 +2422,7 @@ export default {
   'Easy pieces': 'Leichte Teile',
   'Getting harder': 'Wird schwerer',
   'Last chance': 'Letzte Chance',
+  'Hints': 'Hinweise',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'Die beste Stelle leuchtet auf, solange du ein Teil hältst, und nach einem Moment von selbst. Ein Tipp schickt das Teil dorthin.',
+  'Time’s up': 'Zeit ist um',
 }

@@ -10,6 +10,9 @@ import { Button } from './ui.jsx'
 import Buddy from './Buddy.jsx'
 import { confettiFrom } from './confetti.js'
 import { cleanBuddy } from '../lib/buddy.js'
+import { setText } from './ProfileSheet.jsx'
+import { exOr } from '../lib/exercises.js'
+import { exerciseNameText } from '../lib/format.js'
 
 // Rest Blast: the block puzzle that fills a rest between sets. It opens with every rest (not
 // the short switch-sides pause) while Settings → Rest Blast is on, plays over the page with the
@@ -20,8 +23,10 @@ import { cleanBuddy } from '../lib/buddy.js'
 // Touch: a lifted piece rides just above the fingertip, at board size, and drops onto the valid
 // cell nearest to where it is (snapSpot), so a thumb a little off still lands it. While it is
 // lifted its best spot pulses on the board; left alone for a moment, the game points at the
-// best move itself (bestMove). The drag moves the ghost on the DOM directly, and the board only
-// re-renders when the cell under the piece changes.
+// best move itself (bestMove); a tap on a piece (no drag) sends it straight there. Settings →
+// Rest Blast → Hints turns all that off. The drag moves the ghost on the DOM directly, and the
+// board only re-renders when the cell under the piece changes. The header says which set is up
+// next, so you can plan the walk back to the bar.
 
 // The best score lived in this browser's storage before the record moved into the profile
 // (S.restBlast); read once so nobody's best goes back to zero.
@@ -64,7 +69,7 @@ function useCountUp(value) {
   return shown
 }
 
-function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
+function Game({ secondsLeft, total, forIdx, hidden, onNextSet, onHide, onScore }) {
   const [board, setBoard] = useState(emptyBoard)
   const [tray, setTray] = useState(() => dealTray(emptyBoard(), secondsLeft))
   const [score, setScore] = useState(0)
@@ -72,6 +77,10 @@ function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
   const bud = cleanBuddy(useStore(s => s.S.buddy))
   const update = useStore(s => s.update)
   const best = Math.max(cleanStats(saved).best, oldBest())
+  const hintsOn = useStore(s => s.S.restHints !== false)
+  const active = useStore(s => s.S.active)
+  const unit = useStore(s => s.S.unit)
+  const [rx, setRx] = useState(null)            // { kind, id }: Iso's reaction to the last move
   const [combo, setCombo] = useState(0)
   const [over, setOver] = useState(null)        // null | 'stuck' | 'time'
   const [lifted, setLifted] = useState(null)    // the tray index in hand
@@ -116,10 +125,10 @@ function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
   // half minute, when the squeeze is the point.
   const squeeze = secondsLeft <= 30
   useEffect(() => {
-    if (over || lifted != null || hidden || squeeze) { setHint(null); return }
+    if (over || lifted != null || hidden || squeeze || !hintsOn) { setHint(null); return }
     const id = setTimeout(() => setHint(bestMove(board, tray)), IDLE_HINT_MS)
     return () => clearTimeout(id)
-  }, [board, tray, over, lifted, hidden, squeeze])
+  }, [board, tray, over, lifted, hidden, squeeze, hintsOn])
 
   const cellSize = () => {
     const el = boardRef.current
@@ -150,7 +159,7 @@ function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
     const rect = el.getBoundingClientRect()
     const pad = parseFloat(getComputedStyle(el).paddingLeft) || 0
     const cell = (rect.width - 2 * pad) / SIZE
-    drag.current = { idx, x: e.clientX, y: e.clientY, cell, rect, pad, pointerId: e.pointerId }
+    drag.current = { idx, x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, moved: 0, cell, rect, pad, pointerId: e.pointerId }
     setHint(null)
     setLifted(idx)
     buzz(6)
@@ -159,6 +168,7 @@ function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
     const d = drag.current
     if (!d || e.pointerId !== d.pointerId) return
     d.x = e.clientX; d.y = e.clientY
+    d.moved = Math.max(d.moved, Math.hypot(e.clientX - d.x0, e.clientY - d.y0))
     moveGhost(d)
   }
   const drop = e => {
@@ -166,9 +176,12 @@ function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
     if (!d || (e && e.pointerId !== d.pointerId)) return
     drag.current = null
     const p = tray[d.idx]
-    const spot = target
+    let spot = target
     setLifted(null); setTarget(null)
-    if (!spot || !p) return
+    if (!p) return
+    // a tap, not a drag: the piece goes to its best spot (while hints are on)
+    if (d.moved < 8) { const sp = hintsOn && !squeeze ? bestSpot(board, p.shape) : null; spot = sp ? { r: sp.r, c: sp.c } : null }
+    if (!spot) { if (d.moved >= 8 && anyMove(board, [p])) setRx({ kind: 'oops', id: Date.now() }); return }
     const res = place(board, p.shape, spot.r, spot.c, p.color, combo)
     // Every turn the slot just played is dealt again from a fresh scan of the board, with the two
     // pieces still in hand (lib/blockblast.js dealOne): the most obvious piece early in the rest.
@@ -185,7 +198,7 @@ function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
     if (res.lines) {
       const id = Date.now()
       setCheer(id)
-      if (res.perfect) confettiFrom(boardRef.current, { count: 140 })
+      if (res.perfect) { confettiFrom(boardRef.current, { count: 140 }); setRx({ kind: 'love', id }) }
       else if (res.lines > 1 || res.combo > 2) confettiFrom(boardRef.current, { count: 40 + 20 * res.lines, spread: 50, power: .8 })
       setFlash({ rows: res.rows, cols: res.cols, id })
       setPop({ text: (res.perfect ? t('Perfect clear!') + ' ' : '') + '+' + res.points + (res.combo > 1 ? ' · ' + t('Combo') + ' ×' + res.combo : ''), id, perfect: res.perfect })
@@ -212,7 +225,7 @@ function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
     for (const r of rows) for (let c = 0; c < SIZE; c++) clearing.add(r * SIZE + c)
     for (const c of cols) for (let r = 0; r < SIZE; r++) clearing.add(r * SIZE + c)
   }
-  const hintFor = inHand && !squeeze ? (() => { const s = bestSpot(board, inHand.shape); return s && { piece: inHand, r: s.r, c: s.c } })()
+  const hintFor = !hintsOn ? null : inHand && !squeeze ? (() => { const s = bestSpot(board, inHand.shape); return s && { piece: inHand, r: s.r, c: s.c } })()
     : hint && tray[hint.idx] ? { piece: tray[hint.idx], r: hint.r, c: hint.c } : null
   if (hintFor && !(target && sameSpot(target, hintFor))) for (const [dr, dc] of hintFor.piece.shape.cells) hinted.add((hintFor.r + dr) * SIZE + hintFor.c + dc)
   const flashed = new Set()
@@ -221,6 +234,17 @@ function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
     for (const c of flash.cols) for (let r = 0; r < SIZE; r++) flashed.add(r * SIZE + c)
   }
   const cell = cellSize()
+  const nextUp = (() => {
+    const A = active
+    if (!A?.entries?.length) return null
+    const start = Math.max(0, Number.isInteger(forIdx) ? forIdx : (A.cur || 0))
+    for (let k = 0; k < A.entries.length; k++) {
+      const e = A.entries[(start + k) % A.entries.length]
+      const i = (e.sets || []).findIndex(x => !x.done)
+      if (i >= 0) return { name: exerciseNameText(exOr(e.id)), n: i + 1, m: e.sets.length, set: e.sets[i] }
+    }
+    return null
+  })()
   const ph = secondsLeft > total / 2 ? 'good' : squeeze ? 'end' : 'mid'
 
   return (
@@ -231,7 +255,7 @@ function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
           <div className="rb-best">{t('Best')} {Math.max(best, score)}</div>
         </div>
         {/* your buddy watches the round with you (components/Buddy.jsx) */}
-        <div className="rb-title">{bud.kind && <Buddy mood={over ? (over === 'time' ? 'proud' : 'missing') : 'active'} level={bud.level} size={38} bump={cheer} />}<span>{t('Rest Blast')}</span></div>
+        <div className="rb-title">{bud.kind && <Buddy mood={over ? (over === 'time' ? 'proud' : 'missing') : 'active'} level={bud.level} size={38} bump={cheer} react={rx} eyesFollow />}<span>{t('Rest Blast')}</span></div>
         <div className="rb-head-end">
           {combo > 1 && !over && <span key={combo} className="rb-combo">{t('Combo')} ×{combo}</span>}
           <Button size="sm" variant="ghost" onClick={onHide}>{t('Hide')}</Button>
@@ -243,6 +267,8 @@ function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
         <div className="rb-phase-bar"><i style={{ width: Math.max(0, Math.min(100, secondsLeft / total * 100)) + '%' }} /></div>
         <div className="rb-phase-lbl"><b>{over === 'time' ? t('Time’s up') : ph === 'good' ? t('Easy pieces') : ph === 'mid' ? t('Getting harder') : t('Last chance')}</b><span>{Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, '0')}</span></div>
       </div>}
+
+      {nextUp && !over && <div className="rb-next"><span>{t('Up next')}</span><b>{nextUp.name}</b><span>{nextUp.n}/{nextUp.m} · {setText(nextUp.set, unit)}</span></div>}
 
       <div key={'b' + shake} className={'rb-board' + (shake ? ' shake' : '')} ref={boardRef}>
         {board.flatMap((row, r) => row.map((v, c) => {
@@ -324,7 +350,7 @@ export default function RestGame() {
   // Hidden keeps the round going underneath (the board and score stay), just out of the way.
   const secondsLeft = timer.ready ? 0 : timer.left
   return <>
-    <Game key={round} secondsLeft={secondsLeft} total={timer.total} hidden={hidden} onNextSet={stopRest} onHide={() => setHidden(true)} onScore={setScore} />
+    <Game key={round} secondsLeft={secondsLeft} total={timer.total} forIdx={timer.forIdx} hidden={hidden} onNextSet={stopRest} onHide={() => setHidden(true)} onScore={setScore} />
     {hidden && <Handle score={score} onOpen={() => setHidden(false)} />}
   </>
 }

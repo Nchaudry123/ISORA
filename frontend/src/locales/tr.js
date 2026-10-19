@@ -2402,4 +2402,7 @@ export default {
   'Easy pieces': 'Kolay parçalar',
   'Getting harder': 'Zorlaşıyor',
   'Last chance': 'Son şans',
+  'Hints': 'İpuçları',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'Bir parçayı tutarken en iyi yer yanar, bir an sonra kendiliğinden de. Bir dokunuş parçayı oraya gönderir.',
+  'Time’s up': 'Süre doldu',
 }

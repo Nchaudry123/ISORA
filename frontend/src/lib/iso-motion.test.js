@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { initialState, step, jump, poke, nudge, BEHAVIORS } from './iso-motion.js'
+import { initialState, step, jump, poke, nudge, react, BEHAVIORS } from './iso-motion.js'
 
 // a seeded random source, so a run is the same every time
 const seeded = (n = 1) => () => { n = (n * 16807) % 2147483647; return (n - 1) / 2147483646 }
@@ -61,5 +61,32 @@ describe('Iso in motion', () => {
     const mouths = new Set()
     for (let i = 0; i < 30; i++) mouths.add(step(st, { dt: 1 / 60, talking: true, small: true }, seeded()).mouth.toFixed(2))
     expect(mouths.size).toBeGreaterThan(5)
+  })
+
+  it('a poke surprises it, then it is in love; three quick pokes make it laugh', () => {
+    const st = initialState(seeded())
+    poke(st, seeded())
+    const p1 = run(st, 0.15, { small: true })
+    expect(p1.o).toBeGreaterThan(0.3)
+    expect(p1.wide).toBeGreaterThan(1.15)
+    const p2 = run(st, 0.9, { small: true })
+    expect(st.rx).toBe('love')
+    expect(p2.hearts.length).toBeGreaterThan(0)
+    expect(p2.smile).toBeGreaterThan(0.8)
+    run(st, 0.6, { small: true })   // the first poke is old news by now
+    poke(st, seeded()); run(st, 0.2, { small: true }); poke(st, seeded()); run(st, 0.2, { small: true }); poke(st, seeded())
+    expect(st.rx).toBe('laugh')
+  })
+
+  it('knits its brows for oops, raises them for a mood that is curious, and comes down dizzy from a spin', () => {
+    const st = initialState(seeded())
+    react(st, 'oops')
+    expect(run(st, 0.3, { small: true }).brow).toBeLessThan(-0.2)
+    const fresh = initialState(seeded())
+    expect(run(fresh, 1.5, { mood: 'new', small: true }).brow).toBeGreaterThan(0.4)
+    expect(run(fresh, 1.5, { mood: 'missing', small: true }).brow).toBeLessThan(-0.4)
+    jump(fresh, 20, true)
+    run(fresh, 0.6, { small: true })
+    expect(fresh.rx).toBe('dizzy')
   })
 })

@@ -2402,4 +2402,7 @@ export default {
   'Easy pieces': 'Peças fáceis',
   'Getting harder': 'A ficar difícil',
   'Last chance': 'Última oportunidade',
+  'Hints': 'Dicas',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'O melhor sítio acende enquanto seguras uma peça e, passado um momento, sozinho. Um toque envia a peça para lá.',
+  'Time’s up': 'Acabou o tempo',
 }

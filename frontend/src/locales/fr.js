@@ -2402,4 +2402,7 @@ export default {
   'Easy pieces': 'Pièces faciles',
   'Getting harder': 'Ça se corse',
   'Last chance': 'Dernière chance',
+  'Hints': 'Indices',
+  'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'La meilleure place s’allume tant que tu tiens une pièce, et d’elle-même après un instant. Un tap y envoie la pièce.',
+  'Time’s up': 'Temps écoulé',
 }
