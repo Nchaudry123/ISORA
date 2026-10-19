@@ -30,7 +30,7 @@ export function BuddyPicker({ onDone, cta }) {
 
 const SR = { position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }
 /** Text that types itself out, once per text, with a caret while it runs. */
-export function Typewriter({ text, speed = 22 }) {
+export function Typewriter({ text, speed = 22, onTyping }) {
   const [n, setN] = useState(0)
   useEffect(() => {
     if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) { setN(text.length); return }
@@ -38,6 +38,7 @@ export function Typewriter({ text, speed = 22 }) {
     let i = 0, timer
     const start = setTimeout(function tick() {
       i++; setN(i)
+      onTyping?.(i < text.length)
       if (i < text.length) timer = setTimeout(tick, /[.,!?]/.test(text[i - 1]) ? speed * 6 : speed)
     }, 650)
     return () => { clearTimeout(start); clearTimeout(timer) }
@@ -72,6 +73,7 @@ export function BuddyCard({ doneToday, plannedToday, todayName, facts = {} }) {
   const prof = cleanProfile(S.profile)
   const today = todayISO()
   const key = lineKey(mood, today)
+  const [talking, setTalking] = useState(false)
   const line = bud.line?.key === key ? bud.line.text : t(fallbackLine(mood, today), prof.name || t('friend'), todayName || t('Training'))
 
   // the line of the day, written for this mood by the server (api/buddy-line.js)
@@ -103,9 +105,9 @@ export function BuddyCard({ doneToday, plannedToday, todayName, facts = {} }) {
   </button>
 
   return <button type="button" className="bcard" onClick={buddySheet} aria-label={t('{0}, level {1}', bud.name, lv.level)}>
-    <Buddy mood={mood} level={lv.level} size={76} />
+    <Buddy mood={mood} level={lv.level} size={80} talking={talking} />
     <div className="bcard-body">
-      <div className="bcard-bubble"><Typewriter text={line} /></div>
+      <div className="bcard-bubble"><Typewriter text={line} onTyping={setTalking} /></div>
       <div className="bcard-meta"><b>{bud.name}</b><span>{t('Level {0}', lv.level)}</span></div>
       <div className="bcard-bar" aria-hidden="true"><i style={{ width: lv.pct + '%' }} /></div>
     </div>

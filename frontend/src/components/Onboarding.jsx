@@ -170,7 +170,7 @@ function OnboardingChat() {
 
   return <div className="ob" role="dialog" aria-label={t('Welcome to ISORA')}>
     <div className="ob-head">
-      <span className="ob-av buddy-av"><Buddy mood={busy ? 'active' : result ? 'proud' : 'hyped'} size={44} /></span>
+      <span className="ob-av buddy-av"><Buddy mood={result ? 'proud' : 'hyped'} size={44} talking={busy} /></span>
       <div className="ob-head-t"><div className="ob-name">{buddy.name}</div><div className="ob-sub">{busy ? t('typing…') : t('Your ISORA buddy')}</div></div>
       <button type="button" className="ob-skip" onClick={skip}>{t('Skip')}</button>
     </div>

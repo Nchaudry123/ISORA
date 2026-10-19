@@ -374,59 +374,17 @@ button.avatar:active{transform:scale(.94)}
 .buddy{display:block;overflow:visible;flex:none;-webkit-tap-highlight-color:transparent}
 .buddy.tappable{cursor:pointer;outline:none}
 .buddy.tappable:focus-visible{filter:drop-shadow(0 0 0 2px var(--acc))}
-/* idle: Iso breathes (squash and stretch from the feet), blinks, glances around, waves when happy */
-.buddy.alive .bd-body{animation:bd-breathe 3.6s ease-in-out infinite;transform-origin:60px 108px}
-.buddy.alive .bd-shadow{animation:bd-shadow 3.6s ease-in-out infinite;transform-origin:60px 110px}
-.buddy.alive .bd-blink{animation:bd-blink 5.2s infinite;transform-origin:60px 58px}
-.buddy.alive .bd-eyes{animation:bd-look 9s ease-in-out infinite}
-.buddy.alive.waving .bd-arm-r{animation:bd-wave 2.8s ease-in-out infinite;transform-origin:96px 72px}
-.buddy.alive .bd-arm-l{animation:bd-sway 3.6s ease-in-out infinite;transform-origin:24px 72px}
-.buddy.alive.m-hyped .bd-hop{animation:bd-hop 2.6s cubic-bezier(.3,0,.3,1) infinite;transform-origin:60px 108px}
-.buddy.alive.m-active .bd-body{animation-duration:1.6s}
-.buddy.alive.m-sleepy .bd-body{animation-duration:5.5s}
+/* Iso's body moves by simulation (lib/iso-motion.js); CSS keeps only its little effects */
 .buddy.alive .bd-z{animation:bd-z 2.6s ease-in-out infinite}
 .buddy.alive .bd-sweat{animation:bd-sweat 1.8s ease-in infinite}
 .buddy.alive .bd-spark{animation:bd-spark 1.9s ease-in-out infinite}
 .buddy.alive .bd-d2{animation-delay:.65s}
 .buddy.alive .bd-d3{animation-delay:1.2s}
-.buddy.poked .bd-hop{animation:bd-poke .8s cubic-bezier(.3,0,.3,1) both !important;transform-origin:60px 108px}
-.buddy.poked .bd-blush{animation:bd-blush .8s ease-out both}
-@keyframes bd-breathe{0%,100%{transform:scale(1,1)}50%{transform:scale(1.025,.972)}}
-@keyframes bd-shadow{0%,100%{transform:scaleX(1)}50%{transform:scaleX(1.04)}}
-@keyframes bd-blink{0%,93%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}97%{transform:scaleY(1)}}
-@keyframes bd-look{0%,30%,100%{transform:translate(0,0)}36%,52%{transform:translate(2.4px,-.6px)}58%,74%{transform:translate(-2.4px,.4px)}80%{transform:translate(0,0)}}
-@keyframes bd-wave{0%,55%,100%{transform:rotate(0)}62%{transform:rotate(-140deg)}70%{transform:rotate(-110deg)}78%{transform:rotate(-140deg)}86%{transform:rotate(-110deg)}94%{transform:rotate(0)}}
-@keyframes bd-sway{0%,100%{transform:rotate(0)}50%{transform:rotate(-6deg)}}
-@keyframes bd-hop{0%,60%,100%{transform:translateY(0) scale(1,1)}66%{transform:translateY(0) scale(1.08,.9)}76%{transform:translateY(-10px) scale(.96,1.05)}86%{transform:translateY(0) scale(1.06,.93)}93%{transform:scale(1,1)}}
-@keyframes bd-poke{0%{transform:scale(1,1)}15%{transform:scale(1.14,.82)}40%{transform:translateY(-16px) scale(.92,1.1)}62%{transform:translateY(0) scale(1.1,.88)}80%{transform:scale(.97,1.04)}100%{transform:scale(1,1)}}
-@keyframes bd-blush{0%,100%{opacity:1}30%,70%{opacity:1;transform:scale(1.25)}}
 @keyframes bd-z{0%{opacity:0;transform:translate(0,4px)}40%{opacity:1}100%{opacity:0;transform:translate(4px,-10px)}}
 @keyframes bd-sweat{0%{opacity:0;transform:translateY(-2px)}25%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
 @keyframes bd-spark{0%,100%{transform:scale(.4) rotate(0);opacity:.2}50%{transform:scale(1.1) rotate(45deg);opacity:1}}
 .buddy .bd-blush{transform-box:fill-box;transform-origin:center}
 .buddy .bd-spark{transform-box:fill-box;transform-origin:center}
-/* tricks: now and then, on its own */
-.buddy.trick-jump .bd-hop{animation:bd-poke .9s cubic-bezier(.3,0,.3,1) both !important;transform-origin:60px 108px}
-.buddy.trick-spin .bd-hop{animation:bd-spin 1s cubic-bezier(.4,0,.2,1) both !important;transform-origin:60px 66px}
-.buddy.trick-wiggle .bd-hop{animation:bd-wiggle .9s ease-in-out both !important;transform-origin:60px 108px}
-.buddy.trick-stretch .bd-hop{animation:bd-stretch 1s cubic-bezier(.3,0,.3,1) both !important;transform-origin:60px 108px}
-.buddy.trick-stretch .bd-arm-l{animation:bd-arms-l 1s ease-in-out both !important;transform-origin:24px 72px}
-.buddy.trick-stretch .bd-arm-r{animation:bd-arms-r 1s ease-in-out both !important;transform-origin:96px 72px}
-/* cheering: both arms up, bouncing */
-.buddy.alive.m-cheer .bd-arm-l{animation:bd-cheer-l .7s ease-in-out infinite alternate !important;transform-origin:24px 72px}
-.buddy.alive.m-cheer .bd-arm-r{animation:bd-cheer-r .7s ease-in-out infinite alternate !important;transform-origin:96px 72px}
-.buddy.alive.m-cheer .bd-hop{animation:bd-hop 1.3s cubic-bezier(.3,0,.3,1) infinite;transform-origin:60px 108px}
-/* following your finger: the face turns toward it */
-.buddy .bd-face{transition:transform .5s var(--spring-soft,ease)}
-.buddy.looking .bd-face{transform:translate(var(--fx,0),var(--fy,0))}
-.buddy.looking .bd-eyes{animation:none !important}
-@keyframes bd-spin{0%{transform:none}25%{transform:translateY(-14px) rotate(0)}75%{transform:translateY(-14px) rotate(360deg)}88%{transform:translateY(0) rotate(360deg) scale(1.08,.9)}100%{transform:rotate(360deg)}}
-@keyframes bd-wiggle{0%,100%{transform:none}15%{transform:rotate(-9deg)}35%{transform:rotate(8deg)}55%{transform:rotate(-6deg)}75%{transform:rotate(4deg)}}
-@keyframes bd-stretch{0%,100%{transform:none}35%,60%{transform:scale(.92,1.12)}80%{transform:scale(1.06,.94)}}
-@keyframes bd-arms-l{0%,100%{transform:none}35%,60%{transform:rotate(110deg)}}
-@keyframes bd-arms-r{0%,100%{transform:none}35%,60%{transform:rotate(-110deg)}}
-@keyframes bd-cheer-l{from{transform:rotate(85deg)}to{transform:rotate(115deg)}}
-@keyframes bd-cheer-r{from{transform:rotate(-85deg)}to{transform:rotate(-115deg)}}
 @media (prefers-reduced-motion:reduce){ .buddy *{animation:none !important} }
 /* the buddy card on Home: the buddy, its speech bubble, its level */
 .bcard{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:var(--surface);border:0;border-radius:var(--r-card);padding:12px 14px 12px 8px;margin:4px 0 16px;color:var(--label);cursor:pointer}

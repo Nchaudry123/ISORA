@@ -1,14 +1,16 @@
 import { useId, useState, useRef, useEffect } from 'react'
 import { KIND_COLOR, gearFor } from '../lib/buddy.js'
+import * as iso from '../lib/iso-motion.js'
 
 // Iso, drawn (lib/buddy.js): a glossy toy block in the app's blue, with a face for its mood, little
 // arms and feet, and the gear its level has earned. Plain SVG lit by gradients: the body is the
 // accent colour, light and shade are white and black laid over it, so any accent still looks lit.
-// It breathes, blinks, glances around and waves through CSS (isora.css, motion.css), and now and
-// then does a trick of its own (a jump, a spin, a wiggle, a stretch). A big Iso follows your finger
-// with its eyes. `interactive` lets a tap poke it: it squishes, hops and beams for a moment; a new
-// `bump` value does the same from outside (a cleared line in Rest Blast). `mood="cheer"` throws
-// both arms up. Under reduced motion it stands still.
+// It moves by simulation, not keyframes (lib/iso-motion.js): a jelly body on springs, arms that
+// lag and flap, real jumps and landings, blinks, a wandering gaze that follows your finger, a wobble
+// when the page scrolls, and little things it does by itself for its mood (dance, wave, spin, tilt,
+// stretch, yawn …). `interactive` lets a tap poke it; a new `bump` value pokes it from outside (a
+// cleared line in Rest Blast); `talking` moves its mouth; `enter` drops it in; `mood="cheer"`
+// throws both arms up. Under reduced motion, or `still`, it stands still.
 
 const INK = '#0b1736'      // eyes and mouth: a deep navy that reads on any blue, in both themes
 const BLUSH = '#ff7aa8'
@@ -33,21 +35,21 @@ function Eyes({ mood, id }) {
     case 'chill': // relaxed: eyes a little smaller, softly lidded
       return <g>
         <clipPath id={id + 'lid'}><path d="M30 56q16-5 32 0q16-5 32 0V72H30Z" /></clipPath>
-        <g className="bd-eyes" clipPath={`url(#${id}lid)`}>{eye(46, 60, 7.6)}{eye(74, 60, 7.6)}</g>
+        <g clipPath={`url(#${id}lid)`}>{eye(46, 60, 7.6)}{eye(74, 60, 7.6)}</g>
       </g>
     case 'missing':
       return <g>
-        <g className="bd-eyes">{eye(46, 60)}{eye(74, 60)}</g>
+        <g>{eye(46, 60)}{eye(74, 60)}</g>
         <ellipse cx="47" cy="68.5" rx="4.5" ry="1.6" fill="#fff" opacity=".55" />
         <path d="M37 47.5l10-3.5M83 47.5l-10-3.5" stroke={INK} strokeWidth="3.2" strokeLinecap="round" />
       </g>
     case 'active':
       return <g>
-        <g className="bd-eyes">{eye(46, 59, 8)}{eye(74, 59, 8)}</g>
+        <g>{eye(46, 59, 8)}{eye(74, 59, 8)}</g>
         <path d="M37 46.5l12 4.5M83 46.5l-12 4.5" stroke={INK} strokeWidth="3.6" strokeLinecap="round" />
       </g>
-    case 'new': return <g className="bd-eyes">{eye(46, 58, 9.6)}{eye(74, 58, 9.6)}</g>
-    default: return <g className="bd-eyes">{eye(46)}{eye(74)}</g> // hyped
+    case 'new': return <g>{eye(46, 58, 9.6)}{eye(74, 58, 9.6)}</g>
+    default: return <g>{eye(46)}{eye(74)}</g> // hyped
   }
 }
 
@@ -67,6 +69,10 @@ function Mouth({ mood }) {
       <path d="M53 76h14" stroke="#fff" strokeWidth="1.6" opacity=".9" />
     </g>
     case 'new': return <ellipse cx="60" cy="77" rx="4.2" ry="4.8" fill={INK} />
+    case 'talk': return <g>
+      <path d="M51 73h18a9 8 0 0 1-18 0Z" fill={INK} />
+      <path d="M55 79a5 3.4 0 0 1 10 0a9 7 0 0 1-10 0Z" fill={TONGUE} />
+    </g>
     default: return line('M53 75q7 5 14 0')
   }
 }
@@ -109,11 +115,9 @@ function Gear({ level, id }) {
   </g>
 }
 
-const WAVES = new Set(['hyped', 'new', 'proud'])
-const TRICKS = ['jump', 'spin', 'wiggle', 'stretch', 'jump', 'wiggle']
 const calm = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
-// one pointer listener for every Iso on screen that follows it
+// one pointer listener for every Iso on screen
 const followers = new Set()
 const onPointer = e => { const p = { x: e.clientX, y: e.clientY }; followers.forEach(f => f(p)) }
 function follow(fn) {
@@ -125,69 +129,97 @@ function follow(fn) {
   }
 }
 
-export default function Buddy({ mood = 'chill', level = 1, size = 96, still = false, interactive = false, bump, tricks, eyesFollow, className = '' }) {
+const f2 = n => (Math.round(n * 100) / 100)
+
+export default function Buddy({ mood = 'chill', level = 1, size = 96, still = false, interactive = false, bump, talking = false, enter = false, eyesFollow, className = '' }) {
   const id = 'bd' + useId().replace(/[^a-zA-Z0-9]/g, '')
   const [poked, setPoked] = useState(0)
-  const [trick, setTrick] = useState(null)
-  const [looking, setLooking] = useState(false)
   const timer = useRef(null)
-  const svg = useRef(null)
+  const R = { svg: useRef(null), shadow: useRef(null), jump: useRef(null), lean: useRef(null), body: useRef(null),
+    armL: useRef(null), armR: useRef(null), face: useRef(null), eyes: useRef(null), mouth: useRef(null) }
+  const sim = useRef(null)
+  const live = useRef({ mood, talking })
+  const cheer = mood === 'cheer'
+  live.current = { mood: poked ? 'proud' : mood, talking }
   useEffect(() => () => clearTimeout(timer.current), [])
+
   const poke = (buzz = true) => {
     setPoked(n => n + 1)
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setPoked(0), 900)
+    if (sim.current) iso.poke(sim.current)
     if (buzz) try { navigator.vibrate?.(12) } catch { /* no haptics */ }
   }
   // poked from outside: any new truthy `bump`
   const firstBump = useRef(true)
   useEffect(() => { if (firstBump.current) { firstBump.current = false; return } if (bump) poke(false) }, [bump])
 
-  // a trick now and then, while it is on screen and big enough to see one
-  const doTricks = !still && (tricks ?? size >= 56)
+  // the body, simulated every frame while it is on screen (lib/iso-motion.js)
+  const small = size < 48
+  const followOn = !small && (eyesFollow ?? true)
   useEffect(() => {
-    if (!doTricks || calm()) return
-    let t1, t2
-    const next = () => {
-      t1 = setTimeout(() => {
-        if (!document.hidden) { setTrick(TRICKS[(Math.random() * TRICKS.length) | 0]); t2 = setTimeout(() => setTrick(null), 1100) }
-        next()
-      }, 6000 + Math.random() * 8000)
+    if (still || calm()) return
+    const st = sim.current = iso.initialState()
+    if (enter) { st.jy = -70; st.air = true; st.jv = 0; st.airT = 0; st.airTotal = 1 }
+    let pointer = null, pointerAt = -1e9, raf = 0, last = 0, visible = true, lastY = window.scrollY
+    const set = (ref, v) => ref.current?.setAttribute('transform', v)
+    const frame = now => {
+      raf = 0
+      const dt = last ? (now - last) / 1000 : 1 / 60
+      last = now
+      const p = iso.step(st, { dt, mood: live.current.mood, talking: live.current.talking, small,
+        pointer: now - pointerAt < 2500 ? pointer : null })
+      set(R.jump, `translate(0 ${f2(p.jy)})`)
+      set(R.lean, `rotate(${f2(p.rot)} 60 106)`)
+      set(R.body, `translate(60 104) scale(${f2(p.sx)} ${f2(p.sy)}) translate(-60 -104)`)
+      set(R.armL, `rotate(${f2(p.al)} 24 72)`)
+      set(R.armR, `rotate(${f2(p.ar)} 96 72)`)
+      set(R.face, `translate(${f2(p.lx * 5)} ${f2(p.ly * 3.6)})`)
+      set(R.eyes, `translate(0 59) scale(1 ${f2(p.blink)}) translate(0 -59)`)
+      set(R.mouth, `translate(60 77) scale(${f2(0.9 + 0.1 * p.mouth)} ${f2(p.mouth)}) translate(-60 -77)`)
+      set(R.shadow, `translate(60 110) scale(${f2(p.shadow)} ${f2(p.shadow)}) translate(-60 -110)`)
+      if (R.shadow.current) R.shadow.current.style.opacity = f2(0.35 + 0.65 * p.shadow)
+      go()
     }
-    next()
-    return () => { clearTimeout(t1); clearTimeout(t2) }
-  }, [doTricks])
-
-  // a big Iso watches your finger: its face turns toward it, and back once you stop
-  const doFollow = !still && (eyesFollow ?? (interactive || size >= 120))
-  useEffect(() => {
-    if (!doFollow || calm()) return
-    let idle
-    const off = follow(p => {
-      const el = svg.current
+    const go = () => { if (!raf && visible && !document.hidden) raf = requestAnimationFrame(frame) }
+    const stop = () => { if (raf) cancelAnimationFrame(raf); raf = 0; last = 0 }
+    const onVis = () => (document.hidden ? stop() : go())
+    document.addEventListener('visibilitychange', onVis)
+    const io = typeof IntersectionObserver !== 'undefined' ? new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? go() : stop() }) : null
+    if (io && R.svg.current) io.observe(R.svg.current)
+    // the page scrolling under it gives it a wobble
+    const onScroll = () => { const y = window.scrollY; iso.nudge(st, (y - lastY) / 60); lastY = y }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    // it looks at your finger (and leans toward it)
+    const off = followOn ? follow(pt => {
+      const el = R.svg.current
       if (!el) return
       const r = el.getBoundingClientRect()
-      const dx = p.x - (r.left + r.width / 2), dy = p.y - (r.top + r.height * 0.45)
-      const d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 220)
-      el.style.setProperty('--fx', (dx / d * 5 * k).toFixed(2) + 'px')
-      el.style.setProperty('--fy', (dy / d * 4 * k).toFixed(2) + 'px')
-      setLooking(true)
-      clearTimeout(idle)
-      idle = setTimeout(() => setLooking(false), 2500)
-    })
-    return () => { off(); clearTimeout(idle) }
-  }, [doFollow])
+      const dx = pt.x - (r.left + r.width / 2), dy = pt.y - (r.top + r.height * 0.45)
+      const reach = Math.max(260, r.width * 3)
+      const d = Math.hypot(dx, dy)
+      if (d > reach * 2.5) return
+      const k = Math.min(1, d / 120) / (d || 1)
+      pointer = { dx: dx * k, dy: dy * k * 0.8 }
+      pointerAt = performance.now()
+    }) : null
+    go()
+    return () => {
+      stop(); off?.(); io?.disconnect()
+      document.removeEventListener('visibilitychange', onVis)
+      window.removeEventListener('scroll', onScroll)
+      sim.current = null
+    }
+  }, [still, small, followOn])
 
-  const cheer = mood === 'cheer'
   const face = poked || cheer ? 'proud' : mood
   const f = FRONT, b = BACK
-  const cls = ['buddy', still ? '' : 'alive', 'm-' + face, cheer ? 'm-cheer' : '', WAVES.has(face) && !cheer ? 'waving' : '', poked ? 'poked' : '',
-    trick && !poked ? 'trick-' + trick : '', looking ? 'looking' : '', interactive ? 'tappable' : '', className].filter(Boolean).join(' ')
+  const cls = ['buddy', still ? '' : 'alive', 'm-' + face, interactive ? 'tappable' : '', className].filter(Boolean).join(' ')
   const props = interactive
     ? { role: 'button', tabIndex: 0, 'aria-label': 'Iso', onClick: e => { e.stopPropagation(); poke() }, onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); poke() } } }
     : { 'aria-hidden': true, focusable: 'false' }
   return (
-    <svg ref={svg} className={cls} viewBox="0 0 120 120" width={size} height={size} style={{ color: KIND_COLOR }} {...props}>
+    <svg ref={R.svg} className={cls} viewBox="0 0 120 120" width={size} height={size} style={{ color: KIND_COLOR }} {...props}>
       <defs>
         <radialGradient id={id + 'sh'}><stop offset="0" stopColor="#000" stopOpacity=".42" /><stop offset="1" stopColor="#000" stopOpacity="0" /></radialGradient>
         <linearGradient id={id + 'lit'} x1="0" y1="0" x2="0" y2="1">
@@ -207,31 +239,33 @@ export default function Buddy({ mood = 'chill', level = 1, size = 96, still = fa
         <clipPath id={id + 'face'}><rect x={f.x} y={f.y} width={f.w} height={f.h} rx={f.r} /></clipPath>
       </defs>
 
-      <ellipse className="bd-shadow" cx="60" cy="110" rx="34" ry="5" fill={`url(#${id}sh)`} />
-      <g className="bd-hop"><g className="bd-body">
-        {/* feet */}
+      <ellipse ref={R.shadow} className="bd-shadow" cx="60" cy="110" rx="34" ry="5" fill={`url(#${id}sh)`} />
+      <g ref={R.jump}><g ref={R.lean}>
+        {/* feet stay on the ground while the body squashes above them */}
         {[36, 66].map(x => <g key={x}>
           <rect x={x} y="96" width="18" height="12" rx="6" fill="currentColor" />
           <rect x={x} y="96" width="18" height="12" rx="6" fill="#000" opacity=".3" />
         </g>)}
-        {/* arms: the right one waves when Iso is happy */}
-        <g className="bd-arm bd-arm-l"><g transform="rotate(28 22 74)"><rect x="15" y="70" width="13" height="24" rx="6.5" fill="currentColor" /><rect x="15" y="70" width="13" height="24" rx="6.5" fill="#000" opacity=".22" /></g></g>
-        <g className="bd-arm bd-arm-r"><g transform="rotate(-28 98 74)"><rect x="92" y="70" width="13" height="24" rx="6.5" fill="currentColor" /><rect x="92" y="70" width="13" height="24" rx="6.5" fill="#000" opacity=".22" /></g></g>
-        {/* the block: depth, then the lit face */}
-        <rect x={b.x} y={b.y} width={b.w} height={b.h} rx={b.r} fill="currentColor" />
-        <rect x={b.x} y={b.y} width={b.w} height={b.h} rx={b.r} fill="#000" opacity=".34" />
-        <rect x={f.x} y={f.y} width={f.w} height={f.h} rx={f.r} fill="currentColor" />
-        <rect x={f.x} y={f.y} width={f.w} height={f.h} rx={f.r} fill={`url(#${id}lit)`} />
-        <rect x={f.x} y={f.y} width={f.w} height={f.h} rx={f.r} fill={`url(#${id}side)`} />
-        <rect x={f.x + .75} y={f.y + .75} width={f.w - 1.5} height={f.h - 1.5} rx={f.r - .75} fill="none" stroke="#fff" strokeOpacity=".28" strokeWidth="1.5" />
-        {/* gloss */}
-        <path d="M30 34q2-5 10-5h18q4 0 3 3-1 3-6 3H40q-6 0-9 4-2 1-1-5Z" fill={`url(#${id}gloss)`} />
-        <circle cx="88" cy="33" r="2.4" fill="#fff" opacity=".55" />
-        {/* cheeks, face */}
-        <ellipse className="bd-blush" cx="33" cy="70" rx="8.5" ry="5.2" fill={`url(#${id}blush)`} />
-        <ellipse className="bd-blush" cx="87" cy="70" rx="8.5" ry="5.2" fill={`url(#${id}blush)`} />
-        <g className="bd-face"><g className="bd-blink"><Eyes mood={face} id={id} /></g><Mouth mood={face} /></g>
-        <Gear level={level} id={id} />
+        <g ref={R.body}>
+          <g ref={R.armL}><g transform="rotate(28 22 74)"><rect x="15" y="70" width="13" height="24" rx="6.5" fill="currentColor" /><rect x="15" y="70" width="13" height="24" rx="6.5" fill="#000" opacity=".22" /></g></g>
+          <g ref={R.armR}><g transform="rotate(-28 98 74)"><rect x="92" y="70" width="13" height="24" rx="6.5" fill="currentColor" /><rect x="92" y="70" width="13" height="24" rx="6.5" fill="#000" opacity=".22" /></g></g>
+          {/* the block: depth, then the lit face */}
+          <rect x={b.x} y={b.y} width={b.w} height={b.h} rx={b.r} fill="currentColor" />
+          <rect x={b.x} y={b.y} width={b.w} height={b.h} rx={b.r} fill="#000" opacity=".34" />
+          <rect x={f.x} y={f.y} width={f.w} height={f.h} rx={f.r} fill="currentColor" />
+          <rect x={f.x} y={f.y} width={f.w} height={f.h} rx={f.r} fill={`url(#${id}lit)`} />
+          <rect x={f.x} y={f.y} width={f.w} height={f.h} rx={f.r} fill={`url(#${id}side)`} />
+          <rect x={f.x + .75} y={f.y + .75} width={f.w - 1.5} height={f.h - 1.5} rx={f.r - .75} fill="none" stroke="#fff" strokeOpacity=".28" strokeWidth="1.5" />
+          <path d="M30 34q2-5 10-5h18q4 0 3 3-1 3-6 3H40q-6 0-9 4-2 1-1-5Z" fill={`url(#${id}gloss)`} />
+          <circle cx="88" cy="33" r="2.4" fill="#fff" opacity=".55" />
+          <g ref={R.face}>
+            <ellipse className="bd-blush" cx="33" cy="70" rx="8.5" ry="5.2" fill={`url(#${id}blush)`} />
+            <ellipse className="bd-blush" cx="87" cy="70" rx="8.5" ry="5.2" fill={`url(#${id}blush)`} />
+            <g ref={R.eyes}><Eyes mood={face} id={id} /></g>
+            <g ref={R.mouth}><Mouth mood={talking && !poked ? 'talk' : face} /></g>
+          </g>
+          <Gear level={level} id={id} />
+        </g>
       </g></g>
       <Extras mood={face} />
     </svg>
