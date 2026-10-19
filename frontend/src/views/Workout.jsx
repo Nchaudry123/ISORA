@@ -588,8 +588,9 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   // from. The button's own label speaks for it, so a screen reader hears it with the set number.
   const failMark = s => isFailureSet(s) ? <span className="failmark" aria-hidden="true">{t('F')}</span> : null
   const failSay = (s, label) => isFailureSet(s) ? label + ', ' + t('Taken to failure') : label
+  const nextIdx = editing ? -1 : entry.sets.findIndex(x => !x.done)
   const plainRow = (s, i) => (
-    <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (col3 ? ' eff3' : '') + (timed ? ' timed' : '')}>
+    <div ref={el => onSetRowRef?.(i, el)} className={'setrow' + (s.done ? ' done' : '') + (i === nextIdx ? ' next' : '') + (col3 ? ' eff3' : '') + (timed ? ' timed' : '')}>
       <button type="button" className="n" aria-label={failSay(s, sideTagOf(s) ? t('Set {0} ({1})', setNumOf(s, i), sideTagOf(s)) : t('Set {0}', setNumOf(s, i)))} aria-describedby={optsId} title={t('More')} onClick={() => openSetMenu(s, i)}>{setNumOf(s, i)}{failMark(s)}</button>
       {/* Both words sit in the pill's one grid cell (::before/::after, hidden), so Left and
           Right are as wide as the longer of the two in every language and the inputs

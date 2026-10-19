@@ -62,8 +62,8 @@ export default function Library() {
     return <div key={e.id} className="item" {...tappable(() => exerciseDetailSheet(e))}>
       <Thumb ex={e} />
       <div className="grow"><div className={`tt ${exerciseNameClass(e)}`}>{isFav(S, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div><div className="ss capitalize">{t(MUSCLE_NAME[e.tg] || e.tg || e.bp)} · {t(e.eq)}</div></div>
-      {best > 0 && <span className="tag acc">{fmtNum(best)}</span>}
-      <Button size="sm" variant="tinted" icon="plus" onClick={ev => { ev.stopPropagation(); addToRoutineSheet(e) }}>{t('Plan')}</Button>
+      {best > 0 && <span className="tag acc ex-best">{fmtNum(best)} {S.unit}</span>}
+      <button type="button" className="ex-add" aria-label={t('Plan')} title={t('Plan')} onClick={ev => { ev.stopPropagation(); addToRoutineSheet(e) }}><Icon name="plus" /></button>
     </div>
   }
 
@@ -101,7 +101,7 @@ export default function Library() {
       <button className={'chip nocap' + (!eqOn ? ' on' : '')} onClick={() => { setEq(''); setShown(40) }}>{t('Any equipment')}</button>
       {eqOpts.map(x => <button key={x} className={'chip' + (eqOn === x ? ' on' : '')} onClick={() => { setEq(x); setShown(40) }}>{t(x)}</button>)}
     </div>}
-    <div className={'list' + (S.exerciseView === 'cards' ? ' ex-grid' : '')}>
+    <div className={'list ex-list' + (S.exerciseView === 'cards' ? ' ex-grid' : '')}>
       <div className="item ex-new" {...tappable(() => customExSheet(null, ex => exerciseDetailSheet(ex), q.trim()))}>
         <div className="thumb thumb-x"><Icon name="plusCircle" /></div>
         <div className="grow"><div className="tt">{t('Create your own exercise')}</div><div className="ss">{t('name + body part, and a photo or video if you like')}</div></div><Icon name="plus" className="chev" />
