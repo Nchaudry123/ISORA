@@ -176,16 +176,19 @@ export default async function handler(req, res) {
   if (r.status === 429) return res.status(429).json({ error: 'busy' })
   if (!r.ok) return res.status(502).json({ error: 'upstream', status: r.status })
 
-  let data, model = null
+  let data, model = null, why = null
   try {
     const body = await r.json()
     model = typeof body?.model === 'string' ? body.model : null
-    const text = body?.choices?.[0]?.message?.content
+    const choice = body?.choices?.[0]
+    const text = choice?.message?.content
+    // what went wrong, for the error only: how the answer ended and its first characters
+    why = { finish: choice?.finish_reason || choice?.native_finish_reason || null, len: typeof text === 'string' ? text.length : -1, head: typeof text === 'string' ? text.slice(0, 240) : String(body?.error?.message || '').slice(0, 240) }
     data = JSON.parse(typeof text === 'string' ? text.replace(/^```(?:json)?\s*|\s*```$/g, '') : '')
   } catch {
-    return res.status(502).json({ error: 'bad-output' })
+    return res.status(502).json({ error: 'bad-output', model, why })
   }
-  if (typeof data?.reply !== 'string' || typeof data?.done !== 'boolean') return res.status(502).json({ error: 'bad-output' })
+  if (typeof data?.reply !== 'string' || typeof data?.done !== 'boolean') return res.status(502).json({ error: 'bad-output', model, why })
   // what is known now: what the app sent, with what this turn added on top (a value, once given, stays)
   const known = { ...knownIn, ...cleanKnown(data.known) }
   const declined = [...new Set([...declinedIn, ...cleanDeclined(data.declined)])]
