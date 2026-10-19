@@ -2405,4 +2405,8 @@ export default {
   'Hints': '힌트',
   'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': '조각을 들고 있으면 가장 좋은 자리가 빛나고, 잠시 후엔 저절로 빛나요. 한 번 탭하면 조각이 그곳으로 가요.',
   'Time’s up': '시간 종료',
+  'Activity': '활동',
+  'Muscles': '근육',
+  'Body & progress': '몸과 진행 상황',
+  'Last 12 months': '최근 12개월',
 }

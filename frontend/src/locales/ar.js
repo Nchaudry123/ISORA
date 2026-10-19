@@ -2460,4 +2460,8 @@ export default {
   'Hints': 'تلميحات',
   'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'يضيء أفضل مكان أثناء إمساكك بالقطعة، وبعد لحظة من تلقاء نفسه. نقرة ترسل القطعة إلى هناك.',
   'Time’s up': 'انتهى الوقت',
+  'Activity': 'النشاط',
+  'Muscles': 'العضلات',
+  'Body & progress': 'الجسم والتقدم',
+  'Last 12 months': 'آخر 12 شهرًا',
 }

@@ -595,3 +595,6 @@ button.avatar:active{transform:scale(.94)}
 .ex-add:active{transform:scale(.88);background:color-mix(in srgb,var(--acc) 26%,transparent);transition-duration:.1s}
 .ex-grid .ex-add{position:absolute;inset-inline-end:8px;top:8px;background:var(--acc);color:var(--on-acc)}
 .ex-grid .item{position:relative}
+/* Stats: the sections read top to bottom; the first heading sits close under the tiles */
+.tiles + .inbox-h{margin-top:14px}
+.inbox-h + .card{margin-top:0}

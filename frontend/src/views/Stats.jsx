@@ -24,7 +24,7 @@ import {
   effortHistogram, isHardSet, HARD_RIR, MIN_RATED
 } from '../lib/effort.js'
 import { anchorsByWorkout, resolveSetRir } from '../lib/recovery.js'
-import { Button, Segmented, SelectRow } from '../components/ui.jsx'
+import { Button, Segmented, SelectRow, Section, Row } from '../components/ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { isWarmupRow } from '../lib/workout-model.js'
 
@@ -192,7 +192,7 @@ function MuscleBalance({ S }) {
   const completionSummary = <>
     {missed.length > 0 && <>
       <h4 className="sec" style={{ marginTop: 12 }}>{on ? t('No hard sets in this period') : t('Not trained in this period')}</h4>
-      <div className="mchips">{missed.map(m => <span key={m} className="mchip miss">{t(MUSCLE_NAME[m])}</span>)}</div>
+      <div className="mchips">{missed.slice(0, 6).map(m => <span key={m} className="mchip miss">{t(MUSCLE_NAME[m])}</span>)}{missed.length > 6 && <span className="mchip">{t('+{0} more', missed.length - 6)}</span>}</div>
     </>}
     {!missed.length && worked.length > 0 &&
       <div className="muted small" style={{ marginTop: 10 }}>{on
@@ -644,8 +644,9 @@ export default function Stats() {
 
     </div>
 
+    <h3 className="inbox-h">{t('Activity')}</h3>
     <div className="card">
-      <h2>{t('Activity (last 12 months)')}</h2>
+      <h2>{t('Last 12 months')}</h2>
       <Heatmap
         S={S}
         metric={S.heatmapMetric === 'vol' ? 'vol' : 'time'}
@@ -654,27 +655,12 @@ export default function Stats() {
       />
     </div>
 
+    {(workouts.length > 0 || Object.keys(loadOfWeeklyPlan(S)).length > 0) && <h3 className="inbox-h">{t('Muscles')}</h3>}
     {(workouts.length > 0 || Object.keys(loadOfWeeklyPlan(S)).length > 0) && <MuscleBalance S={S} />}
     {S.routines.length > 0 && <WeeklyPlanVolume S={S} />}
-    {workouts.length > 0 && <div className="card row between" style={{ alignItems: 'center', gap: 12 }}>
-      <div style={{ minWidth: 0 }}><h2 style={{ margin: 0 }}>{t('Structural balance')}</h2>
-        <div className="muted small" style={{ marginTop: 4 }}>{t('See which lift is holding back the rest.')}</div></div>
-      <Button size="sm" variant="tinted" trailingIcon="chevronRight" style={{ flexShrink: 0 }} onClick={() => nav('/structural-balance')}>{t('Open')}</Button>
-    </div>}
-    {workouts.length > 0 && <div className="card row between" style={{ alignItems: 'center', gap: 12 }}>
-      <div style={{ minWidth: 0 }}><h2 style={{ margin: 0 }}>{t('Progress photos')}</h2>
-        <div className="muted small" style={{ marginTop: 4 }}>{t('Every photo you kept with a workout, lined up by date. Plus a before/after slider.')}</div></div>
-      <Button size="sm" variant="tinted" trailingIcon="chevronRight" style={{ flexShrink: 0 }} onClick={() => nav('/progress-photos')}>{t('Open')}</Button>
-    </div>}
-    <div className="card row between" style={{ alignItems: 'center', gap: 12 }}>
-      <div style={{ minWidth: 0 }}><h2 style={{ margin: 0 }}>{t('Body measurements')}</h2>
-        <div className="muted small" style={{ marginTop: 4 }}>{(S.measurements || []).length
-          ? t('Last check-in {0}', fmtDate(S.measurements[S.measurements.length - 1].d, true))
-          : t('Waist, arms, body fat and anything else you measure, each with its own curve.')}</div></div>
-      <Button size="sm" variant="tinted" trailingIcon="chevronRight" style={{ flexShrink: 0 }} onClick={() => nav('/measurements')}>{t('Open')}</Button>
-    </div>
     {(hasEffort(S) || hasEstimableEffort(S)) && <EffortCard S={S} />}
 
+    <h3 className="inbox-h">{t('Body & progress')}</h3>
     <div className="cols">
       <div className="card">
         <div className="row between bw-head" style={{ marginBottom: 8 }}>
@@ -752,5 +738,12 @@ export default function Stats() {
       </div>
       <div className="list">{[...workouts].reverse().slice(0, 6).map(w => <WorkoutRow key={w.id} w={w} onClick={() => workoutDetailSheet(w)} />)}</div>
     </>}
+    {/* the deeper views, as one grouped list (components/ui.jsx Section/Row) rather than three cards */}
+    <Section title={t('More')}>
+      {workouts.length > 0 && <Row icon="scale" iconTint="var(--teal)" title={t('Structural balance')} subtitle={t('See which lift is holding back the rest.')} accessory="chevron" onClick={() => nav('/structural-balance')} />}
+      {workouts.length > 0 && <Row icon="camera" iconTint="var(--purple)" title={t('Progress photos')} subtitle={t('Every photo you kept with a workout, lined up by date. Plus a before/after slider.')} accessory="chevron" onClick={() => nav('/progress-photos')} />}
+      <Row icon="ruler" iconTint="var(--orange)" title={t('Body measurements')} accessory="chevron" onClick={() => nav('/measurements')}
+        subtitle={(S.measurements || []).length ? t('Last check-in {0}', fmtDate(S.measurements[S.measurements.length - 1].d, true)) : t('Waist, arms, body fat and anything else you measure, each with its own curve.')} />
+    </Section>
   </>
 }

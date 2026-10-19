@@ -6,7 +6,7 @@ import { todayISO } from '../lib/format.js'
 import { PERSONAL } from '../lib/demo.js'
 import { newProfile } from '../lib/equipment.js'
 import { cleanProfile } from '../lib/profile.js'
-import { SCRIPT, normalizeProfile, scriptedFocus, pickPlan, resumeScript } from '../lib/onboarding.js'
+import { SCRIPT, normalizeProfile, scriptedFocus, pickPlan, resumeScript, unitHint } from '../lib/onboarding.js'
 import { normalizeCode, download, saveCode } from '../lib/cloud.js'
 import { loadStarterPlan, PLAN_COPY } from '../sheets.jsx'
 import IsoraMark from './IsoraMark.jsx'
@@ -77,6 +77,8 @@ function OnboardingChat() {
     const v = st.read(en, S.unit)
     if (v === undefined) { say('coach', t('Sorry, I didn’t catch that.') + ' ' + t(st.ask, script.current.answers.name || '')); return }
     script.current.answers[st.key] = v
+    // "176 lb" or "5 ft 11": the app will switch to pounds; "80 kg" keeps kilos
+    if ((st.key === 'weightKg' || st.key === 'heightCm') && !script.current.answers.unit) { const u = unitHint(text); if (u) script.current.answers.unit = u }
     script.current.i++
     if (script.current.i < SCRIPT.length) { askScript(); return }
     const p = normalizeProfile(script.current.answers)
@@ -151,10 +153,14 @@ function OnboardingChat() {
     const gear = p.equipment.length ? newProfile(t('My equipment')) : null
     if (gear) gear.equipment = p.equipment
     update(s => {
+      // the unit they spoke in becomes the app's, before the weigh-in below is written in it
+      if (p.unit && p.unit !== s.unit) s.unit = p.unit
       s.profile = cleanProfile({ ...cleanProfile(s.profile), name: p.name, goal: p.goal, weekTarget: p.daysPerWeek,
         heightCm: p.heightCm, experience: p.experience, focus: p.focus, focusAreas: p.focusAreas })
       if (p.weightKg) {
-        const w = s.unit === 'lb' ? Math.round(p.weightKg * 2.20462 * 10) / 10 : p.weightKg
+        // in pounds, a kg figure the model rounded comes back a hair off a whole number: snap it
+        let w = s.unit === 'lb' ? Math.round(p.weightKg * 2.20462 * 10) / 10 : Math.round(p.weightKg * 10) / 10
+        if (s.unit === 'lb' && Math.abs(w - Math.round(w)) <= 0.15) w = Math.round(w)
         s.bodyweight = [...s.bodyweight.filter(b => b.d !== todayISO()), { d: todayISO(), w, t: Date.now() }].sort((a, b) => (a.d < b.d ? -1 : 1))
       }
       if (gear) { s.equipProfiles = [...(s.equipProfiles || []), gear]; s.equipFilterOn = true; s.activeEquipId = gear.id }

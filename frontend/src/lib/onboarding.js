@@ -26,18 +26,20 @@ export function pickPlan({ goal, daysPerWeek, experience } = {}) {
 /** An answer from the model (or the script) made safe to apply. */
 export function normalizeProfile(p) {
   const o = p && typeof p === 'object' ? p : {}
-  const num = (v, lo, hi) => (Number.isFinite(Number(v)) && Number(v) >= lo && Number(v) <= hi ? Math.round(Number(v) * 10) / 10 : null)
+  const num = (v, lo, hi) => (Number.isFinite(Number(v)) && Number(v) >= lo && Number(v) <= hi ? Math.round(Number(v) * 100) / 100 : null)
   const days = Math.round(Number(o.daysPerWeek))
   return {
     name: typeof o.name === 'string' ? o.name.trim().slice(0, 40) : '',
     goal: GOALS.includes(o.goal) ? o.goal : 'fitness',
     weightKg: num(o.weightKg, 25, 350),
-    heightCm: num(o.heightCm, 100, 250),
+    heightCm: num(o.heightCm, 100, 250) == null ? null : Math.round(num(o.heightCm, 100, 250)),
     experience: LEVELS.includes(o.experience) ? o.experience : 'beginner',
     daysPerWeek: days >= 1 && days <= 7 ? days : 3,
     equipment: [...new Set((Array.isArray(o.equipment) ? o.equipment : []).filter(e => KNOWN_GEAR.has(e)))],
     focus: typeof o.focus === 'string' ? o.focus.trim().slice(0, 600) : '',
     focusAreas: (Array.isArray(o.focusAreas) ? o.focusAreas : []).filter(a => typeof a === 'string' && a.trim()).map(a => a.trim().slice(0, 30)).slice(0, 4),
+    // the unit the app switches to, when the chat made it clear (unitHint, or the server's known.unit)
+    unit: o.unit === 'lb' || o.unit === 'kg' ? o.unit : null,
   }
 }
 
@@ -61,6 +63,17 @@ export function resumeScript(known = {}, declined = []) {
   return { i: i < 0 ? SCRIPT.length : i, answers }
 }
 
+/**
+ * The weight unit someone uses, from how they write a weight or a height: pounds, feet or inches
+ * say lb; kilos, centimetres or metres say kg; a bare number says nothing (null).
+ */
+export function unitHint(text) {
+  const s = String(text || '').toLowerCase()
+  if (/\d\s*(?:lbs?|pounds?)\b/.test(s) || /\d\s*(?:'|′|ft|feet|foot)\b/.test(s) || /\d\s*(?:"|″|in|inch|inches)\b/.test(s)) return 'lb'
+  if (/\d\s*(?:kgs?|kilos?|kilograms?)\b/.test(s) || /\d\s*(?:cm|centimet|metres?|meters?|m)\b/.test(s)) return 'kg'
+  return null
+}
+
 /** A typed weight in kg: "80", "80 kg", "176 lb", "176lbs". Plain numbers are in `unit`. */
 export function parseWeight(text, unit = 'kg') {
   const m = String(text || '').replace(',', '.').match(/(\d+(?:\.\d+)?)\s*(kg|kgs|kilo|lb|lbs|pound)?/i)
@@ -68,7 +81,8 @@ export function parseWeight(text, unit = 'kg') {
   const n = parseFloat(m[1])
   const u = (m[2] || unit).toLowerCase()
   const kg = u.startsWith('lb') || u.startsWith('pound') ? n / 2.20462 : n
-  return kg >= 25 && kg <= 350 ? Math.round(kg * 10) / 10 : null
+  // two decimals: a weight typed in pounds comes back out as the same pounds (176, not 175.9)
+  return kg >= 25 && kg <= 350 ? Math.round(kg * 100) / 100 : null
 }
 
 /** A typed height in cm: "180", "180 cm", "1.80 m", "5'11", "5 ft 11", "71 in". */

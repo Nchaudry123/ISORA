@@ -2405,4 +2405,8 @@ export default {
   'Hints': 'Suggerimenti',
   'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'Il posto migliore si illumina mentre tieni un pezzo e, dopo un attimo, da solo. Un tocco manda lì il pezzo.',
   'Time’s up': 'Tempo scaduto',
+  'Activity': 'Attività',
+  'Muscles': 'Muscoli',
+  'Body & progress': 'Corpo e progressi',
+  'Last 12 months': 'Ultimi 12 mesi',
 }

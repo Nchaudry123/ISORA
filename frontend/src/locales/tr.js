@@ -2405,4 +2405,8 @@ export default {
   'Hints': 'İpuçları',
   'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'Bir parçayı tutarken en iyi yer yanar, bir an sonra kendiliğinden de. Bir dokunuş parçayı oraya gönderir.',
   'Time’s up': 'Süre doldu',
+  'Activity': 'Etkinlik',
+  'Muscles': 'Kaslar',
+  'Body & progress': 'Vücut ve ilerleme',
+  'Last 12 months': 'Son 12 ay',
 }

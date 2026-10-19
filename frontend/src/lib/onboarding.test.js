@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { pickPlan, normalizeProfile, parseWeight, parseHeight, SCRIPT, GEAR, scriptedFocus, resumeScript } from './onboarding.js'
+import { pickPlan, normalizeProfile, parseWeight, parseHeight, SCRIPT, GEAR, scriptedFocus, resumeScript, unitHint } from './onboarding.js'
 
 const step = key => SCRIPT.find(s => s.key === key)
 
@@ -15,14 +15,14 @@ describe('first-run setup', () => {
 
   it('makes a model answer safe', () => {
     const p = normalizeProfile({ name: ' Sam ', goal: 'fly', weightKg: 900, heightCm: 182.04, experience: 'pro', daysPerWeek: 12, equipment: ['dumbbell', 'laser', 'dumbbell'], focus: 'x', focusAreas: ['a', '', 7, 'b', 'c', 'd', 'e'] })
-    expect(p).toEqual({ name: 'Sam', goal: 'fitness', weightKg: null, heightCm: 182, experience: 'beginner', daysPerWeek: 3, equipment: ['dumbbell'], focus: 'x', focusAreas: ['a', 'b', 'c', 'd'] })
+    expect(p).toEqual({ name: 'Sam', goal: 'fitness', weightKg: null, heightCm: 182, experience: 'beginner', daysPerWeek: 3, equipment: ['dumbbell'], focus: 'x', focusAreas: ['a', 'b', 'c', 'd'], unit: null })
     expect(normalizeProfile(null).goal).toBe('fitness')
   })
 
   it('reads weights in any unit', () => {
     expect(parseWeight('80')).toBe(80)
-    expect(parseWeight('176 lb')).toBe(79.8)
-    expect(parseWeight('176', 'lb')).toBe(79.8)
+    expect(parseWeight('176 lb')).toBe(79.83)
+    expect(parseWeight('176', 'lb')).toBe(79.83)
     expect(parseWeight('80,5 kg')).toBe(80.5)
     expect(parseWeight('heavy')).toBeNull()
     expect(parseWeight('5')).toBeNull()
@@ -70,5 +70,15 @@ describe('picking the scripted chat up mid-way', () => {
     expect(all.answers.equipment).toEqual(['barbell'])
     // junk from another client is ignored, not trusted
     expect(resumeScript({ name: 7, goal: 'x', daysPerWeek: 9 }).answers).toEqual({})
+  })
+})
+
+describe('the unit someone writes in', () => {
+  it('reads pounds, feet and inches as lb, kilos and centimetres as kg, and a bare number as nothing', () => {
+    expect(unitHint('176 lb')).toBe('lb'); expect(unitHint('176lbs')).toBe('lb'); expect(unitHint('about 180 pounds')).toBe('lb')
+    expect(unitHint("5'11")).toBe('lb'); expect(unitHint('5 ft 11')).toBe('lb'); expect(unitHint('71 inches')).toBe('lb')
+    expect(unitHint('80 kg')).toBe('kg'); expect(unitHint('80kgs')).toBe('kg'); expect(unitHint('1.80 m')).toBe('kg'); expect(unitHint('180cm')).toBe('kg')
+    expect(unitHint('80')).toBeNull(); expect(unitHint('skip')).toBeNull(); expect(unitHint('')).toBeNull()
+    expect(normalizeProfile({ unit: 'lb' }).unit).toBe('lb'); expect(normalizeProfile({ unit: 'stone' }).unit).toBeNull()
   })
 })

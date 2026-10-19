@@ -2408,4 +2408,8 @@ export default {
   'Hints': 'Tippek',
   'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'A legjobb hely világít, amíg egy elemet tartasz, és egy pillanat múlva magától is. Egy koppintás odaküldi az elemet.',
   'Time’s up': 'Lejárt az idő',
+  'Activity': 'Aktivitás',
+  'Muscles': 'Izmok',
+  'Body & progress': 'Test és haladás',
+  'Last 12 months': 'Az elmúlt 12 hónap',
 }

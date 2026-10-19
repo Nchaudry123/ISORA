@@ -34,7 +34,7 @@ const SYSTEM = `You are ISORA's coach: the friendly voice that greets someone th
 Your job in this short chat is to get to know the person so the app can set up their training. Find out, in a natural order, one or two things per message:
 1. their first name
 2. what they want from training (map it to one goal: strength, muscle, fitness, or active)
-3. their body weight and height (accept any units; convert to kg and cm yourself)
+3. their body weight and height (accept any units; convert to kg and cm yourself, and note in known.unit which weight unit they use: "lb" if they write pounds, feet or inches, "kg" if kilos or centimetres, null if a bare number)
 4. how experienced they are (beginner, intermediate, advanced)
 5. how many days a week they can train (1 to 7)
 6. what equipment they have access to: the items they own at home, or a full gym (then set known.gym to true and leave equipment empty — never list a gym's equipment)
@@ -61,7 +61,7 @@ const OUTPUT = {
     known: {
       type: 'object',
       additionalProperties: false,
-      required: [...FIELDS, 'gym'],
+      required: [...FIELDS, 'gym', 'unit'],
       properties: {
         name: nullable({ type: 'string' }),
         goal: nullable({ type: 'string', enum: GOALS }),
@@ -71,6 +71,7 @@ const OUTPUT = {
         daysPerWeek: nullable({ type: 'integer' }),
         equipment: nullable({ type: 'array', items: { type: 'string', enum: EQUIPMENT } }),
         gym: nullable({ type: 'boolean' }),
+        unit: nullable({ type: 'string', enum: ['kg', 'lb'] }),
       },
     },
     declined: { type: 'array', items: { type: 'string', enum: ['weightKg', 'heightCm'] } },
@@ -117,6 +118,7 @@ const cleanKnown = k => {
   if (LEVELS.includes(o.experience)) out.experience = o.experience
   if (Number.isInteger(o.daysPerWeek) && o.daysPerWeek >= 1 && o.daysPerWeek <= 7) out.daysPerWeek = o.daysPerWeek
   if (Array.isArray(o.equipment)) out.equipment = o.equipment.filter(e => EQUIPMENT.includes(e))
+  if (o.unit === 'kg' || o.unit === 'lb') out.unit = o.unit
   // a full gym is everything; the model only says so, the list is filled in here
   if (o.gym === true || (Array.isArray(o.equipment) && o.equipment.length >= EQUIPMENT.length - 1)) { out.gym = true; out.equipment = [...EQUIPMENT] }
   return out
@@ -198,7 +200,7 @@ export default async function handler(req, res) {
   const complete = FIELDS.every(f => known[f] !== undefined || declined.includes(f))
   const profile = data.done && data.profile && typeof data.profile === 'object' ? { ...data.profile } : null
   // the profile is built on what was actually said, never on a field the model made up at the end
-  if (profile) for (const f of FIELDS) if (known[f] !== undefined) profile[f] = known[f]
+  if (profile) { for (const f of FIELDS) if (known[f] !== undefined) profile[f] = known[f]; profile.unit = known.unit || null }
   return res.status(200).json({
     reply: data.reply,
     quickReplies: Array.isArray(data.quickReplies) ? data.quickReplies.filter(q => typeof q === 'string').slice(0, 5) : [],

@@ -2405,4 +2405,8 @@ export default {
   'Hints': 'संकेत',
   'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'टुकड़ा पकड़े रहने पर सबसे अच्छी जगह जगमगाती है, और थोड़ी देर बाद अपने आप भी। एक टैप टुकड़े को वहाँ भेज देता है।',
   'Time’s up': 'समय समाप्त',
+  'Activity': 'गतिविधि',
+  'Muscles': 'मांसपेशियाँ',
+  'Body & progress': 'शरीर और प्रगति',
+  'Last 12 months': 'पिछले 12 महीने',
 }

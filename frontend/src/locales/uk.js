@@ -2402,4 +2402,8 @@ export default {
   'Hints': 'Підказки',
   'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'Найкраще місце підсвічується, поки тримаєш фігуру, а за мить — само. Торкання відправляє фігуру туди.',
   'Time’s up': 'Час вийшов',
+  'Activity': 'Активність',
+  'Muscles': 'М’язи',
+  'Body & progress': 'Тіло та прогрес',
+  'Last 12 months': 'Останні 12 місяців',
 }

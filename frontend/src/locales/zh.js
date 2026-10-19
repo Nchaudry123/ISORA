@@ -2405,4 +2405,8 @@ export default {
   'Hints': '提示',
   'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': '按住方块时最佳位置会亮起，稍等片刻也会自动亮起。轻点一下即可把方块放到那里。',
   'Time’s up': '时间到',
+  'Activity': '活动',
+  'Muscles': '肌肉',
+  'Body & progress': '身体与进度',
+  'Last 12 months': '最近 12 个月',
 }

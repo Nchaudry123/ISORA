@@ -2416,4 +2416,8 @@ export default {
   'Hints': 'คำใบ้',
   'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'จุดที่ดีที่สุดจะสว่างขึ้นขณะที่คุณถือชิ้นส่วน และสักครู่ก็สว่างเอง แตะหนึ่งครั้งเพื่อส่งชิ้นส่วนไปที่นั่น',
   'Time’s up': 'หมดเวลา',
+  'Activity': 'กิจกรรม',
+  'Muscles': 'กล้ามเนื้อ',
+  'Body & progress': 'ร่างกายและความก้าวหน้า',
+  'Last 12 months': '12 เดือนที่ผ่านมา',
 }
