@@ -3,6 +3,11 @@
 // knows enough — the person's training profile and a short focus. The app builds the plan itself
 // from that profile (lib/onboarding.js), so the model only talks and decides the focus.
 //
+// The model does not have to remember: every turn it returns what it knows so far (`known`),
+// the app sends that back with the next message, and this function tells the model, in a
+// system note, exactly what is known, what was declined and what is still missing — so it
+// never asks the same thing twice, whichever cheap model is answering.
+//
 // Runs through OpenRouter (one key, many models, fallback between them). The key stays here, in
 // the OPENROUTER_API_KEY environment variable of the Vercel project; without it this answers 503
 // and the app runs the scripted version of the same chat. OPENROUTER_MODELS (comma-separated)
@@ -40,17 +45,34 @@ Quick replies: offer 2 to 5 short tap-able answers that fit your question (e.g. 
 
 When you know all six, set done to true and fill profile. In profile.focus write two or three sentences, addressed to them by name, on what their training should focus on and why, grounded in their goal, experience, days and equipment (and their weight and height only in general terms - no diet, medical or weight-loss advice). focusAreas lists two to four short areas (e.g. "compound lifts", "progressive overload", "core", "mobility"). Until then, done is false and profile is null.
 
-If they ask something unrelated, answer in one sentence and come back to the question. If they would rather not give their weight or height, accept that and use null.`
+Every turn, fill \`known\` with everything learned so far in this whole chat (keep earlier values; null for what is not known yet) and list in \`declined\` any of weightKg/heightCm the person would rather not give. Never ask again for anything already known or declined; move to the next missing item. If they ask something unrelated, answer in one sentence and come back to the question.`
+
+const FIELDS = ['name', 'goal', 'weightKg', 'heightCm', 'experience', 'daysPerWeek', 'equipment']
 
 const nullable = schema => ({ anyOf: [schema, { type: 'null' }] })
 const OUTPUT = {
   type: 'object',
   additionalProperties: false,
-  required: ['reply', 'quickReplies', 'done', 'profile'],
+  required: ['reply', 'quickReplies', 'done', 'known', 'declined', 'profile'],
   properties: {
     reply: { type: 'string' },
     quickReplies: { type: 'array', items: { type: 'string' } },
     done: { type: 'boolean' },
+    known: {
+      type: 'object',
+      additionalProperties: false,
+      required: FIELDS,
+      properties: {
+        name: nullable({ type: 'string' }),
+        goal: nullable({ type: 'string', enum: GOALS }),
+        weightKg: nullable({ type: 'number' }),
+        heightCm: nullable({ type: 'number' }),
+        experience: nullable({ type: 'string', enum: LEVELS }),
+        daysPerWeek: nullable({ type: 'integer' }),
+        equipment: nullable({ type: 'array', items: { type: 'string', enum: EQUIPMENT } }),
+      },
+    },
+    declined: { type: 'array', items: { type: 'string', enum: ['weightKg', 'heightCm'] } },
     profile: nullable({
       type: 'object',
       additionalProperties: false,
@@ -83,6 +105,28 @@ const clean = body => {
   return out[0].role === 'user' ? out : null
 }
 
+// What the app says is known already (from earlier turns), checked field by field.
+const cleanKnown = k => {
+  const o = k && typeof k === 'object' ? k : {}
+  const out = {}
+  if (typeof o.name === 'string' && o.name.trim()) out.name = o.name.trim().slice(0, 40)
+  if (GOALS.includes(o.goal)) out.goal = o.goal
+  if (Number.isFinite(o.weightKg) && o.weightKg > 20 && o.weightKg < 400) out.weightKg = o.weightKg
+  if (Number.isFinite(o.heightCm) && o.heightCm > 90 && o.heightCm < 260) out.heightCm = o.heightCm
+  if (LEVELS.includes(o.experience)) out.experience = o.experience
+  if (Number.isInteger(o.daysPerWeek) && o.daysPerWeek >= 1 && o.daysPerWeek <= 7) out.daysPerWeek = o.daysPerWeek
+  if (Array.isArray(o.equipment)) out.equipment = o.equipment.filter(e => EQUIPMENT.includes(e))
+  return out
+}
+const cleanDeclined = d => (Array.isArray(d) ? d.filter(x => x === 'weightKg' || x === 'heightCm') : [])
+// The note the model reads before answering: what it has, what it still needs.
+const stateNote = (known, declined) => {
+  const have = FIELDS.filter(f => known[f] !== undefined).map(f => f + '=' + JSON.stringify(known[f]))
+  const missing = FIELDS.filter(f => known[f] === undefined && !declined.includes(f))
+  if (!missing.length) return `[State: everything is known (${have.join(', ')}). Do not ask anything more: set done to true now, fill profile from these values and write the focus.]`
+  return `[State: known so far: ${have.length ? have.join(', ') : 'nothing yet'}.${declined.length ? ' Declined: ' + declined.join(', ') + '.' : ''} Still missing: ${missing.join(', ')}. Ask only for the next missing item(s); do not ask again for anything known or declined.]`
+}
+
 const modelList = () => {
   const env = (process.env.OPENROUTER_MODELS || '').split(',').map(s => s.trim()).filter(Boolean)
   return env.length ? env : DEFAULT_MODELS
@@ -96,6 +140,10 @@ export default async function handler(req, res) {
   if (limited(req, { max: 40, windowMs: 10 * 60 * 1000 })) return res.status(429).json({ error: 'busy' })
   const messages = clean(req.body)
   if (!messages) return res.status(400).json({ error: 'bad-request' })
+  const knownIn = cleanKnown(req.body?.known)
+  const declinedIn = cleanDeclined(req.body?.declined)
+  // the state note sits right before the person's latest message, where the model reads it last
+  const withState = [...messages.slice(0, -1), { role: 'system', content: stateNote(knownIn, declinedIn) }, messages[messages.length - 1]]
 
   let r
   try {
@@ -109,7 +157,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         models: modelList(),
-        messages: [{ role: 'system', content: SYSTEM }, ...messages],
+        messages: [{ role: 'system', content: SYSTEM }, ...withState],
         response_format: { type: 'json_schema', json_schema: { name: 'coach_turn', strict: true, schema: OUTPUT } },
         // only providers that honour the schema, and none that keep or train on what is sent
         provider: { require_parameters: true, data_collection: 'deny' },
@@ -135,11 +183,19 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: 'bad-output' })
   }
   if (typeof data?.reply !== 'string' || typeof data?.done !== 'boolean') return res.status(502).json({ error: 'bad-output' })
+  // what is known now: what the app sent, with what this turn added on top (a value, once given, stays)
+  const known = { ...knownIn, ...cleanKnown(data.known) }
+  const declined = [...new Set([...declinedIn, ...cleanDeclined(data.declined)])]
+  const complete = FIELDS.every(f => known[f] !== undefined || declined.includes(f))
+  const profile = data.done && data.profile && typeof data.profile === 'object' ? { ...data.profile } : null
+  // the profile is built on what was actually said, never on a field the model made up at the end
+  if (profile) for (const f of FIELDS) if (known[f] !== undefined) profile[f] = known[f]
   return res.status(200).json({
     reply: data.reply,
     quickReplies: Array.isArray(data.quickReplies) ? data.quickReplies.filter(q => typeof q === 'string').slice(0, 5) : [],
-    done: data.done,
-    profile: data.done && data.profile && typeof data.profile === 'object' ? data.profile : null,
+    done: data.done && !!profile,
+    known, declined, complete,
+    profile,
     model,   // which model in the list answered (OpenRouter's own report)
   })
 }

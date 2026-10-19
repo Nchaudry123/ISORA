@@ -6,7 +6,7 @@ import { todayISO } from '../lib/format.js'
 import { PERSONAL } from '../lib/demo.js'
 import { newProfile } from '../lib/equipment.js'
 import { cleanProfile } from '../lib/profile.js'
-import { SCRIPT, normalizeProfile, scriptedFocus, pickPlan } from '../lib/onboarding.js'
+import { SCRIPT, normalizeProfile, scriptedFocus, pickPlan, resumeScript } from '../lib/onboarding.js'
 import { normalizeCode, download, saveCode } from '../lib/cloud.js'
 import { loadStarterPlan, PLAN_COPY } from '../sheets.jsx'
 import IsoraMark from './IsoraMark.jsx'
@@ -42,6 +42,8 @@ function OnboardingChat() {
   const [picked, setPicked] = useState(() => !!cleanBuddy(S.buddy).kind)
   const buddy = cleanBuddy(S.buddy)
   const history = useRef(null)
+  const known = useRef({})          // what the server says the chat has learned so far (api/coach-chat.js)
+  const declined = useRef([])
   const script = useRef({ i: 0, answers: {} })
   const end = useRef(null)
 
@@ -55,9 +57,17 @@ function OnboardingChat() {
     say('coach', script.current.i === 0 ? t('Hi, I’m {0}, your ISORA buddy. What should I call you?', cleanBuddy(useStore.getState().S.buddy).name) : t(st.ask, script.current.answers.name || ''))
     setQuick(st.quick.map(q => t(q)))
   }
+  // The scripted chat picks up where the AI one got to (lib/onboarding.js resumeScript): what
+  // was answered is kept, and only the open questions are asked — never the name again.
   const toScript = () => {
     mode.current = 'script'
-    script.current = { i: 0, answers: {} }
+    script.current = resumeScript(known.current, declined.current)
+    if (script.current.i >= SCRIPT.length) {
+      const p = normalizeProfile(script.current.answers)
+      const f = scriptedFocus(p)
+      finish({ ...p, ...f }, f.focus)
+      return
+    }
     askScript()
   }
   const answerScript = text => {
@@ -78,12 +88,26 @@ function OnboardingChat() {
   const askAI = async () => {
     setBusy(true); setQuick([])
     try {
-      const r = await fetch('/api/coach-chat', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: history.current }),
-      })
-      if (!r.ok) throw new Error('coach ' + r.status)
-      const data = await r.json()
+      let data = null
+      // one more try after a hiccup (a busy model, a timeout), so a single bad request does not
+      // end the AI chat; the scripted one only takes over if the second try fails too
+      for (let attempt = 0; attempt < 2 && !data; attempt++) {
+        if (attempt) await new Promise(res => setTimeout(res, 1200))
+        try {
+          const r = await fetch('/api/coach-chat', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messages: history.current, known: known.current, declined: declined.current }),
+          })
+          if (r.status === 503) throw Object.assign(new Error('not-configured'), { final: true })
+          if (!r.ok) throw new Error('coach ' + r.status)
+          data = await r.json()
+        } catch (e) { if (e.final || attempt) throw e }
+      }
+      if (data.known && typeof data.known === 'object') known.current = { ...known.current, ...data.known }
+      if (Array.isArray(data.declined)) declined.current = data.declined
+      // the same line twice in a row is the model going round in circles: hand over to the script
+      const last = [...history.current].reverse().find(m => m.role === 'assistant')
+      if (last && last.content.trim() === String(data.reply || '').trim() && !data.done) throw new Error('repeat')
       history.current.push({ role: 'assistant', content: data.reply })
       if (data.done && data.profile) {
         const p = normalizeProfile(data.profile)

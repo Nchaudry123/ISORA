@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { pickPlan, normalizeProfile, parseWeight, parseHeight, SCRIPT, GEAR, scriptedFocus } from './onboarding.js'
+import { pickPlan, normalizeProfile, parseWeight, parseHeight, SCRIPT, GEAR, scriptedFocus, resumeScript } from './onboarding.js'
 
 const step = key => SCRIPT.find(s => s.key === key)
 
@@ -56,5 +56,19 @@ describe('first-run setup', () => {
     expect(f.focus).toMatch(/^Sam, with 3 days a week/)
     expect(f.focus).toMatch(/5×5/)
     expect(f.focusAreas).toContain('compound lifts')
+  })
+})
+
+describe('picking the scripted chat up mid-way', () => {
+  it('skips what the AI chat already learned and declined, and finishes at once with everything known', () => {
+    expect(resumeScript()).toEqual({ i: 0, answers: {} })
+    const r = resumeScript({ name: 'Namir', goal: 'muscle', weightKg: 80, heightCm: null }, ['heightCm'])
+    expect(r.answers).toEqual({ name: 'Namir', goal: 'muscle', weightKg: 80, heightCm: null })
+    expect(SCRIPT[r.i].key).toBe('experience')
+    const all = resumeScript({ name: 'N', goal: 'strength', weightKg: 80, heightCm: 180, experience: 'advanced', daysPerWeek: 4, equipment: ['barbell', 'nonsense'] })
+    expect(all.i).toBe(SCRIPT.length)
+    expect(all.answers.equipment).toEqual(['barbell'])
+    // junk from another client is ignored, not trusted
+    expect(resumeScript({ name: 7, goal: 'x', daysPerWeek: 9 }).answers).toEqual({})
   })
 })

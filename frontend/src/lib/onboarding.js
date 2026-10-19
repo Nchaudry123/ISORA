@@ -41,6 +41,26 @@ export function normalizeProfile(p) {
   }
 }
 
+/**
+ * Where the scripted chat picks up when the AI one drops out mid-way: the answers already given
+ * (the server's `known`, with declined weight/height read as answered), and the index of the
+ * first question still open — SCRIPT.length when nothing is, so the chat can finish at once.
+ */
+export function resumeScript(known = {}, declined = []) {
+  const k = known && typeof known === 'object' ? known : {}
+  const answers = {}
+  if (typeof k.name === 'string' && k.name.trim()) answers.name = k.name.trim().slice(0, 40)
+  if (GOALS.includes(k.goal)) answers.goal = k.goal
+  if (Number.isFinite(k.weightKg)) answers.weightKg = k.weightKg
+  if (Number.isFinite(k.heightCm)) answers.heightCm = k.heightCm
+  if (LEVELS.includes(k.experience)) answers.experience = k.experience
+  if (Number.isInteger(k.daysPerWeek) && k.daysPerWeek >= 1 && k.daysPerWeek <= 7) answers.daysPerWeek = k.daysPerWeek
+  if (Array.isArray(k.equipment)) answers.equipment = k.equipment.filter(e => KNOWN_GEAR.has(e))
+  for (const f of Array.isArray(declined) ? declined : []) if ((f === 'weightKg' || f === 'heightCm') && !(f in answers)) answers[f] = null
+  const i = SCRIPT.findIndex(st => !(st.key in answers))
+  return { i: i < 0 ? SCRIPT.length : i, answers }
+}
+
 /** A typed weight in kg: "80", "80 kg", "176 lb", "176lbs". Plain numbers are in `unit`. */
 export function parseWeight(text, unit = 'kg') {
   const m = String(text || '').replace(',', '.').match(/(\d+(?:\.\d+)?)\s*(kg|kgs|kilo|lb|lbs|pound)?/i)
