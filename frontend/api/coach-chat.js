@@ -161,7 +161,10 @@ export default async function handler(req, res) {
         response_format: { type: 'json_schema', json_schema: { name: 'coach_turn', strict: true, schema: OUTPUT } },
         // only providers that honour the schema, and none that keep or train on what is sent
         provider: { require_parameters: true, data_collection: 'deny' },
-        max_tokens: 1500,
+        // the final turn carries the whole profile and the focus; a reasoning model's thinking
+        // must not eat into that room (api/buddy-line.js learnt the same lesson)
+        max_tokens: 2500,
+        reasoning: { effort: 'low', exclude: true },
         temperature: 0.6,
       }),
       signal: AbortSignal.timeout(25000),
