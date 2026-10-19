@@ -155,17 +155,8 @@
 /* ------------------------------------------------------------- Rest Blast -- */
 #rest-game{animation:rb-in .5s var(--spring-soft)}
 @keyframes rb-in{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:none}}
-.rb-score.bump{animation:score-bump .45s var(--spring)}
-@keyframes score-bump{0%{transform:scale(1.35);color:var(--acc)}100%{transform:none}}
-.rb-score{display:inline-block;transform-origin:0 60%}
 .rb-slot .rb-piece{animation:deal-in .5s var(--spring) both}
 @keyframes deal-in{from{transform:scale(.2) rotate(-25deg);opacity:0}to{transform:none;opacity:1}}
-.rb-cell.rb-land{animation:land .42s var(--spring)}
-@keyframes land{0%{transform:scale(.55)}100%{transform:none}}
-.rb-cell.rb-flash{animation:shatter .42s ease-out}
-@keyframes shatter{0%{transform:scale(1);background:#fff}40%{transform:scale(1.18) rotate(8deg);background:#fff}100%{transform:scale(1);background:var(--surface-2)}}
-.rb-ghost .rb-piece{animation:lift .3s var(--spring) both;filter:drop-shadow(0 14px 18px rgba(0,0,0,.45))}
-@keyframes lift{from{transform:scale(.6)}to{transform:scale(1.04)}}
 .rb-over{animation:pop-fade .3s ease}
 .rb-over > *{animation:rise .55s var(--spring-soft) both}
 .rb-over > :nth-child(2){animation-delay:.08s}.rb-over > :nth-child(3){animation-delay:.16s}
@@ -177,7 +168,7 @@
   #app.vfade.push,#app.vfade.pop,.today-hero .th-cta,.today-hero .th-av,.today-hero.is-train .th-cta::after,.rb-reopen{animation:none !important}
   #app.vfade,#app > .narrow > *,.week .wday .num,.chk.on,.ck.on,.chk.on::after,#tabbar,#tabbar button.on .tab-ic,#tabbar button.start .cir::after,
   .sheet,.sheet > *,.center,.bcard .buddy,.bcard-bubble,.bcard-bar i,.lvlup .buddy,.fin-iso .buddy,.lvlup-t,.fin-trophy,#rest-game,
-  .rb-score.bump,.rb-slot .rb-piece,.rb-cell.rb-land,.rb-cell.rb-flash,.rb-ghost .rb-piece,.rb-over,.rb-over > *,.rb-board.shake,.ib-row .tag.acc,.tw{display:grid}.tw > *{grid-area:1/1}.tw-ghost{visibility:hidden}
+  .rb-slot .rb-piece,.rb-over,.rb-over > *,.rb-board.shake,.ib-row .tag.acc,.tw{display:grid}.tw > *{grid-area:1/1}.tw-ghost{visibility:hidden}
 .tw-caret{animation:none !important}
   .ib-row,.bcard,.wday,.tile,.iconbtn,.btn,#tabbar button .tab-ic{transition:none}
 }

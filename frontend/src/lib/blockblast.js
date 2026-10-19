@@ -110,7 +110,8 @@ export function badness(secondsLeft) {
 
 // How helpful one shape is on a board: its best spot's line clears, then how snugly it sits
 // (filled neighbours), so the good half also builds towards clears rather than scattering.
-function bestSpot(board, shape) {
+// Exported for the hint: the game shows a lifted piece this spot (components/RestGame.jsx).
+export function bestSpot(board, shape) {
   let best = null
   for (const [r, c] of placements(board, shape)) {
     const { rows, cols } = linesAfter(board, shape, r, c)
@@ -123,6 +124,34 @@ function bestSpot(board, shape) {
     const value = (rows.length + cols.length) * 100 + snug + shape.cells.length
     if (!best || value > best.value) best = { r, c, value }
   }
+  return best
+}
+
+/**
+ * Where a dragged piece lands: the valid placement nearest to where its top-left cell is, in
+ * fractional board cells (fr, fc), looking up to one cell around — so a thumb a little off still
+ * drops the piece where it obviously goes. Null when nothing within reach fits.
+ */
+export function snapSpot(board, shape, fr, fc) {
+  const r0 = Math.round(fr), c0 = Math.round(fc)
+  let best = null
+  for (let r = r0 - 1; r <= r0 + 1; r++) for (let c = c0 - 1; c <= c0 + 1; c++) {
+    if (!canPlace(board, shape, r, c)) continue
+    const d = (r - fr) ** 2 + (c - fc) ** 2
+    if (d > 1.21) continue
+    if (!best || d < best.d) best = { r, c, d }
+  }
+  return best && { r: best.r, c: best.c }
+}
+
+/** The tray piece with the most to gain, and where: the idle hint. */
+export function bestMove(board, tray) {
+  let best = null
+  tray.forEach((p, idx) => {
+    if (!p) return
+    const spot = bestSpot(board, p.shape)
+    if (spot && (!best || spot.value > best.value)) best = { idx, r: spot.r, c: spot.c, value: spot.value }
+  })
   return best
 }
 

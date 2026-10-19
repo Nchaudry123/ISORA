@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
+  bestSpot, snapSpot, bestMove,
   SIZE, SHAPES, JUNK, emptyBoard, canPlace, place, placements, fitsAnywhere, anyMove,
   badness, dealTray, dealOne, doomBoard, doomTray, emptyStats, cleanStats, recordRound, PERFECT_BONUS,
 } from './blockblast.js'
@@ -155,5 +156,24 @@ describe('dealing every turn', () => {
     const res = place(b, dot, 0, SIZE - 1, 2)
     expect(res.perfect).toBe(true)
     expect(res.points).toBe(1 + 10 + PERFECT_BONUS)
+  })
+})
+
+describe('hints and snapping', () => {
+  const two = SHAPES.find(s => s.w === 2 && s.h === 1)
+  const bar3 = SHAPES.find(s => s.w === 3 && s.h === 1)
+  it('the best spot finishes a line when one can be finished', () => {
+    const b = emptyBoard()
+    for (let c = 0; c < 5; c++) b[7][c] = 1
+    expect(bestSpot(b, bar3)).toMatchObject({ r: 7, c: 5 })
+    expect(bestMove(b, [{ shape: two, color: 1 }, { shape: bar3, color: 2 }]).idx).toBe(1)
+  })
+  it('a drop snaps to the nearest valid cell within one square, and nowhere when none is near', () => {
+    const b = emptyBoard()
+    expect(snapSpot(b, two, 2.4, 3.6)).toEqual({ r: 2, c: 4 })
+    b[2][4] = 1                                                 // in the way: the row below is nearest
+    expect(snapSpot(b, two, 2.4, 3.6)).toEqual({ r: 3, c: 4 })
+    expect(snapSpot(b, bar3, 0, 5.6)).toEqual({ r: 0, c: 5 })   // 6 would run off the board
+    expect(snapSpot(b, bar3, 0, 9)).toBeNull()
   })
 })

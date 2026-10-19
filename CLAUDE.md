@@ -15,6 +15,11 @@ UI: `frontend/src/isora.css` is ISORA's design layer over index.css (message-app
 scale, grouped lists, blue accent = effort, lavender `--rest` = recovery). Home is an inbox built from
 `lib/inbox.js`; its row classes use the `ib-` prefix because coach.css already owns `.msg`.
 The logo source is `frontend/resources/icon.svg` (`components/IsoraMark.jsx` for in-app use).
+Motion: `frontend/src/motion.css` (springs as linear() curves, page direction push/pop/tab from
+App.jsx, cascades, celebrations) and `components/confetti.js`; Iso, the buddy, is simulated every
+frame by `lib/iso-motion.js` (tested) and drawn by `components/Buddy.jsx`. Rest Blast's touch:
+a lifted piece rides just above the fingertip and drops on the nearest valid cell (`snapSpot`),
+its best spot shown as a hint (`bestSpot`/`bestMove`), all in `lib/blockblast.js` (tested).
 
 What follows is openGym's own guide, still accurate for the code.
 
