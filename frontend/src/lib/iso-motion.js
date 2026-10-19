@@ -25,6 +25,7 @@ const DUR = { hop: 0.7, dance: 2.2, wave: 1.7, spin: 1.1, look: 1.6, tilt: 1.3, 
 const BREATH = { active: [0.035, 5.2], sleepy: [0.03, 1.5], hyped: [0.03, 3], cheer: [0.03, 3.4], missing: [0.02, 1.8] }
 
 const between = (rng, [a, b]) => a + rng() * (b - a)
+const smooth = x => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x))
 
 export function initialState(rng = Math.random) {
   return {
@@ -53,14 +54,14 @@ export function jump(st, h, spin = false) {
   st.jv = -Math.sqrt(2 * G * h)
   st.airT = 0; st.airTotal = 2 * -st.jv / G
   st.sv -= 1.4                       // a quick crouch before it leaves the ground
-  st.alv += 260; st.arv -= 260       // the arms fling up
+  st.alv += 200; st.arv -= 200       // the arms fling up
   if (spin) { st.spinning = true; st.spinFrom = st.spin }
 }
 
 /** A tap: a squish, a hop, sometimes a spin. */
 export function poke(st, rng = Math.random) {
-  st.sv -= 3.2
-  st.rv += (rng() < 0.5 ? -1 : 1) * 60
+  st.sv -= 2.6
+  st.rv += (rng() < 0.5 ? -1 : 1) * 45
   jump(st, 10 + rng() * 6, rng() < 0.25)
   st.beh = 'poke'; st.behT = 0
 }
@@ -107,7 +108,7 @@ export function step(st, { dt, mood = 'chill', pointer = null, talking = false, 
     st.ty = centre ? 0 : (rng() * 1.2 - 0.5)
     st.nextGaze = 1.2 + rng() * 2.8
   }
-  let gx = st.tx * 0.7, gy = st.ty * 0.6
+  let gx = st.tx * 0.6, gy = st.ty * 0.5
   if (pointer) { gx = pointer.dx; gy = pointer.dy }
   if (beh === 'look') { gx = side * (bt < 0.8 ? 1 : -0.6); gy = -0.15 }
   if (beh === 'tilt') gy = -0.5
@@ -117,11 +118,12 @@ export function step(st, { dt, mood = 'chill', pointer = null, talking = false, 
   // targets for the springs
   const [depth, speed] = BREATH[mood] || [0.025, 2.2]
   let sT = 1 + depth * Math.sin(st.t * speed)
-  let rT = Math.sin(st.t * 0.7) * 2.2 + gx * 3.5
+  let rT = Math.sin(st.t * 0.55) * 2 + gx * 3
   let alT = Math.sin(st.t * 1.3) * 4, arT = -Math.sin(st.t * 1.1 + 1) * 4
   if (mood === 'cheer') { alT = 95 + 18 * Math.sin(st.t * 9); arT = -95 - 18 * Math.sin(st.t * 9) }
   if (st.air) { sT = 1.08; alT += 55; arT -= 55 }
 
+  const idle = { sT, rT, alT, arT }
   switch (beh) {
     case 'dance': {
       const beat = Math.sin(bt * Math.PI * 4)
@@ -139,6 +141,12 @@ export function step(st, { dt, mood = 'chill', pointer = null, talking = false, 
     case 'yawn': { const k = Math.sin(Math.min(1, bt / DUR.yawn) * Math.PI); sT = 1 + 0.1 * k; alT = 100 * k; arT = -100 * k; break }
     case 'sigh': { const k = Math.sin(Math.min(1, bt / DUR.sigh) * Math.PI); sT = 1 - 0.07 * k; alT = -6; arT = 6; break }
   }
+  if (beh) {
+    const d = DUR[beh] || 1
+    const e = smooth(Math.min(1, bt / 0.3, (d - bt) / 0.3))
+    sT = idle.sT + (sT - idle.sT) * e; rT = idle.rT + (rT - idle.rT) * e
+    alT = idle.alT + (alT - idle.alT) * e; arT = idle.arT + (arT - idle.arT) * e
+  }
 
   // integrate in small steps so stiff springs stay stable at any frame rate
   for (let left = dt; left > 1e-6; left -= SUB) {
@@ -146,19 +154,21 @@ export function step(st, { dt, mood = 'chill', pointer = null, talking = false, 
     if (st.air) {
       st.jv += G * h; st.jy += st.jv * h; st.airT += h
       if (st.jy >= 0) {
-        st.alv -= 180; st.arv += 180     // and flop down as it lands
+        st.alv -= 140; st.arv += 140     // and flop down as it lands
         // landing: the faster the fall, the bigger the squash
-        st.sv -= Math.min(6, st.jv * 0.012)
+        st.sv -= Math.min(7, st.jv * 0.03)
         st.jy = 0; st.jv = 0; st.air = false
         if (st.spinning) { st.spinning = false; st.spin = st.spinFrom }
       }
     }
-    spring(st, 's', 'sv', sT, 260, 9, h)          // jelly: stiff, lightly damped
-    spring(st, 'rot', 'rv', rT, 70, 10, h)
-    spring(st, 'lx', 'lxv', gx, 90, 14, h)
-    spring(st, 'ly', 'lyv', gy, 90, 14, h)
-    spring(st, 'al', 'alv', alT, 150, 9, h)
-    spring(st, 'ar', 'arv', arT, 150, 9, h)
+    // damping ratios: body 0.5 (a jelly wobble that dies in two swings), lean and arms ~0.65,
+    // gaze ~0.9 (eyes glide, they do not bounce)
+    spring(st, 's', 'sv', sT, 220, 15, h)
+    spring(st, 'rot', 'rv', rT, 60, 10, h)
+    spring(st, 'lx', 'lxv', gx, 55, 13, h)
+    spring(st, 'ly', 'lyv', gy, 55, 13, h)
+    spring(st, 'al', 'alv', alT, 110, 14, h)
+    spring(st, 'ar', 'arv', arT, 110, 14, h)
   }
   // one full turn over the time it is in the air
   if (st.spinning) st.spin = st.spinFrom + 360 * Math.min(1, st.airT / st.airTotal)
@@ -167,10 +177,10 @@ export function step(st, { dt, mood = 'chill', pointer = null, talking = false, 
   st.nextBlink -= dt
   if (st.nextBlink <= 0) { st.blinkAt = st.t; st.nextBlink = rng() < 0.22 ? 0.28 : 2 + rng() * 3.5 }
   const since = st.t - st.blinkAt
-  st.blink = since >= 0 && since < 0.16 ? 1 - 0.9 * Math.sin(since / 0.16 * Math.PI) : 1
+  st.blink = since >= 0 && since < 0.18 ? 1 - 0.9 * smooth(Math.sin(since / 0.18 * Math.PI)) : 1
   if (mood === 'sleepy' && beh !== 'yawn') st.blink = Math.min(st.blink, 0.55 + 0.1 * Math.sin(st.t))
 
-  st.mouth = talking ? 0.35 + 0.65 * Math.abs(Math.sin(st.t * 13) * Math.sin(st.t * 5.3 + 1))
+  st.mouth = talking ? 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(st.t * 11)) * (0.6 + 0.4 * Math.sin(st.t * 4.1 + 1))
     : beh === 'yawn' ? 1 + 1.1 * Math.sin(Math.min(1, bt / DUR.yawn) * Math.PI) : 1
 
   return pose(st)

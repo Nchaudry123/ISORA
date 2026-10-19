@@ -5,10 +5,11 @@
    nobody asked for is the intro and Iso. Everything stops under reduced motion (the end). */
 
 :root{
-  /* a lively spring (overshoots ~16%) and a soft one (~1%), as linear() curves; a browser
-     without linear() falls back to its default easing, which is fine */
-  --spring:linear(0, .009, .035 2.1%, .141, .281 6.7%, .723 12.9%, .938 16.7%, 1.017, 1.077, 1.121, 1.149 24.3%, 1.159, 1.163, 1.161, 1.154 29.9%, 1.129 32.8%, 1.051 39.6%, 1.017 43.1%, .991, .977 51%, .974 53.8%, .975 57.1%, .997 69.8%, 1.003 76.9%, 1.004 83.8%, 1);
-  --spring-soft:linear(0, .0447, .1665, .3303, .5047 18.9%, .6635, .7948, .8956 33.1%, .9447, .9789, 1.0006 46.5%, 1.0087 52%, 1.0124 57.8%, 1.0115, 1.0087 70.6%, 1.0024 86.4%, 1);
+  /* springs as linear() curves, each sampled at 48 points from a real damped spring, so they
+     have no kinks: --spring overshoots about 8% (damping 0.62), --spring-soft settles without a
+     visible overshoot (0.88). A browser without linear() falls back to its default easing. */
+  --spring:linear(0, 0.02, 0.0729, 0.1492, 0.2407, 0.3404, 0.4426, 0.5428, 0.6377, 0.7248, 0.8025, 0.8701, 0.9272, 0.9741, 1.0113, 1.0396, 1.0599, 1.0732, 1.0808, 1.0835, 1.0824, 1.0784, 1.0723, 1.0648, 1.0566, 1.048, 1.0396, 1.0316, 1.0242, 1.0176, 1.0118, 1.0068, 1.0028, 0.9995, 0.9971, 0.9953, 0.994, 0.9933, 0.993, 0.9931, 0.9934, 0.9939, 0.9945, 0.9952, 0.9959, 0.9966, 0.9972, 0.9979, 1);
+  --spring-soft:linear(0, 0.0099, 0.0364, 0.0752, 0.1228, 0.1762, 0.2331, 0.2916, 0.3503, 0.4079, 0.4637, 0.5169, 0.5672, 0.6143, 0.658, 0.6982, 0.735, 0.7684, 0.7986, 0.8258, 0.8501, 0.8717, 0.8908, 0.9076, 0.9224, 0.9352, 0.9464, 0.956, 0.9643, 0.9714, 0.9774, 0.9824, 0.9867, 0.9902, 0.9931, 0.9955, 0.9974, 0.9989, 1.0001, 1.0011, 1.0018, 1.0023, 1.0026, 1.0028, 1.0029, 1.003, 1.0029, 1.0029, 1);
 }
 
 /* ------------------------------------------------------------------- intro -- */
@@ -31,7 +32,7 @@
   animation:in-ring calc(1s * var(--t)) cubic-bezier(.2,.6,.3,1) calc(1.2s * var(--t)) forwards}
 .intro-ring.r2{animation-delay:calc(1.38s * var(--t))}
 .intro-word{display:flex;gap:.06em;font-family:var(--display);font-stretch:118%;font-weight:800;font-size:44px;letter-spacing:.04em;color:var(--label)}
-.intro-word span{display:inline-block;opacity:0;transform:translateY(22px) scale(.8);filter:blur(8px);
+.intro-word span{display:inline-block;will-change:transform,opacity,filter;opacity:0;transform:translateY(22px) scale(.8);filter:blur(8px);
   animation:in-letter calc(.7s * var(--t)) var(--spring-soft) calc((1.05s + var(--i) * .07s) * var(--t)) forwards}
 .intro-tag{font-size:16px;font-weight:500;color:var(--label-2);opacity:0;transform:translateY(8px);
   animation:in-tag calc(.6s * var(--t)) var(--spring-soft) calc(1.55s * var(--t)) forwards}
@@ -52,38 +53,41 @@
 @keyframes iso-in-y{from{transform:translateY(0)}to{transform:translateY(-34px)}}
 
 /* ------------------------------------------------------------- views -- */
-#app.vfade{animation:view-in .5s var(--spring-soft)}
-@keyframes view-in{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+#app.vfade{animation:view-in .55s var(--spring-soft)}
+@keyframes view-in{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
 /* a view's blocks arrive in a short cascade, top to bottom (once, when the view opens) */
 #app > .narrow > :is(.hdr,.card,.list,.inbox,.inbox-h,.tiles,.stories,.bcard,.inbox-door,h4.sec,.sect,.sect-t,.section,.seg,.chips){
-  animation:rise .6s var(--spring-soft) both}
+  animation:rise .7s var(--spring-soft) both}
 #app > .narrow > :nth-child(2){animation-delay:.04s} #app > .narrow > :nth-child(3){animation-delay:.08s}
 #app > .narrow > :nth-child(4){animation-delay:.12s} #app > .narrow > :nth-child(5){animation-delay:.16s}
 #app > .narrow > :nth-child(6){animation-delay:.2s}  #app > .narrow > :nth-child(7){animation-delay:.24s}
 #app > .narrow > :nth-child(8){animation-delay:.28s} #app > .narrow > :nth-child(9){animation-delay:.32s}
 #app > .narrow > :nth-child(n+10){animation-delay:.36s}
-@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translate3d(0,12px,0)}to{opacity:1;transform:none}}
 /* the week: each day pops in, left to right; today's number keeps a slow glow */
 .week .wday .num{animation:day-pop .55s var(--spring) both}
 .week .wday:nth-child(2) .num{animation-delay:.04s}.week .wday:nth-child(3) .num{animation-delay:.08s}
 .week .wday:nth-child(4) .num{animation-delay:.12s}.week .wday:nth-child(5) .num{animation-delay:.16s}
 .week .wday:nth-child(6) .num{animation-delay:.2s}.week .wday:nth-child(7) .num{animation-delay:.24s}
 @keyframes day-pop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
-.week .wday.today .num{animation:day-pop .55s var(--spring) .12s both, today-glow 2.8s ease-in-out 1s infinite}
-@keyframes today-glow{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 7px color-mix(in srgb,var(--label) 45%,transparent))}}
+.week .wday.today .num{position:relative}
+.week .wday.today .num::after{content:'';position:absolute;inset:-3px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,transparent 78%,color-mix(in srgb,var(--label) 35%,transparent) 88%,transparent);
+  opacity:0;will-change:opacity,transform;animation:today-glow 3s ease-in-out 1s infinite}
+@keyframes today-glow{0%,100%{opacity:0;transform:scale(.96)}50%{opacity:1;transform:scale(1.06)}}
 
 /* --------------------------------------------------- give under the finger -- */
 .ib-row,.bcard,.wday,.tile,.iconbtn,.chk,.ck,.ob-quick button,.bsheet-stats > div,.bsheet-gear > div{
-  transition:transform .45s var(--spring),background var(--fast)}
-.ib-row:active,.bcard:active,.tile:active{transform:scale(.975);transition-duration:.12s}
-.wday:active,.iconbtn:active,.ob-quick button:active{transform:scale(.9);transition-duration:.12s}
-.btn{transition:transform .45s var(--spring),background var(--fast),opacity var(--fast)}
-.btn:active{transform:scale(.96);transition-duration:.1s}
+  transition:transform .5s var(--spring-soft),background var(--fast)}
+.ib-row:active,.bcard:active,.tile:active{transform:scale(.975);transition-duration:.12s;transition-timing-function:ease-out}
+.wday:active,.iconbtn:active,.ob-quick button:active{transform:scale(.9);transition-duration:.12s;transition-timing-function:ease-out}
+.btn{transition:transform .5s var(--spring-soft),background var(--fast),opacity var(--fast)}
+.btn:active{transform:scale(.96);transition-duration:.1s;transition-timing-function:ease-out}
 /* a set ticked off: the box pops and rings */
 .chk.on,.ck.on{animation:chk-pop .5s var(--spring)}
-.chk.on::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;animation:chk-ring .6s ease-out forwards}
+.chk.on::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;border:2px solid var(--acc);opacity:0;animation:chk-ring .6s cubic-bezier(.2,.6,.3,1)}
 @keyframes chk-pop{0%{transform:scale(.6)}100%{transform:scale(1)}}
-@keyframes chk-ring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 70%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
+@keyframes chk-ring{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(1.8)}}
 .ib-row .tag.acc{animation:tag-in .6s var(--spring) .35s both}
 @keyframes tag-in{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
 
@@ -97,15 +101,15 @@
 #tabbar button.start .cir{transition:transform .5s var(--spring)}
 #tabbar button.start:active .cir{transform:scale(.86);transition-duration:.1s}
 #tabbar button.start:not(.rec) .cir::after{content:'';position:absolute;inset:0;border-radius:50%;pointer-events:none;
-  box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 55%,transparent);animation:start-breathe 3.2s ease-out 1.2s infinite}
-@keyframes start-breathe{0%,60%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 0%,transparent)}5%{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 55%,transparent)}45%{box-shadow:0 0 0 14px color-mix(in srgb,var(--acc) 0%,transparent)}}
+  border:2px solid var(--acc);opacity:0;will-change:transform,opacity;animation:start-breathe 3.2s cubic-bezier(.2,.6,.3,1) 1.2s infinite}
+@keyframes start-breathe{0%{opacity:.6;transform:scale(1)}55%,100%{opacity:0;transform:scale(1.5)}}
 
 /* ------------------------------------------------------- sheets and toasts -- */
-.sheet{animation:sheet-spring .55s var(--spring-soft)}
-@keyframes sheet-spring{from{transform:translateY(100%)}to{transform:none}}
+.sheet{animation:sheet-spring .6s var(--spring-soft)}
+@keyframes sheet-spring{from{transform:translate3d(0,100%,0)}to{transform:none}}
 .mback{animation:pop-fade .3s ease}
-.center{animation:center-spring .5s var(--spring)}
-@keyframes center-spring{from{transform:translate(-50%,-50%) scale(.82);opacity:0}30%{opacity:1}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.center{animation:center-spring .55s var(--spring);will-change:transform,opacity}
+@keyframes center-spring{from{transform:translate(-50%,-50%) scale(.9);opacity:0}35%{opacity:1}to{transform:translate(-50%,-50%) scale(1);opacity:1}}
 .sheet > :not(.grab){animation:rise .5s var(--spring-soft) both}
 .sheet > :nth-child(3){animation-delay:.04s}.sheet > :nth-child(4){animation-delay:.08s}
 .sheet > :nth-child(5){animation-delay:.12s}.sheet > :nth-child(n+6){animation-delay:.16s}
@@ -113,7 +117,7 @@
 #toast.show{transform:translateX(-50%) translateY(0) scale(1)}
 
 /* ------------------------------------------------------------------ Iso -- */
-.bcard .buddy{animation:iso-drop .8s var(--spring) .15s both}
+.bcard .buddy{animation:iso-drop .8s var(--spring-soft) .15s both}
 @keyframes iso-drop{0%{transform:translateY(-26px) scale(.5);opacity:0}100%{transform:none;opacity:1}}
 .bcard-bubble{transform-origin:0 100%;animation:bubble-in .55s var(--spring) .45s both}
 @keyframes bubble-in{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}

@@ -372,6 +372,7 @@ button.avatar:active{transform:scale(.94)}
 
 /* ------------------------------------------------------------- the buddy -- */
 .buddy{display:block;overflow:visible;flex:none;-webkit-tap-highlight-color:transparent}
+.buddy.alive{will-change:transform;transform:translateZ(0)}
 .buddy.tappable{cursor:pointer;outline:none}
 .buddy.tappable:focus-visible{filter:drop-shadow(0 0 0 2px var(--acc))}
 /* Iso's body moves by simulation (lib/iso-motion.js); CSS keeps only its little effects */

@@ -129,7 +129,7 @@ function follow(fn) {
   }
 }
 
-const f2 = n => (Math.round(n * 100) / 100)
+const f2 = n => (Math.round(n * 1000) / 1000)
 
 export default function Buddy({ mood = 'chill', level = 1, size = 96, still = false, interactive = false, bump, talking = false, enter = false, eyesFollow, className = '' }) {
   const id = 'bd' + useId().replace(/[^a-zA-Z0-9]/g, '')
