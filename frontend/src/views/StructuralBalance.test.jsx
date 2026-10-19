@@ -200,13 +200,13 @@ describe('StructuralBalance view', () => {
 })
 
 describe('the way in from Stats', () => {
-  it('is a card like the others that opens the screen, once there is a workout to read', () => {
+  it('is a row in the More list that opens the screen, once there is a workout to read', () => {
     const host = render(Stats)
-    const card = [...host.querySelectorAll('.card')].find(c => c.querySelector('h2')?.textContent === 'Structural balance')
-    expect(card).toBeTruthy()
-    expect(card.textContent).toContain('See which lift is holding back the rest.')
-    const open = [...card.querySelectorAll('button')].find(b => b.textContent.includes('Open'))
-    act(() => open.click())
+    // the row itself is the control (components/ui.jsx Row): the smallest clickable thing holding the title
+    const row = [...host.querySelectorAll('button,[role=button],.lrow')].filter(e => e.textContent.includes('Structural balance')).sort((x, y) => x.textContent.length - y.textContent.length)[0]
+    expect(row).toBeTruthy()
+    expect(row.textContent).toContain('See which lift is holding back the rest.')
+    act(() => row.click())
     expect(navSpy).toHaveBeenCalledWith('/structural-balance')
   })
 
