@@ -2410,4 +2410,8 @@ export default {
   'Body & progress': 'शरीर और प्रगति',
   'Last 12 months': 'पिछले 12 महीने',
   "since {0}": "{0} से",
+  '{0} training day': '{0} ट्रेनिंग दिन',
+  '{0} rest day': '{0} आराम दिन',
+  '{0} training days': '{0} ट्रेनिंग दिन',
+  '{0} rest days': '{0} आराम दिन',
 }

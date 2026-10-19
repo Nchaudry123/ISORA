@@ -2410,4 +2410,8 @@ export default {
   'Body & progress': '몸과 진행 상황',
   'Last 12 months': '최근 12개월',
   "since {0}": "{0}부터",
+  '{0} training day': '훈련 {0}일',
+  '{0} rest day': '휴식 {0}일',
+  '{0} training days': '훈련 {0}일',
+  '{0} rest days': '휴식 {0}일',
 }

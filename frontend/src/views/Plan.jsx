@@ -265,7 +265,7 @@ function Schedule({ S, update, nav, mode }) {
       <span className={'lrow-i' + (rs.length ? '' : ' rest')}><Icon name={rs.length ? glyphOf(rs[0].emoji) : 'moon'} /></span>
       <div className="grow">
         <div className="tt">{rs.length ? deriveSessionName(rs.map(r => r.name)) : t('Rest day')}</div>
-        <div className="ss">{rs.length === 1 ? preview(rs[0]) : rs.length ? [routineCount(rs.length), rs.some(r => r.ex.length) && exCount(rs.reduce((n, r) => n + r.ex.length, 0))].filter(Boolean).join(' · ') : t('Tap to plan something')}</div>
+        <div className="ss">{rs.length === 1 ? preview(rs[0]) : rs.length ? routineCount(rs.length) : t('Tap to plan something')}</div>
       </div>
       <Icon name="chevronRight" className="chev" />
     </div>

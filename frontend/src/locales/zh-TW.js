@@ -2403,4 +2403,8 @@ export default {
   'Body & progress': '身體與進度',
   'Last 12 months': '最近 12 個月',
   "since {0}": "自 {0} 起",
+  '{0} training day': '{0} 個訓練日',
+  '{0} rest day': '{0} 個休息日',
+  '{0} training days': '{0} 個訓練日',
+  '{0} rest days': '{0} 個休息日',
 }

@@ -2489,4 +2489,8 @@ export default {
   'Body & progress': 'শরীর ও অগ্রগতি',
   'Last 12 months': 'গত ১২ মাস',
   "since {0}": "{0} থেকে",
+  '{0} training day': '{0} ট্রেনিং দিন',
+  '{0} rest day': '{0} বিশ্রাম দিন',
+  '{0} training days': '{0} ট্রেনিং দিন',
+  '{0} rest days': '{0} বিশ্রাম দিন',
 }

@@ -2410,4 +2410,8 @@ export default {
   'Body & progress': 'Cuerpo y progreso',
   'Last 12 months': 'Últimos 12 meses',
   "since {0}": "desde {0}",
+  '{0} training day': '{0} día de entrenamiento',
+  '{0} rest day': '{0} día de descanso',
+  '{0} training days': '{0} días de entrenamiento',
+  '{0} rest days': '{0} días de descanso',
 }

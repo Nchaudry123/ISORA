@@ -2410,4 +2410,8 @@ export default {
   'Body & progress': 'Vücut ve ilerleme',
   'Last 12 months': 'Son 12 ay',
   "since {0}": "{0} tarihinden beri",
+  '{0} training day': '{0} antrenman günü',
+  '{0} rest day': '{0} dinlenme günü',
+  '{0} training days': '{0} antrenman günü',
+  '{0} rest days': '{0} dinlenme günü',
 }

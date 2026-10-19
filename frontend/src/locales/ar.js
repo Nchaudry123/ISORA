@@ -2465,4 +2465,8 @@ export default {
   'Body & progress': 'الجسم والتقدم',
   'Last 12 months': 'آخر 12 شهرًا',
   "since {0}": "منذ {0}",
+  '{0} training day': '{0} يوم تدريب',
+  '{0} rest day': '{0} يوم راحة',
+  '{0} training days': '{0} أيام تدريب',
+  '{0} rest days': '{0} أيام راحة',
 }

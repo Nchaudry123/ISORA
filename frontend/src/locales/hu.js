@@ -2413,4 +2413,8 @@ export default {
   'Body & progress': 'Test és haladás',
   'Last 12 months': 'Az elmúlt 12 hónap',
   "since {0}": "{0} óta",
+  '{0} training day': '{0} edzésnap',
+  '{0} rest day': '{0} pihenőnap',
+  '{0} training days': '{0} edzésnap',
+  '{0} rest days': '{0} pihenőnap',
 }

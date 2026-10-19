@@ -2421,4 +2421,8 @@ export default {
   'Body & progress': 'ร่างกายและความก้าวหน้า',
   'Last 12 months': '12 เดือนที่ผ่านมา',
   "since {0}": "ตั้งแต่ {0}",
+  '{0} training day': '{0} วันฝึก',
+  '{0} rest day': '{0} วันพัก',
+  '{0} training days': '{0} วันฝึก',
+  '{0} rest days': '{0} วันพัก',
 }
