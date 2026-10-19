@@ -2394,4 +2394,5 @@ export default {
   'Rest day, {0}. Muscles grow while you recover.': '휴식일이에요, {0}. 근육은 쉬는 동안 자라요.',
   'Take it easy today, {0}. You’ve earned it.': '오늘은 편하게, {0}. 그럴 자격 있어요.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'ISORA 친구 Iso예요. Iso는 응원해 주고, 한 주를 챙기고, 운동하면서 함께 자라요.',
+  'Find your balance.': '나만의 균형을 찾아요.',
 }

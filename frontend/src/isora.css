@@ -405,6 +405,28 @@ button.avatar:active{transform:scale(.94)}
 @keyframes bd-spark{0%,100%{transform:scale(.4) rotate(0);opacity:.2}50%{transform:scale(1.1) rotate(45deg);opacity:1}}
 .buddy .bd-blush{transform-box:fill-box;transform-origin:center}
 .buddy .bd-spark{transform-box:fill-box;transform-origin:center}
+/* tricks: now and then, on its own */
+.buddy.trick-jump .bd-hop{animation:bd-poke .9s cubic-bezier(.3,0,.3,1) both !important;transform-origin:60px 108px}
+.buddy.trick-spin .bd-hop{animation:bd-spin 1s cubic-bezier(.4,0,.2,1) both !important;transform-origin:60px 66px}
+.buddy.trick-wiggle .bd-hop{animation:bd-wiggle .9s ease-in-out both !important;transform-origin:60px 108px}
+.buddy.trick-stretch .bd-hop{animation:bd-stretch 1s cubic-bezier(.3,0,.3,1) both !important;transform-origin:60px 108px}
+.buddy.trick-stretch .bd-arm-l{animation:bd-arms-l 1s ease-in-out both !important;transform-origin:24px 72px}
+.buddy.trick-stretch .bd-arm-r{animation:bd-arms-r 1s ease-in-out both !important;transform-origin:96px 72px}
+/* cheering: both arms up, bouncing */
+.buddy.alive.m-cheer .bd-arm-l{animation:bd-cheer-l .7s ease-in-out infinite alternate !important;transform-origin:24px 72px}
+.buddy.alive.m-cheer .bd-arm-r{animation:bd-cheer-r .7s ease-in-out infinite alternate !important;transform-origin:96px 72px}
+.buddy.alive.m-cheer .bd-hop{animation:bd-hop 1.3s cubic-bezier(.3,0,.3,1) infinite;transform-origin:60px 108px}
+/* following your finger: the face turns toward it */
+.buddy .bd-face{transition:transform .5s var(--spring-soft,ease)}
+.buddy.looking .bd-face{transform:translate(var(--fx,0),var(--fy,0))}
+.buddy.looking .bd-eyes{animation:none !important}
+@keyframes bd-spin{0%{transform:none}25%{transform:translateY(-14px) rotate(0)}75%{transform:translateY(-14px) rotate(360deg)}88%{transform:translateY(0) rotate(360deg) scale(1.08,.9)}100%{transform:rotate(360deg)}}
+@keyframes bd-wiggle{0%,100%{transform:none}15%{transform:rotate(-9deg)}35%{transform:rotate(8deg)}55%{transform:rotate(-6deg)}75%{transform:rotate(4deg)}}
+@keyframes bd-stretch{0%,100%{transform:none}35%,60%{transform:scale(.92,1.12)}80%{transform:scale(1.06,.94)}}
+@keyframes bd-arms-l{0%,100%{transform:none}35%,60%{transform:rotate(110deg)}}
+@keyframes bd-arms-r{0%,100%{transform:none}35%,60%{transform:rotate(-110deg)}}
+@keyframes bd-cheer-l{from{transform:rotate(85deg)}to{transform:rotate(115deg)}}
+@keyframes bd-cheer-r{from{transform:rotate(-85deg)}to{transform:rotate(-115deg)}}
 @media (prefers-reduced-motion:reduce){ .buddy *{animation:none !important} }
 /* the buddy card on Home: the buddy, its speech bubble, its level */
 .bcard{display:flex;align-items:center;gap:12px;width:100%;text-align:start;background:var(--surface);border:0;border-radius:var(--r-card);padding:12px 14px 12px 8px;margin:4px 0 16px;color:var(--label);cursor:pointer}

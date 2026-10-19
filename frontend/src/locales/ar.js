@@ -2449,4 +2449,5 @@ export default {
   'Rest day, {0}. Muscles grow while you recover.': 'يوم راحة يا {0}. العضلات تنمو أثناء الاستشفاء.',
   'Take it easy today, {0}. You’ve earned it.': 'خذها بهدوء اليوم يا {0}. لقد استحققت ذلك.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'هذا Iso، رفيقك في ISORA. يشجعك Iso ويتابع أسبوعك وينمو مع تمرينك.',
+  'Find your balance.': 'اعثر على توازنك.',
 }

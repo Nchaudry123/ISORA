@@ -2414,4 +2414,5 @@ export default {
   'Rest day, {0}. Muscles grow while you recover.': 'Ruhetag, {0}. Muskeln wachsen in der Erholung.',
   'Take it easy today, {0}. You’ve earned it.': 'Mach heute langsam, {0}. Du hast es dir verdient.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Das ist Iso, dein ISORA-Buddy. Iso feuert dich an, behält deine Woche im Blick und wächst mit deinem Training.',
+  'Find your balance.': 'Finde deine Balance.',
 }

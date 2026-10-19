@@ -65,6 +65,8 @@ import { workoutText } from './lib/workout-text.js'
 import { workoutCardModel, layoutWorkoutCard, drawWorkoutCard, viewAspect, CARD_FONT } from './lib/workout-card.js'
 import { copyText } from './lib/clipboard.js'
 import { queueRemaining, pinState } from './lib/queue.js'
+import Buddy from './components/Buddy.jsx'
+import { confetti } from './components/confetti.js'
 import { DAY_NOTE_TAGS, DAY_NOTE_LABEL, DAY_NOTE_ICON, dayNoteOf, dayNoteLine, canNoteDay, withDayNote } from './lib/day-notes.js'
 
 const S = () => useStore.getState().S
@@ -3174,9 +3176,12 @@ export const supersetSheet = (meta, onSave) => ui().openSheet(close => <Superset
    by tapping "+ Drop"/"+ Burst", which appends with the same suggested-next-value math. */
 
 // Shown when the last exercise's last set is checked — finish, or keep going.
+// Iso, when you have met it, celebrates in place of the icon (components/Buddy.jsx)
+const isoMet = () => !!useStore.getState().S.buddy?.kind
 function WorkoutComplete({ close }) {
   return <div style={{ textAlign: 'center', padding: '8px 0' }}>
-    <div style={{ fontSize: 44, display: 'flex', justifyContent: 'center', color: 'var(--acc)' }}><Icon name="checkCircle" /></div>
+    {isoMet() ? <div className="fin-iso"><Buddy mood="hyped" size={104} level={useStore.getState().S.buddy?.level || 1} interactive /></div>
+      : <div style={{ fontSize: 44, display: 'flex', justifyContent: 'center', color: 'var(--acc)' }}><Icon name="checkCircle" /></div>}
     <h3 style={{ margin: '8px 0' }}>{t("That's the whole workout!")}</h3>
     <div className="muted small" style={{ marginBottom: 16 }}>{t('All exercises done. Nice work! Finish up, or add another one if you’ve got more in you.')}</div>
     <Button variant="primary" icon="flag" onClick={() => { close(); finishWorkout() }}>{t('Finish workout')}</Button>
@@ -3307,8 +3312,15 @@ function CardioDone({ st, w }) {
 
 function FinishSummary({ w, prs, e1prs = [], close }) {
   const st = useStore(s => s.S)
+  useEffect(() => {
+    const a = setTimeout(() => confetti({ count: prs.length ? 160 : 110, power: prs.length ? 1.15 : 1 }), 200)
+    const b = prs.length ? setTimeout(() => confetti({ count: 70, spread: 40, colors: ['#ffd23f', '#ffe27a', '#f4a100', '#ffffff'] }), 900) : null
+    return () => { clearTimeout(a); clearTimeout(b) }
+  }, [])
   return <div style={{ textAlign: 'center', padding: '8px 0' }}>
-    <div style={{ fontSize: 44, display: 'flex', justifyContent: 'center', color: 'var(--acc)' }}><Icon name="trophy" /></div>
+    {st.buddy?.kind ? <div className="fin-iso"><Buddy mood="cheer" size={120} level={st.buddy.level || 1} interactive />
+      <span className="fin-trophy"><Icon name="trophy" /></span></div>
+      : <div style={{ fontSize: 44, display: 'flex', justifyContent: 'center', color: 'var(--acc)' }}><Icon name="trophy" /></div>}
     <h3 style={{ margin: '8px 0' }}>{t('Workout complete!')}</h3>
     <div className="tiles" style={{ textAlign: 'start' }}>
       <div className="tile"><div className="l">{t('Duration')}</div><div className="v" style={{ fontSize: '1.1rem' }}>{fmtDur(w.end - w.start)}</div></div>

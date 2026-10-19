@@ -2397,4 +2397,5 @@ export default {
   'Rest day, {0}. Muscles grow while you recover.': 'Pihenőnap, {0}. Az izmok a pihenés alatt nőnek.',
   'Take it easy today, {0}. You’ve earned it.': 'Ma lazíts, {0}. Megérdemled.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Ő Iso, az ISORA-társad. Iso biztat, figyeli a hetedet, és veled együtt fejlődik.',
+  'Find your balance.': 'Találd meg az egyensúlyod.',
 }

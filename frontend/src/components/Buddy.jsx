@@ -4,8 +4,11 @@ import { KIND_COLOR, gearFor } from '../lib/buddy.js'
 // Iso, drawn (lib/buddy.js): a glossy toy block in the app's blue, with a face for its mood, little
 // arms and feet, and the gear its level has earned. Plain SVG lit by gradients: the body is the
 // accent colour, light and shade are white and black laid over it, so any accent still looks lit.
-// It breathes, blinks, glances around and waves through CSS (isora.css), and stands still under
-// reduced motion. `interactive` lets a tap poke it: it squishes, hops and beams for a moment.
+// It breathes, blinks, glances around and waves through CSS (isora.css, motion.css), and now and
+// then does a trick of its own (a jump, a spin, a wiggle, a stretch). A big Iso follows your finger
+// with its eyes. `interactive` lets a tap poke it: it squishes, hops and beams for a moment; a new
+// `bump` value does the same from outside (a cleared line in Rest Blast). `mood="cheer"` throws
+// both arms up. Under reduced motion it stands still.
 
 const INK = '#0b1736'      // eyes and mouth: a deep navy that reads on any blue, in both themes
 const BLUSH = '#ff7aa8'
@@ -107,26 +110,84 @@ function Gear({ level, id }) {
 }
 
 const WAVES = new Set(['hyped', 'new', 'proud'])
+const TRICKS = ['jump', 'spin', 'wiggle', 'stretch', 'jump', 'wiggle']
+const calm = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
-export default function Buddy({ mood = 'chill', level = 1, size = 96, still = false, interactive = false, className = '' }) {
+// one pointer listener for every Iso on screen that follows it
+const followers = new Set()
+const onPointer = e => { const p = { x: e.clientX, y: e.clientY }; followers.forEach(f => f(p)) }
+function follow(fn) {
+  if (!followers.size) { window.addEventListener('pointermove', onPointer, { passive: true }); window.addEventListener('pointerdown', onPointer, { passive: true }) }
+  followers.add(fn)
+  return () => {
+    followers.delete(fn)
+    if (!followers.size) { window.removeEventListener('pointermove', onPointer); window.removeEventListener('pointerdown', onPointer) }
+  }
+}
+
+export default function Buddy({ mood = 'chill', level = 1, size = 96, still = false, interactive = false, bump, tricks, eyesFollow, className = '' }) {
   const id = 'bd' + useId().replace(/[^a-zA-Z0-9]/g, '')
   const [poked, setPoked] = useState(0)
+  const [trick, setTrick] = useState(null)
+  const [looking, setLooking] = useState(false)
   const timer = useRef(null)
+  const svg = useRef(null)
   useEffect(() => () => clearTimeout(timer.current), [])
-  const poke = () => {
+  const poke = (buzz = true) => {
     setPoked(n => n + 1)
     clearTimeout(timer.current)
     timer.current = setTimeout(() => setPoked(0), 900)
-    try { navigator.vibrate?.(12) } catch { /* no haptics */ }
+    if (buzz) try { navigator.vibrate?.(12) } catch { /* no haptics */ }
   }
-  const face = poked ? 'proud' : mood
+  // poked from outside: any new truthy `bump`
+  const firstBump = useRef(true)
+  useEffect(() => { if (firstBump.current) { firstBump.current = false; return } if (bump) poke(false) }, [bump])
+
+  // a trick now and then, while it is on screen and big enough to see one
+  const doTricks = !still && (tricks ?? size >= 56)
+  useEffect(() => {
+    if (!doTricks || calm()) return
+    let t1, t2
+    const next = () => {
+      t1 = setTimeout(() => {
+        if (!document.hidden) { setTrick(TRICKS[(Math.random() * TRICKS.length) | 0]); t2 = setTimeout(() => setTrick(null), 1100) }
+        next()
+      }, 6000 + Math.random() * 8000)
+    }
+    next()
+    return () => { clearTimeout(t1); clearTimeout(t2) }
+  }, [doTricks])
+
+  // a big Iso watches your finger: its face turns toward it, and back once you stop
+  const doFollow = !still && (eyesFollow ?? (interactive || size >= 120))
+  useEffect(() => {
+    if (!doFollow || calm()) return
+    let idle
+    const off = follow(p => {
+      const el = svg.current
+      if (!el) return
+      const r = el.getBoundingClientRect()
+      const dx = p.x - (r.left + r.width / 2), dy = p.y - (r.top + r.height * 0.45)
+      const d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 220)
+      el.style.setProperty('--fx', (dx / d * 5 * k).toFixed(2) + 'px')
+      el.style.setProperty('--fy', (dy / d * 4 * k).toFixed(2) + 'px')
+      setLooking(true)
+      clearTimeout(idle)
+      idle = setTimeout(() => setLooking(false), 2500)
+    })
+    return () => { off(); clearTimeout(idle) }
+  }, [doFollow])
+
+  const cheer = mood === 'cheer'
+  const face = poked || cheer ? 'proud' : mood
   const f = FRONT, b = BACK
-  const cls = ['buddy', still ? '' : 'alive', 'm-' + face, WAVES.has(face) ? 'waving' : '', poked ? 'poked' : '', interactive ? 'tappable' : '', className].filter(Boolean).join(' ')
+  const cls = ['buddy', still ? '' : 'alive', 'm-' + face, cheer ? 'm-cheer' : '', WAVES.has(face) && !cheer ? 'waving' : '', poked ? 'poked' : '',
+    trick && !poked ? 'trick-' + trick : '', looking ? 'looking' : '', interactive ? 'tappable' : '', className].filter(Boolean).join(' ')
   const props = interactive
     ? { role: 'button', tabIndex: 0, 'aria-label': 'Iso', onClick: e => { e.stopPropagation(); poke() }, onKeyDown: e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); poke() } } }
     : { 'aria-hidden': true, focusable: 'false' }
   return (
-    <svg className={cls} viewBox="0 0 120 120" width={size} height={size} style={{ color: KIND_COLOR }} {...props}>
+    <svg ref={svg} className={cls} viewBox="0 0 120 120" width={size} height={size} style={{ color: KIND_COLOR }} {...props}>
       <defs>
         <radialGradient id={id + 'sh'}><stop offset="0" stopColor="#000" stopOpacity=".42" /><stop offset="1" stopColor="#000" stopOpacity="0" /></radialGradient>
         <linearGradient id={id + 'lit'} x1="0" y1="0" x2="0" y2="1">

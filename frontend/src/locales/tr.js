@@ -2394,4 +2394,5 @@ export default {
   'Rest day, {0}. Muscles grow while you recover.': 'Dinlenme günü, {0}. Kaslar dinlenirken büyür.',
   'Take it easy today, {0}. You’ve earned it.': 'Bugün rahat ol, {0}. Bunu hak ettin.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Bu Iso, ISORA arkadaşın. Iso seni destekler, haftanı takip eder ve antrenmanınla birlikte büyür.',
+  'Find your balance.': 'Dengeni bul.',
 }

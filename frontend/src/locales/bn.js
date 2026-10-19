@@ -2473,4 +2473,5 @@ export default {
   'Rest day, {0}. Muscles grow while you recover.': 'বিশ্রামের দিন, {0}। বিশ্রামের সময় পেশি বাড়ে।',
   'Take it easy today, {0}. You’ve earned it.': 'আজ ধীরে চলুন, {0}। এটা আপনার প্রাপ্য।',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'এ হল Iso, আপনার ISORA সঙ্গী। Iso উৎসাহ দেয়, সপ্তাহের খেয়াল রাখে এবং আপনার ট্রেনিংয়ের সাথে বড় হয়।',
+  'Find your balance.': 'আপনার ভারসাম্য খুঁজে নিন।',
 }

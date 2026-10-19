@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { t, getLang } from '../lib/i18n.js'
@@ -10,6 +10,7 @@ import { KIND, DEFAULT_NAME, cleanBuddy, totalXP, levelOf, gearFor, moodOf, days
 import Buddy from './Buddy.jsx'
 import { Button } from './ui.jsx'
 import Icon from './Icon.jsx'
+import { confetti } from './confetti.js'
 
 // Iso's screens (lib/buddy.js, components/Buddy.jsx): meeting it, its card on Home with the line of
 // the day, its sheet, and the level-up moment.
@@ -25,6 +26,25 @@ export function BuddyPicker({ onDone, cta }) {
     <div className="bpick-stage"><Buddy mood="hyped" size={190} interactive /></div>
     <Button variant="primary" onClick={() => onDone()}>{cta || t('Meet {0}', DEFAULT_NAME)}</Button>
   </div>
+}
+
+const SR = { position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)', whiteSpace: 'nowrap' }
+/** Text that types itself out, once per text, with a caret while it runs. */
+export function Typewriter({ text, speed = 22 }) {
+  const [n, setN] = useState(0)
+  useEffect(() => {
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) { setN(text.length); return }
+    setN(0)
+    let i = 0, timer
+    const start = setTimeout(function tick() {
+      i++; setN(i)
+      if (i < text.length) timer = setTimeout(tick, /[.,!?]/.test(text[i - 1]) ? speed * 6 : speed)
+    }, 650)
+    return () => { clearTimeout(start); clearTimeout(timer) }
+  }, [text])
+  // the full text, invisible, holds the bubble at its final size while the typed part grows
+  return <span className="tw"><span className="tw-ghost" aria-hidden="true">{text}</span>
+    <span aria-hidden="true">{text.slice(0, n)}{n < text.length && <span className="tw-caret" />}</span><span style={SR}>{text}</span></span>
 }
 
 /** Everything the card and the sheet show, worked out once from the profile. */
@@ -85,7 +105,7 @@ export function BuddyCard({ doneToday, plannedToday, todayName, facts = {} }) {
   return <button type="button" className="bcard" onClick={buddySheet} aria-label={t('{0}, level {1}', bud.name, lv.level)}>
     <Buddy mood={mood} level={lv.level} size={76} />
     <div className="bcard-body">
-      <div className="bcard-bubble">{line}</div>
+      <div className="bcard-bubble"><Typewriter text={line} /></div>
       <div className="bcard-meta"><b>{bud.name}</b><span>{t('Level {0}', lv.level)}</span></div>
       <div className="bcard-bar" aria-hidden="true"><i style={{ width: lv.pct + '%' }} /></div>
     </div>
@@ -130,11 +150,12 @@ function MeetSheet({ close }) {
 export const meetSheet = () => useUI.getState().openSheet(close => <MeetSheet close={close} />)
 
 function LevelUp({ close, name, level }) {
+  useEffect(() => { const a = setTimeout(() => confetti({ count: 120 }), 250); return () => clearTimeout(a) }, [])
   const g = gearFor(level), before = gearFor(level - 1)
   const unlocked = g.crown && !before.crown ? t('Crown') : g.phones && !before.phones ? t('Headphones') : g.band && !before.band ? t('Sweatband') : null
   return <div className="lvlup">
     <div className="lvlup-burst" aria-hidden="true">{Array.from({ length: 12 }, (_, i) => <i key={i} style={{ '--a': i * 30 + 'deg' }} />)}</div>
-    <Buddy mood="proud" level={level} size={150} />
+    <Buddy mood="cheer" level={level} size={150} interactive />
     <div className="lvlup-t">{t('Level {0}!', level)}</div>
     <p className="muted">{unlocked ? t('New gear for {0}: {1}', name, unlocked) : t('{0} is growing with you.', name)}</p>
     <Button variant="primary" onClick={close}>{t('Nice!')}</Button>

@@ -2398,4 +2398,5 @@ export default {
   'Rest day, {0}. Muscles grow while you recover.': 'День отдыха, {0}. Мышцы растут во время восстановления.',
   'Take it easy today, {0}. You’ve earned it.': 'Сегодня полегче, {0}. Ты это заслужил.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Это Iso, твой напарник в ISORA. Iso подбадривает тебя, следит за неделей и растёт вместе с тренировками.',
+  'Find your balance.': 'Найди свой баланс.',
 }

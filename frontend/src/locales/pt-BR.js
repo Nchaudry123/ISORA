@@ -1463,6 +1463,7 @@ export const PT_BR_OVERRIDES = {
   'Take it easy today, {0}. You’ve earned it.': 'Vá com calma hoje, {0}. Você merece.',
   'Workout logged. Now we recover, {0}.': 'Treino registrado. Agora vamos recuperar, {0}.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Este é o Iso, seu companheiro ISORA. O Iso te anima, acompanha sua semana e cresce com seu treino.',
+  'Find your balance.': 'Encontre seu equilíbrio.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

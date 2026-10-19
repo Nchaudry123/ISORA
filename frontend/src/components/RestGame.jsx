@@ -8,6 +8,7 @@ import {
 } from '../lib/blockblast.js'
 import { Button } from './ui.jsx'
 import Buddy from './Buddy.jsx'
+import { confettiFrom } from './confetti.js'
 import { cleanBuddy } from '../lib/buddy.js'
 
 // Rest Blast: the block puzzle that fills a rest between sets. It opens with every rest (not
@@ -48,6 +49,9 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
   const [drag, setDrag] = useState(null)        // { idx, x, y }
   const [pop, setPop] = useState(null)          // { text, id }: the floating score of the last clear
   const [flash, setFlash] = useState(null)      // { rows, cols, id }: lines just cleared
+  const [landed, setLanded] = useState(null)    // { cells, id }: the piece just placed, which lands with a bounce
+  const [cheer, setCheer] = useState(0)         // a clear: Iso hops
+  const [shake, setShake] = useState(0)         // stuck: the board shakes once
   const boardRef = useRef(null)
   const secsRef = useRef(secondsLeft)
   secsRef.current = secondsLeft
@@ -99,6 +103,7 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
     const held = tray.map((x, i) => (i === d.idx ? null : x))
     const next = held.map((x, i) => (i === d.idx ? dealOne(res.board, held, secsRef.current) : x))
     buzz(res.perfect ? [30, 40, 60] : res.lines ? [14, 30, 14] : 8)
+    setLanded({ id: Date.now(), cells: new Set(p.shape.cells.map(([dr, dc]) => (spot.r + dr) * SIZE + spot.c + dc)) })
     setBoard(res.board)
     setTray(next)
     setScore(s => s + res.points)
@@ -107,12 +112,15 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
     setCombo(res.combo)
     if (res.lines) {
       const id = Date.now()
+      setCheer(id)
+      if (res.perfect) confettiFrom(boardRef.current, { count: 140 })
+      else if (res.lines > 1 || res.combo > 2) confettiFrom(boardRef.current, { count: 40 + 20 * res.lines, spread: 50, power: .8 })
       setFlash({ rows: res.rows, cols: res.cols, id })
       setPop({ text: (res.perfect ? t('Perfect clear!') + ' ' : '') + '+' + res.points + (res.combo > 1 ? ' · ' + t('Combo') + ' ×' + res.combo : ''), id, perfect: res.perfect })
       setTimeout(() => setFlash(f => (f?.id === id ? null : f)), 320)
       setTimeout(() => setPop(x => (x?.id === id ? null : x)), 900)
     }
-    if (!anyMove(res.board, next)) setOver(secsRef.current > 0 ? 'stuck' : 'time')
+    if (!anyMove(res.board, next)) { setOver(secsRef.current > 0 ? 'stuck' : 'time'); if (secsRef.current > 0) setShake(Date.now()) }
   }
 
   useEffect(() => {
@@ -157,22 +165,23 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
     <div id="rest-game" role="dialog" aria-label={t('Rest Blast')} hidden={hidden}>
       <div className="rb-head">
         <div>
-          <div className="rb-score">{score}</div>
+          <div key={score} className={'rb-score' + (score ? ' bump' : '')}>{score}</div>
           <div className="rb-best">{t('Best')} {Math.max(best, score)}</div>
         </div>
         {/* your buddy watches the round with you (components/Buddy.jsx) */}
-        <div className="rb-title">{bud.kind && <Buddy mood={over ? (over === 'time' ? 'proud' : 'missing') : 'active'} level={bud.level} size={34} />}{t('Rest Blast')}</div>
+        <div className="rb-title">{bud.kind && <Buddy mood={over ? (over === 'time' ? 'proud' : 'missing') : 'active'} level={bud.level} size={34} bump={cheer} />}{t('Rest Blast')}</div>
         <Button size="sm" variant="ghost" onClick={onHide}>{t('Hide')}</Button>
       </div>
 
-      <div className="rb-board" ref={boardRef}>
+      <div key={'b' + shake} className={'rb-board' + (shake ? ' shake' : '')} ref={boardRef}>
         {board.flatMap((row, r) => row.map((v, c) => {
           const k = r * SIZE + c
           const cls = v === JUNK ? ' rb-junk'
             : v ? ' rb-k' + v + (clearing.has(k) ? ' rb-glow' : '')
               : preview.has(k) ? ' rb-prev rb-k' + dragColor
                 : flashed.has(k) ? ' rb-flash' : ''
-          return <i key={k} className={'rb-cell' + cls} />
+          const land = v && v !== JUNK && landed?.cells.has(k) ? ' rb-land' : ''
+          return <i key={k + (land ? '-' + landed.id : '')} className={'rb-cell' + cls + land} />
         }))}
         {pop && <div key={pop.id} className={'rb-pop' + (pop.perfect ? ' perfect' : '')}>{pop.text}</div>}
         {over && (
