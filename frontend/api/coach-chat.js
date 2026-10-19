@@ -37,7 +37,7 @@ Your job in this short chat is to get to know the person so the app can set up t
 3. their body weight and height (accept any units; convert to kg and cm yourself)
 4. how experienced they are (beginner, intermediate, advanced)
 5. how many days a week they can train (1 to 7)
-6. what equipment they have access to (a full gym counts as everything)
+6. what equipment they have access to: the items they own at home, or a full gym (then set known.gym to true and leave equipment empty — never list a gym's equipment)
 
 Style: warm, brief, plain words, like a message from a good coach. At most two short sentences per message, then the question. No lists, no markdown. Write in the language the person writes in (the app's language is given in the first message).
 
@@ -61,7 +61,7 @@ const OUTPUT = {
     known: {
       type: 'object',
       additionalProperties: false,
-      required: FIELDS,
+      required: [...FIELDS, 'gym'],
       properties: {
         name: nullable({ type: 'string' }),
         goal: nullable({ type: 'string', enum: GOALS }),
@@ -70,6 +70,7 @@ const OUTPUT = {
         experience: nullable({ type: 'string', enum: LEVELS }),
         daysPerWeek: nullable({ type: 'integer' }),
         equipment: nullable({ type: 'array', items: { type: 'string', enum: EQUIPMENT } }),
+        gym: nullable({ type: 'boolean' }),
       },
     },
     declined: { type: 'array', items: { type: 'string', enum: ['weightKg', 'heightCm'] } },
@@ -116,12 +117,14 @@ const cleanKnown = k => {
   if (LEVELS.includes(o.experience)) out.experience = o.experience
   if (Number.isInteger(o.daysPerWeek) && o.daysPerWeek >= 1 && o.daysPerWeek <= 7) out.daysPerWeek = o.daysPerWeek
   if (Array.isArray(o.equipment)) out.equipment = o.equipment.filter(e => EQUIPMENT.includes(e))
+  // a full gym is everything; the model only says so, the list is filled in here
+  if (o.gym === true || (Array.isArray(o.equipment) && o.equipment.length >= EQUIPMENT.length - 1)) { out.gym = true; out.equipment = [...EQUIPMENT] }
   return out
 }
 const cleanDeclined = d => (Array.isArray(d) ? d.filter(x => x === 'weightKg' || x === 'heightCm') : [])
 // The note the model reads before answering: what it has, what it still needs.
 const stateNote = (known, declined) => {
-  const have = FIELDS.filter(f => known[f] !== undefined).map(f => f + '=' + JSON.stringify(known[f]))
+  const have = FIELDS.filter(f => known[f] !== undefined).map(f => f + '=' + (f === 'equipment' && known.gym ? '"full gym"' : JSON.stringify(known[f])))
   const missing = FIELDS.filter(f => known[f] === undefined && !declined.includes(f))
   if (!missing.length) return `[State: everything is known (${have.join(', ')}). Do not ask anything more: set done to true now, fill profile from these values and write the focus.]`
   return `[State: known so far: ${have.length ? have.join(', ') : 'nothing yet'}.${declined.length ? ' Declined: ' + declined.join(', ') + '.' : ''} Still missing: ${missing.join(', ')}. Ask only for the next missing item(s); do not ask again for anything known or declined.]`
@@ -163,7 +166,7 @@ export default async function handler(req, res) {
         provider: { require_parameters: true, data_collection: 'deny' },
         // the final turn carries the whole profile and the focus; a reasoning model's thinking
         // must not eat into that room (api/buddy-line.js learnt the same lesson)
-        max_tokens: 2500,
+        max_tokens: 3000,
         reasoning: { effort: 'low', exclude: true },
         temperature: 0.6,
       }),
