@@ -2395,4 +2395,11 @@ export default {
   'Take it easy today, {0}. You’ve earned it.': 'Vas-y doucement aujourd’hui, {0}. Tu l’as mérité.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Voici Iso, ton compagnon ISORA. Iso t’encourage, garde un œil sur ta semaine et grandit avec ton entraînement.',
   'Find your balance.': 'Trouve ton équilibre.',
+  'See summary': 'Voir le résumé',
+  'Plan a workout': 'Planifier une séance',
+  'All sets done': 'Toutes les séries faites',
+  'Nothing planned. Rest is training too.': 'Rien de prévu. Le repos fait aussi partie de l’entraînement.',
+  'Easy pieces': 'Pièces faciles',
+  'Getting harder': 'Ça se corse',
+  'Last chance': 'Dernière chance',
 }

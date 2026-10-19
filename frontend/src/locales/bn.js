@@ -2474,4 +2474,11 @@ export default {
   'Take it easy today, {0}. You’ve earned it.': 'আজ ধীরে চলুন, {0}। এটা আপনার প্রাপ্য।',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'এ হল Iso, আপনার ISORA সঙ্গী। Iso উৎসাহ দেয়, সপ্তাহের খেয়াল রাখে এবং আপনার ট্রেনিংয়ের সাথে বড় হয়।',
   'Find your balance.': 'আপনার ভারসাম্য খুঁজে নিন।',
+  'See summary': 'সারসংক্ষেপ দেখুন',
+  'Plan a workout': 'একটি ওয়ার্কআউট পরিকল্পনা করুন',
+  'All sets done': 'সব সেট শেষ',
+  'Nothing planned. Rest is training too.': 'কিছু পরিকল্পনা নেই। বিশ্রামও ট্রেনিং।',
+  'Easy pieces': 'সহজ টুকরো',
+  'Getting harder': 'কঠিন হচ্ছে',
+  'Last chance': 'শেষ সুযোগ',
 }

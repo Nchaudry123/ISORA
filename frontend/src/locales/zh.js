@@ -2395,4 +2395,11 @@ export default {
   'Take it easy today, {0}. You’ve earned it.': '今天放轻松，{0}。这是你应得的。',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': '这是 Iso，你的 ISORA 伙伴。Iso 会为你加油、关注你的一周，并随你的训练一起成长。',
   'Find your balance.': '找到你的平衡。',
+  'See summary': '查看总结',
+  'Plan a workout': '安排一次训练',
+  'All sets done': '所有组已完成',
+  'Nothing planned. Rest is training too.': '没有安排。休息也是训练。',
+  'Easy pieces': '简单方块',
+  'Getting harder': '越来越难',
+  'Last chance': '最后机会',
 }

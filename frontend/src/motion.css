@@ -54,7 +54,23 @@
 
 /* ------------------------------------------------------------- views -- */
 #app.vfade{animation:view-in .55s var(--spring-soft)}
+/* pages have a direction: deeper slides in from the end, back slides in from the start,
+   a tab switch rises in place (App.jsx works out which) */
+#app.vfade.push{animation:view-push .5s var(--spring-soft)}
+#app.vfade.pop{animation:view-pop .45s var(--spring-soft)}
 @keyframes view-in{from{opacity:0;transform:translate3d(0,10px,0)}to{opacity:1;transform:none}}
+@keyframes view-push{from{opacity:0;transform:translate3d(36px,0,0)}to{opacity:1;transform:none}}
+@keyframes view-pop{from{opacity:0;transform:translate3d(-24px,0,0)}to{opacity:1;transform:none}}
+#app.vfade.push > .narrow > *,#app.vfade.pop > .narrow > *{animation:none}
+[dir="rtl"] #app.vfade.push{animation-name:view-pop}[dir="rtl"] #app.vfade.pop{animation-name:view-push}
+/* the hero: its button arrives last, the progress bar fills */
+.today-hero{transition:transform .5s var(--spring-soft),background var(--fast)}
+.today-hero:active{transform:scale(.985);transition-duration:.12s;transition-timing-function:ease-out}
+.today-hero .th-cta{animation:rise .6s var(--spring-soft) .25s both}
+.today-hero .th-av{animation:day-pop .6s var(--spring) .1s both}
+.today-hero.is-train .th-cta::after{content:'';position:absolute;inset:0;border-radius:inherit;border:2px solid var(--on-acc);opacity:0;animation:start-breathe 3.2s cubic-bezier(.2,.6,.3,1) 1.5s infinite}
+.rb-reopen{animation:handle-up .6s var(--spring) both}
+@keyframes handle-up{from{transform:translate(-50%,40px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
 /* a view's blocks arrive in a short cascade, top to bottom (once, when the view opens) */
 #app > .narrow > :is(.hdr,.card,.list,.inbox,.inbox-h,.tiles,.stories,.bcard,.inbox-door,h4.sec,.sect,.sect-t,.section,.seg,.chips){
   animation:rise .7s var(--spring-soft) both}
@@ -158,6 +174,7 @@
 
 @media (prefers-reduced-motion:reduce){
   .intro{display:none}
+  #app.vfade.push,#app.vfade.pop,.today-hero .th-cta,.today-hero .th-av,.today-hero.is-train .th-cta::after,.rb-reopen{animation:none !important}
   #app.vfade,#app > .narrow > *,.week .wday .num,.chk.on,.ck.on,.chk.on::after,#tabbar,#tabbar button.on .tab-ic,#tabbar button.start .cir::after,
   .sheet,.sheet > *,.center,.bcard .buddy,.bcard-bubble,.bcard-bar i,.lvlup .buddy,.fin-iso .buddy,.lvlup-t,.fin-trophy,#rest-game,
   .rb-score.bump,.rb-slot .rb-piece,.rb-cell.rb-land,.rb-cell.rb-flash,.rb-ghost .rb-piece,.rb-over,.rb-over > *,.rb-board.shake,.ib-row .tag.acc,.tw{display:grid}.tw > *{grid-area:1/1}.tw-ghost{visibility:hidden}

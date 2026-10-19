@@ -53,6 +53,10 @@ import CoachSetup from './views/CoachSetup.jsx'
 
 // last known scrollY per route, so back-navigation can put the page where it was
 const scrollPositions = new Map()
+// How deep a route is, for the direction its page slides in from (motion.css): the tabs are the
+// surface, a settings page or a routine is one down, a settings sub-page two.
+const TOP = new Set(['/home', '/plan', '/workout', '/stats', '/library', '/checkin', '/coach'])
+const depthOf = path => (TOP.has(path) ? 0 : path.split('/').filter(Boolean).length)
 
 bindUI(useUI)   // lets the shared controls open sheets without importing the store at module scope
 
@@ -125,6 +129,15 @@ function Shell() {
   // The position is recorded from scroll events rather than read at route
   // change, because by then a shorter page may already have clamped it.
   const pathRef = useRef(null)
+  // deeper → push, shallower → pop, level → a tab switch (worked out before the scroll effect
+  // below moves pathRef on)
+  const depthRef = useRef(depthOf(loc.pathname))
+  const dir = useRef('tab')
+  if (pathRef.current !== null && pathRef.current !== loc.pathname) {
+    const d = depthOf(loc.pathname)
+    dir.current = d > depthRef.current ? 'push' : d < depthRef.current ? 'pop' : 'tab'
+    depthRef.current = d
+  }
   // iOS leaves the page displaced after the keyboard goes away (see lib/viewport-guard.js).
   useEffect(() => installViewportGuard(), [])
   // Click-drag a horizontal chip strip to scroll it sideways (lib/hchips.js) — on a desktop
@@ -204,7 +217,7 @@ function Shell() {
     <>
       {/* keyed on the route: a view that throws is contained, and switching tabs
           re-mounts the boundary, so the tab bar is always a way out */}
-      <div id="app" className="vfade" key={loc.pathname}>
+      <div id="app" className={'vfade ' + dir.current} key={loc.pathname}>
         <ErrorBoundary>
           {!authed ? <Login /> : needsMobileOnboarding ? <MobileOnboarding /> : (
             <Routes>

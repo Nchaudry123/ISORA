@@ -2395,4 +2395,11 @@ export default {
   'Take it easy today, {0}. You’ve earned it.': 'Bugün rahat ol, {0}. Bunu hak ettin.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Bu Iso, ISORA arkadaşın. Iso seni destekler, haftanı takip eder ve antrenmanınla birlikte büyür.',
   'Find your balance.': 'Dengeni bul.',
+  'See summary': 'Özeti gör',
+  'Plan a workout': 'Antrenman planla',
+  'All sets done': 'Tüm setler tamam',
+  'Nothing planned. Rest is training too.': 'Plan yok. Dinlenmek de antrenmandır.',
+  'Easy pieces': 'Kolay parçalar',
+  'Getting harder': 'Zorlaşıyor',
+  'Last chance': 'Son şans',
 }

@@ -2392,4 +2392,11 @@ export default {
   'Take it easy today, {0}. You’ve earned it.': 'Сьогодні легше, {0}. Ти це заслужив.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Це Iso, твій напарник в ISORA. Iso підбадьорює тебе, стежить за тижнем і росте разом із тренуваннями.',
   'Find your balance.': 'Знайди свій баланс.',
+  'See summary': 'Переглянути підсумок',
+  'Plan a workout': 'Запланувати тренування',
+  'All sets done': 'Усі підходи зроблено',
+  'Nothing planned. Rest is training too.': 'Нічого не заплановано. Відпочинок — теж тренування.',
+  'Easy pieces': 'Легкі фігури',
+  'Getting harder': 'Дедалі важче',
+  'Last chance': 'Останній шанс',
 }

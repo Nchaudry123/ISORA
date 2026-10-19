@@ -36,7 +36,7 @@ function Cells({ shape, color, cell, className = '' }) {
   )
 }
 
-function Game({ secondsLeft, hidden, onNextSet, onHide }) {
+function Game({ secondsLeft, total, hidden, onNextSet, onHide, onScore }) {
   const [board, setBoard] = useState(emptyBoard)
   const [tray, setTray] = useState(() => dealTray(emptyBoard(), secondsLeft))
   const [score, setScore] = useState(0)
@@ -76,6 +76,7 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
     if (r.score > 0) update(s => { s.restBlast = recordRound(s.restBlast, r) })
   }
   useEffect(() => { if (over) record() }, [over])
+  useEffect(() => { onScore?.(score) }, [score])
   useEffect(() => record, [])
 
   const cellSize = () => (boardRef.current ? boardRef.current.getBoundingClientRect().width / SIZE : 36)
@@ -173,6 +174,14 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
         <Button size="sm" variant="ghost" onClick={onHide}>{t('Hide')}</Button>
       </div>
 
+      {/* how far the rest has run, and what the dealer hands out now (lib/blockblast.js dealOne) */}
+      {!over && total > 0 && (() => {
+        const ph = secondsLeft > total / 2 ? 'good' : secondsLeft > 30 ? 'mid' : 'end'
+        return <div className={'rb-phase p-' + ph}>
+          <div className="rb-phase-bar"><i style={{ width: Math.max(0, Math.min(100, secondsLeft / total * 100)) + '%' }} /></div>
+          <div className="rb-phase-lbl"><b>{ph === 'good' ? t('Easy pieces') : ph === 'mid' ? t('Getting harder') : t('Last chance')}</b><span>{Math.floor(secondsLeft / 60)}:{String(secondsLeft % 60).padStart(2, '0')}</span></div>
+        </div>
+      })()}
       <div key={'b' + shake} className={'rb-board' + (shake ? ' shake' : '')} ref={boardRef}>
         {board.flatMap((row, r) => row.map((v, c) => {
           const k = r * SIZE + c
@@ -217,6 +226,26 @@ function Game({ secondsLeft, hidden, onNextSet, onHide }) {
   )
 }
 
+// The way back in while the game is tucked away: a handle on the rest bar's top edge, with Iso
+// and this round's score. It measures the bar, which stands higher when the tab bar is under it.
+function Handle({ score, onOpen }) {
+  const bud = cleanBuddy(useStore(s => s.S.buddy))
+  const [dock, setDock] = useState(null)
+  useEffect(() => {
+    const bar = document.getElementById('timer')
+    if (!bar) return
+    const measure = () => setDock(Math.round(window.innerHeight - bar.getBoundingClientRect().top - 16))
+    measure()
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : null
+    ro?.observe(bar)
+    window.addEventListener('resize', measure)
+    return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
+  }, [])
+  return <button type="button" className="rb-reopen" onClick={onOpen} style={dock != null ? { bottom: dock } : undefined}>
+    {bud.kind ? <Buddy mood="active" size={30} /> : null}{t('Rest Blast')}{score > 0 && <b>{score}</b>}
+  </button>
+}
+
 export default function RestGame() {
   const timer = useUI(s => s.timer)
   const stopRest = useUI(s => s.stopRest)
@@ -224,6 +253,7 @@ export default function RestGame() {
   const active = !!timer && timer.kind !== 'switch' && enabled
   const [round, setRound] = useState(0)
   const [hidden, setHidden] = useState(false)
+  const [score, setScore] = useState(0)   // the round's score, for the handle while it is hidden
   // A new rest is a new game, shown again even if the last one was hidden.
   useEffect(() => { if (active) { setRound(n => n + 1); setHidden(false) } }, [active])
   useEffect(() => {
@@ -234,7 +264,7 @@ export default function RestGame() {
   // Hidden keeps the round going underneath (the board and score stay), just out of the way.
   const secondsLeft = timer.ready ? 0 : timer.left
   return <>
-    <Game key={round} secondsLeft={secondsLeft} hidden={hidden} onNextSet={stopRest} onHide={() => setHidden(true)} />
-    {hidden && <button type="button" className="rb-reopen" onClick={() => setHidden(false)}>{t('Rest Blast')}</button>}
+    <Game key={round} secondsLeft={secondsLeft} total={timer.total} hidden={hidden} onNextSet={stopRest} onHide={() => setHidden(true)} onScore={setScore} />
+    {hidden && <Handle score={score} onOpen={() => setHidden(false)} />}
   </>
 }

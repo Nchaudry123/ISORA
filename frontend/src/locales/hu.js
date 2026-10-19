@@ -2398,4 +2398,11 @@ export default {
   'Take it easy today, {0}. You’ve earned it.': 'Ma lazíts, {0}. Megérdemled.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Ő Iso, az ISORA-társad. Iso biztat, figyeli a hetedet, és veled együtt fejlődik.',
   'Find your balance.': 'Találd meg az egyensúlyod.',
+  'See summary': 'Összegzés megtekintése',
+  'Plan a workout': 'Edzés tervezése',
+  'All sets done': 'Minden sorozat kész',
+  'Nothing planned. Rest is training too.': 'Nincs terv. A pihenés is edzés.',
+  'Easy pieces': 'Könnyű elemek',
+  'Getting harder': 'Egyre nehezebb',
+  'Last chance': 'Utolsó esély',
 }

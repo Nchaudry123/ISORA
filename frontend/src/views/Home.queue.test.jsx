@@ -55,7 +55,7 @@ const mount = () => act(() => root.render(<Home />))
 const chips = () => [...host.querySelectorAll('.queue .chip')]
 const chipTexts = () => chips().map(c => c.textContent)
 const status = () => host.querySelector('.queue .queue-status')?.textContent
-const todayTitle = () => host.querySelector('.today-row .ttl')?.textContent
+const todayTitle = () => host.querySelector('.today-hero .th-title')?.textContent
 const card = () => [...host.querySelectorAll('.ib-row .pv')].map(e => e.textContent).find(x => x.includes('this week'))
 
 describe('Home — coach week progress row', () => {
@@ -115,7 +115,7 @@ describe('Home — coach week progress row', () => {
     expect(status()).toBe('Next week starts ' + fmtDate(startsOn, true))
     expect(chipTexts()[0]).toBe('US W1 D1Up next')
     expect(todayTitle()).toBe('Rest day')
-    expect(host.querySelector('.today-row .ss').textContent).toMatch(/^Next session: \w+, US W1 D1$/)
+    expect(host.querySelector('.today-hero .th-sub').textContent).toMatch(/^Next session: \w+, US W1 D1$/)
   })
 
   it('a rotation-managed queue never names a weekday on its empty gap — the row above already says what is next', () => {
@@ -124,7 +124,7 @@ describe('Home — coach week progress row', () => {
     mount()
     expect(status()).toBe('Next week starts ' + fmtDate(startsOn, true))
     expect(todayTitle()).toBe('Rest day')
-    expect(host.querySelector('.today-row .ss')).toBeNull()
+    expect(host.querySelector('.today-hero .th-sub').textContent).toBe('Nothing planned. Rest is training too.')
   })
 
   it('Rotation chosen with nothing built yet hides the weekday strip and offers an empty state instead', () => {
@@ -135,7 +135,7 @@ describe('Home — coach week progress row', () => {
     expect(host.querySelector('.queue')).toBeNull()
     expect(host.textContent).toContain('No rotation yet')
     expect(todayTitle()).toBe('Rest day')
-    expect(host.querySelector('.today-row .ss')).toBeNull()
+    expect(host.querySelector('.today-hero .th-sub').textContent).toBe('Nothing planned. Rest is training too.')
   })
 
   it('a complete week says so, every chip is inert, and the day goes back to the weekday plan', () => {
@@ -263,7 +263,7 @@ describe('Home — a session pinned to a day', () => {
     expect(status()).toBe('Next: US W1 D3, today')
     // Home reads any per-date override on today as a reschedule — a pin is one.
     expect(todayTitle()).toBe('US W1 D3')
-    expect(host.querySelector('.today-row .ss.resch')?.textContent).toBe('rescheduled')
+    expect(host.querySelector('.today-hero .th-resch')?.textContent).toBe('rescheduled')
   })
 
   it('every session pinned ahead: no chip is lit, the line names the soonest with its day, today rests', () => {
@@ -294,14 +294,14 @@ describe('Home — a session pinned to a day', () => {
 describe('Home — the today row follows today\'s plan, not just the last session', () => {
   const today = todayISO()
   const at = (id, start, name) => ({ id: 'w-' + id + start, d: today, start, end: start + 1000, routineIds: id ? [id] : [], routineId: id, name: name || routines.find(r => r.id === id).name, entries: [] })
-  const tag = () => host.querySelector('.today-row .tag')?.textContent
+  const tag = () => host.querySelector('.today-hero .th-cta span')?.textContent
 
   it('a queue session done today: the row offers the next one, like the progress row', () => {
     setS({ workouts: [at('d1', Date.now() - 3600000)] })
     mount()
     expect(status()).toBe('Next: US W1 D2, today')
     expect(todayTitle()).toBe('US W1 D2')
-    expect(tag()).toBe('Start')
+    expect(tag()).toBe('Start workout')
   })
 
   it('a freestyle session on a planned day leaves the plan offered', () => {
@@ -309,15 +309,15 @@ describe('Home — the today row follows today\'s plan, not just the last sessio
     setS({ queue: null, week: { [wd]: ['own'] }, workouts: [at(null, Date.now() - 3600000, 'Freestyle')] })
     mount()
     expect(todayTitle()).toBe('Core')
-    expect(tag()).toBe('Start')
+    expect(tag()).toBe('Start workout')
   })
 
   it('the planned routine done today still reads as done', () => {
     const wd = new Date(today + 'T12:00:00').getDay()
     setS({ queue: null, week: { [wd]: ['own'] }, workouts: [at('own', Date.now() - 3600000)] })
     mount()
-    expect(todayTitle()).toBe('Core (done)')
-    expect(tag()).toBe('Done')
+    expect(todayTitle()).toBe('Core')
+    expect(tag()).toBe('See summary')
   })
 
   it('Start new pass after a session today: the pass runs today, from its first session', () => {
@@ -331,7 +331,7 @@ describe('Home — the today row follows today\'s plan, not just the last sessio
     expect(chipTexts()).toEqual(['US W1 D1Up next', 'US W1 D2Later', 'US W1 D3Later'])
     expect(status()).toBe('Next: US W1 D1, today')
     expect(todayTitle()).toBe('US W1 D1')
-    expect(tag()).toBe('Start')
+    expect(tag()).toBe('Start workout')
   })
 })
 

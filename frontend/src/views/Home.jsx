@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { effectiveRoutines, effectiveRoutineIds, nextTrainingDay, streakWeeks, lastBW, setsDoneActive, setsDone } from '../lib/history.js'
+import { effectiveRoutines, effectiveRoutineIds, nextTrainingDay, streakWeeks, lastBW, setsDoneActive, setsDone, setUnitsTotal } from '../lib/history.js'
 import { fmtNum, fmtDate, todayISO, isoOf, weekStartOf, weekDayOffset, DAYS, DAYN, exerciseNameText, durPart, fmtVol } from '../lib/format.js'
 import { t, tn, dateLocale } from '../lib/i18n.js'
 import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, starterPlanSheet, bwDeltaColor, weighInsSheet, workoutDetailSheet } from '../sheets.jsx'
@@ -105,7 +105,7 @@ export default function Home() {
   const bwPoints = S.bodyweight.slice(-30).map(b => ({ t: b.t || new Date(b.d).getTime(), y: b.w, d: b.d }))
 
   // today's session shown right under the week strip
-  const onToday = () => { if (S.active) nav('/workout'); else if (todayRoutines.length) startFlow(effectiveRoutineIds(S, todayISO())); else dayOverrideSheet(todayISO()) }
+  const onToday = () => { if (S.active) nav('/workout'); else if (doneToday) workoutDetailSheet(doneToday); else if (todayRoutines.length) startFlow(effectiveRoutineIds(S, todayISO())); else dayOverrideSheet(todayISO()) }
   // A chip on the coach week's progress row starts that one routine, in any order. A session
   // already in progress wins, as on the today row — starting another would overwrite it.
   const onQueueStart = id => { if (S.active) nav('/workout'); else startFlow([id]) }
@@ -130,7 +130,7 @@ export default function Home() {
     {/* You at the top: your avatar (tap for the profile), a greeting by name once you have
         given one, and how far along your weekly target you are (lib/profile.js). */}
     <div className="hdr home-hdr">
-      <Avatar profile={S.profile} size={44} onClick={profileSheet} label={t('Your profile')} />
+      <WeekRing done={doneThisWeek} target={prof.weekTarget}><Avatar profile={S.profile} size={44} onClick={profileSheet} label={t('Your profile')} /></WeekRing>
       <div className="home-hdr-txt">
         <h1 className={!user && prof.name ? 'greet' : undefined}>{user ? t('Hi {0}', user.name) : prof.name ? t(greetingFor(today.getHours()), prof.name) : <span className="brand"><IsoraMark />ISORA</span>}</h1>
         <div className="sub">{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}
@@ -164,31 +164,34 @@ export default function Home() {
     </div>}
 
     <h3 className="inbox-h">{t('Today')}</h3>
-    <div className="inbox">
-      {/* Once today's session is logged the row stops asking for it (issue #4); a session in
-          progress wins, and an open editor on a saved workout reads as an edit. */}
-      <div className={'today-row ib-row ' + (S.active ? 'is-active' : doneToday ? 'is-done' : routine ? 'is-train' : 'is-rest')} {...tappable(onToday)}>
-        <span className="ib-av">
-          <Icon name={S.active ? (editingSaved ? 'pencil' : 'play') : doneToday ? 'checkCircle' : routine ? glyphOf(routine.emoji) : 'moon'} />
-        </span>
-        <div className="ib-body">
-          <div className="ttl">{S.active ? (editingSaved ? S.active.name : t('{0} (in progress)', S.active.name))
-            : doneToday ? (doneToday.name ? t('{0} (done)', doneToday.name) : t('Workout done'))
-            : routine ? todayName : t('Rest day')}</div>
-          {next && !doneToday && <div className="ss">{t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name)}</div>}
-          {/* A moved day says so on the small line, not in the title. */}
-          {todayOvr && routine && !doneToday && !S.active && <div className="ss resch">{t('rescheduled')}</div>}
-          {S.active && !editingSaved && left > 0 && <div className="pv">{tn('{0} set left', '{0} sets left', left)}</div>}
-          {!S.active && routine && !doneToday && <div className="pv">{previewText(routine)}</div>}
+    {/* The one thing to do today, as a hero: its name, what it holds, and one big button. A
+        session in progress shows its clock and progress and resumes; a logged one opens its
+        summary; a rest day offers to plan something. (lib/inbox.js setsLeft) */}
+    {(() => {
+      const state = S.active ? 'active' : doneToday ? 'done' : routine ? 'train' : 'rest'
+      const total = S.active ? setUnitsTotal(S.active.entries) : 0
+      const doneSets = S.active ? total - left : 0
+      const title = state === 'active' ? S.active.name : state === 'done' ? (doneToday.name || t('Workout')) : state === 'train' ? todayName : t('Rest day')
+      const sub = state === 'active' ? (editingSaved ? t('Edit') : left > 0 ? tn('{0} set left', '{0} sets left', left) : t('All sets done'))
+        : state === 'done' ? [...durPart((doneToday.end || 0) - (doneToday.start || 0)), tn('{0} set', '{0} sets', setsDone(doneToday))].join(' · ')
+          : state === 'train' ? previewText(routine)
+            : next ? t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name) : t('Nothing planned. Rest is training too.')
+      const cta = state === 'active' ? (editingSaved ? t('Edit') : t('Resume')) : state === 'done' ? t('See summary') : state === 'train' ? t('Start workout') : t('Plan a workout')
+      return <div className={'today-hero is-' + state} {...tappable(onToday)}>
+        <div className="th-top">
+          <span className="th-av"><Icon name={state === 'active' ? (editingSaved ? 'pencil' : 'play') : state === 'done' ? 'checkCircle' : state === 'train' ? glyphOf(routine.emoji) : 'moon'} /></span>
+          <div className="th-txt">
+            <div className="th-kicker">{state === 'active' && !editingSaved ? <Elapsed start={S.active.start} /> : state === 'done' ? t('Done') : t('Today')}
+              {todayOvr && state === 'train' && <span className="th-resch">{t('rescheduled')}</span>}</div>
+            <div className="th-title">{title}</div>
+            <div className="th-sub">{sub}</div>
+          </div>
         </div>
-        <div className="ib-side">
-          <span className="ib-time">{S.active && !editingSaved ? <Elapsed start={S.active.start} /> : t('Today')}</span>
-          {S.active ? <span className="tag act">{editingSaved ? t('Edit') : t('Resume')}</span>
-            : doneToday ? <span className="tag ok">{t('Done')}</span>
-            : routine ? <span className="tag acc">{t('Start')}</span>
-            : <Icon name="plus" className="chev" />}
-        </div>
+        {state === 'active' && !editingSaved && total > 0 && <div className="th-prog" aria-hidden="true"><i style={{ width: (doneSets / total * 100) + '%' }} /></div>}
+        <div className="th-cta"><span>{cta}</span><Icon name={state === 'done' ? 'chevronRight' : state === 'rest' ? 'plus' : 'play'} /></div>
       </div>
+    })()}
+    <div className="inbox">
       {/* the weigh-in as a to-do, until today's is logged */}
       {S.showWeightCard !== false && !weighedToday && <div className="ib-row" {...tappable(() => bwSheet())}>
         <span className="ib-av" style={{ background: 'var(--teal)' }}><Icon name="scale" /></span>
@@ -311,4 +314,19 @@ export default function Home() {
         : t("No weigh-ins yet. Log your weight to start the curve (we also ask before every workout).")}</div>}
     </div>}
   </div>
+}
+
+/** The avatar in a ring that fills as the week's target is met; nothing without a target. */
+function WeekRing({ done, target, children }) {
+  if (!(target > 0)) return children
+  const R = 24, C = 2 * Math.PI * R
+  const p = Math.min(1, done / target)
+  return <span className={'av-ring' + (p >= 1 ? ' met' : '')} aria-hidden="true">
+    <svg viewBox="0 0 52 52" width="52" height="52">
+      <circle cx="26" cy="26" r={R} fill="none" stroke="var(--surface-3)" strokeWidth="3" />
+      <circle cx="26" cy="26" r={R} fill="none" stroke="var(--acc)" strokeWidth="3" strokeLinecap="round" transform="rotate(-90 26 26)"
+        strokeDasharray={C} strokeDashoffset={C * (1 - p)} />
+    </svg>
+    {children}
+  </span>
 }

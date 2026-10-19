@@ -1464,6 +1464,11 @@ export const PT_BR_OVERRIDES = {
   'Workout logged. Now we recover, {0}.': 'Treino registrado. Agora vamos recuperar, {0}.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'Este é o Iso, seu companheiro ISORA. O Iso te anima, acompanha sua semana e cresce com seu treino.',
   'Find your balance.': 'Encontre seu equilíbrio.',
+  'Plan a workout': 'Planejar um treino',
+  'Nothing planned. Rest is training too.': 'Nada planejado. Descansar também é treinar.',
+  'Getting harder': 'Ficando difícil',
+  'Last chance': 'Última chance',
+  'Change what’s planned on one day': 'Mudar o que está planejado em um dia',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

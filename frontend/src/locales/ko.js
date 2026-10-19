@@ -2395,4 +2395,11 @@ export default {
   'Take it easy today, {0}. You’ve earned it.': '오늘은 편하게, {0}. 그럴 자격 있어요.',
   'This is Iso, your ISORA buddy. Iso cheers you on, keeps an eye on your week and grows as you train.': 'ISORA 친구 Iso예요. Iso는 응원해 주고, 한 주를 챙기고, 운동하면서 함께 자라요.',
   'Find your balance.': '나만의 균형을 찾아요.',
+  'See summary': '요약 보기',
+  'Plan a workout': '운동 계획하기',
+  'All sets done': '모든 세트 완료',
+  'Nothing planned. Rest is training too.': '계획 없음. 휴식도 훈련이에요.',
+  'Easy pieces': '쉬운 조각',
+  'Getting harder': '점점 어려워요',
+  'Last chance': '마지막 기회',
 }
