@@ -2409,4 +2409,5 @@ export default {
   'Muscles': '근육',
   'Body & progress': '몸과 진행 상황',
   'Last 12 months': '최근 12개월',
+  "since {0}": "{0}부터",
 }

@@ -2,8 +2,10 @@ import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
-import { DAYN, DAYS, weekOrder, weekStartOf, uid, exCount, routineCount, todayISO, fmtDate } from '../lib/format.js'
-import { t } from '../lib/i18n.js'
+import { DAYN, DAYS, weekOrder, weekStartOf, uid, exCount, routineCount, todayISO, fmtDate, exerciseNameText } from '../lib/format.js'
+import { previewOf } from '../lib/inbox.js'
+import { exOr } from '../lib/exercises.js'
+import { t, tn } from '../lib/i18n.js'
 import {
   dayAssignSheet, starterPlanSheet, confirmSheet, menuSheet,
   planHasRoutines, exportPlanFile, printWholePlan, importPlanFile,
@@ -255,13 +257,15 @@ function Schedule({ S, update, nav, mode }) {
   const dayRoutines = d => [].concat(S.week[d] || []).map(routineOf).filter(Boolean)
   // One weekday: what is on it at a glance, and a tap to change it (dayAssignSheet picks one
   // routine, several for a combined day, or a rest day).
+  // what a day holds, at a glance: the first exercises by name (lib/inbox.js previewOf), as Home shows them
+  const preview = r => { const p = previewOf(r, id => exerciseNameText(exOr(id))); return p.text ? p.text + (p.more ? ' ' + t('+{0} more', p.more) : '') : exCount(r.ex.length) }
   const dayRow = (d, rs = dayRoutines(d)) => {
-    return <div key={d} className="item plan-day" data-day={d} aria-label={t(DAYN[d])} {...tappable(() => dayAssignSheet(d))}>
+    return <div key={d} className={'item plan-day' + (rs.length ? '' : ' is-rest') + (d === todayDow ? ' is-today' : '')} data-day={d} aria-label={t(DAYN[d])} {...tappable(() => dayAssignSheet(d))}>
       <span className={'plan-day-n' + (d === todayDow ? ' today' : '')} aria-hidden="true">{t(DAYS[d])}</span>
       <span className={'lrow-i' + (rs.length ? '' : ' rest')}><Icon name={rs.length ? glyphOf(rs[0].emoji) : 'moon'} /></span>
       <div className="grow">
         <div className="tt">{rs.length ? deriveSessionName(rs.map(r => r.name)) : t('Rest day')}</div>
-        <div className="ss">{rs.length === 1 ? exCount(rs[0].ex.length) : rs.length ? routineCount(rs.length) : t('Tap to plan something')}</div>
+        <div className="ss">{rs.length === 1 ? preview(rs[0]) : rs.length ? [routineCount(rs.length), rs.some(r => r.ex.length) && exCount(rs.reduce((n, r) => n + r.ex.length, 0))].filter(Boolean).join(' · ') : t('Tap to plan something')}</div>
       </div>
       <Icon name="chevronRight" className="chev" />
     </div>
@@ -304,7 +308,10 @@ function Schedule({ S, update, nav, mode }) {
 
     {mode === 'week' ? <>
       <h4 className="sec">{t('This week')}</h4>
-      <div className="list plan-week">{weekOrder(ws).map(d => dayRow(d))}</div>
+      <div className="list plan-week grouped">{weekOrder(ws).map(d => dayRow(d))}</div>
+      {/* the week in one line: training days, rest days, exercises */}
+      {(() => { const on = weekOrder(ws).filter(d => dayRoutines(d).length); const n = on.reduce((k, d) => k + dayRoutines(d).reduce((m, r) => m + r.ex.length, 0), 0)
+        return <p className="sect-f plan-sum">{[tn('{0} training day', '{0} training days', on.length), tn('{0} rest day', '{0} rest days', 7 - on.length), n > 0 && exCount(n)].filter(Boolean).join(' · ')}</p> })()}
       <p className="sect-f">{t('Want two routines on one day? Tap the day and pick both.')}</p>
     </> : <div className="rotation">
       <div className="row between plan-sec-h">

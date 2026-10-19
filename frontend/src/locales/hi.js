@@ -2409,4 +2409,5 @@ export default {
   'Muscles': 'मांसपेशियाँ',
   'Body & progress': 'शरीर और प्रगति',
   'Last 12 months': 'पिछले 12 महीने',
+  "since {0}": "{0} से",
 }

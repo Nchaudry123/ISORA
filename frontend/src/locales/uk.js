@@ -2406,4 +2406,5 @@ export default {
   'Muscles': 'М’язи',
   'Body & progress': 'Тіло та прогрес',
   'Last 12 months': 'Останні 12 місяців',
+  "since {0}": "з {0}",
 }

@@ -2409,4 +2409,5 @@ export default {
   'Muscles': 'Muscoli',
   'Body & progress': 'Corpo e progressi',
   'Last 12 months': 'Ultimi 12 mesi',
+  "since {0}": "dal {0}",
 }

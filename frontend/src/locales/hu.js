@@ -2412,4 +2412,5 @@ export default {
   'Muscles': 'Izmok',
   'Body & progress': 'Test és haladás',
   'Last 12 months': 'Az elmúlt 12 hónap',
+  "since {0}": "{0} óta",
 }

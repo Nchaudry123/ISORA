@@ -2464,4 +2464,5 @@ export default {
   'Muscles': 'العضلات',
   'Body & progress': 'الجسم والتقدم',
   'Last 12 months': 'آخر 12 شهرًا',
+  "since {0}": "منذ {0}",
 }

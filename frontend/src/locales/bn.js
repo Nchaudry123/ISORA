@@ -2488,4 +2488,5 @@ export default {
   'Muscles': 'পেশি',
   'Body & progress': 'শরীর ও অগ্রগতি',
   'Last 12 months': 'গত ১২ মাস',
+  "since {0}": "{0} থেকে",
 }

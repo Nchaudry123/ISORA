@@ -598,3 +598,28 @@ button.avatar:active{transform:scale(.94)}
 /* Stats: the sections read top to bottom; the first heading sits close under the tiles */
 .tiles + .inbox-h{margin-top:14px}
 .inbox-h + .card{margin-top:0}
+
+/* ------------------------------------------------------------- grouped lists -- */
+/* a list of rows as one card with hairlines, the way Home and the Exercises list read */
+.list.grouped{gap:0;background:var(--surface);border-radius:var(--r-card);overflow:hidden}
+.list.grouped > .item,.list.grouped > .swrow-item{position:relative;background:none;border-radius:0}
+.list.grouped > .item + .item::before,.list.grouped > * + .item::before{content:'';position:absolute;top:0;inset-inline-start:58px;inset-inline-end:0;height:var(--hair);background:var(--sep)}
+.list.grouped > .item:active{background:var(--surface-2)}
+.list.grouped .swfront{background:transparent !important}
+
+/* History: a month per group, its totals in the heading */
+.hist-month{margin-bottom:6px}
+.hist-m{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:18px 4px 8px}
+.hist-m .inbox-h{margin:0}
+.hist-m-stats{font-size:12px;color:var(--label-3);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list.grouped .item .tt{font-weight:600}
+.list.grouped .item .ss{font-size:13px}
+
+/* Plan: today's row marked, rest days quiet, the week summed up */
+.plan-day.is-today .plan-day-n{color:var(--acc)}
+.plan-day.is-today .tt::after{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--acc);margin-inline-start:7px;vertical-align:middle}
+.plan-day.is-rest .tt{color:var(--label-2);font-weight:500}
+.plan-day.is-rest .lrow-i{background:var(--surface-2);color:var(--label-3)}
+.plan-day .ss{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plan-day .grow{min-width:0}
+.plan-sum{color:var(--label-2);font-weight:500}

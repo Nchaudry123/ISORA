@@ -2413,4 +2413,5 @@ export default {
   'Muscles': 'Мышцы',
   'Body & progress': 'Тело и прогресс',
   'Last 12 months': 'Последние 12 месяцев',
+  "since {0}": "с {0}",
 }

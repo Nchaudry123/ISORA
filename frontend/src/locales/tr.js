@@ -2409,4 +2409,5 @@ export default {
   'Muscles': 'Kaslar',
   'Body & progress': 'Vücut ve ilerleme',
   'Last 12 months': 'Son 12 ay',
+  "since {0}": "{0} tarihinden beri",
 }
