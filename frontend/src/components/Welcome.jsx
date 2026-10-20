@@ -47,18 +47,25 @@ export default function Welcome({ onDone, replay = false }) {
   const [i, setI] = useState(0)
   const [dir, setDir] = useState('fwd')
   const [rx, setRx] = useState(null)
+  const [prev, setPrev] = useState(null)   // the screen on its way out, for the length of the transition
   const drag = useRef(null)
   const root = useRef(null)
+  const leaving = useRef(0)
   const last = i === slides.length - 1
   const s = slides[i]
 
   const go = n => {
-    if (n < 0 || n >= slides.length) return
-    setDir(n > i ? 'fwd' : 'back')
+    if (n < 0 || n >= slides.length || n === i) return
+    const d = n > i ? 'fwd' : 'back'
+    setDir(d)
+    setPrev({ s, dir: d })
+    clearTimeout(leaving.current)
+    leaving.current = setTimeout(() => setPrev(null), 520)
     setI(n)
     const kind = slides[n].react
     if (kind) setRx({ kind, id: Date.now() })
   }
+  useEffect(() => () => clearTimeout(leaving.current), [])
   const next = () => last ? onDone() : go(i + 1)
 
   // a swipe moves a screen; the keyboard too
@@ -87,24 +94,32 @@ export default function Welcome({ onDone, replay = false }) {
       <span className="wel-brand"><IsoraMark size={22} /><b>ISORA</b></span>
       <button type="button" className="wel-skip" onClick={onDone}>{last ? '' : t('Skip')}</button>
     </div>
-    <div className={'wel-slide ' + dir + ' is-' + s.key + (s.key === 'install' && dev.os !== 'ios' ? ' is-up' : '')} key={s.key}>
-      <div className="wel-scene">
-        {s.key === 'meet' ? <MeetScene /> : <div className="wel-stage">
-          {s.key === 'blast' && <BlastScene />}
-          {s.key === 'plan' && <PlanScene />}
-          {s.key === 'install' && <InstallScene dev={dev} />}
-          {s.key === 'balance' && <BalanceScene />}
-          <div className="wel-iso"><Buddy mood={s.mood} size={s.key === 'balance' ? 84 : 72} react={rx} point={s.key === 'balance' ? null : s.key === 'install' ? (dev.os === 'ios' ? 'down' : 'up') : 'left'} eyesFollow /></div>
-        </div>}
-      </div>
-      <h1 className="wel-title">{s.title}</h1>
-      <p className="wel-body">{s.body}</p>
-      {s.key === 'install' && <InstallActs dev={dev} />}
+    <div className="wel-deck">
+      <Slide key={s.key} s={s} dir={dir} dev={dev} rx={rx} phase="in" />
+      {prev && <Slide key={'out-' + prev.s.key} s={prev.s} dir={prev.dir} dev={dev} phase="out" />}
     </div>
     <div className="wel-foot">
       <div className="wel-dots" aria-hidden="true">{slides.map((x, k) => <i key={x.key} className={k === i ? 'on' : k < i ? 'done' : ''} />)}</div>
       <Button variant="primary" className="wel-next" onClick={next}>{last ? (replay ? t('Done') : t('Let’s go')) : t('Next')}</Button>
     </div>
+  </div>
+}
+
+function Slide({ s, dir, dev, rx, phase }) {
+  const out = phase === 'out'
+  return <div className={'wel-slide ' + dir + ' ' + phase + ' is-' + s.key + (s.key === 'install' && dev.os !== 'ios' ? ' is-up' : '')} aria-hidden={out || undefined}>
+    <div className="wel-scene">
+      {s.key === 'meet' ? <MeetScene still={out} /> : <div className="wel-stage">
+        {s.key === 'blast' && <BlastScene />}
+        {s.key === 'plan' && <PlanScene />}
+        {s.key === 'install' && <InstallScene dev={dev} />}
+        {s.key === 'balance' && <BalanceScene />}
+        <div className="wel-iso"><Buddy mood={s.mood} size={s.key === 'balance' ? 84 : 72} react={out ? null : rx} point={s.key === 'balance' ? null : s.key === 'install' ? (dev.os === 'ios' ? 'down' : 'up') : 'left'} eyesFollow={!out} still={out} /></div>
+      </div>}
+    </div>
+    <h1 className="wel-title">{s.title}</h1>
+    <p className="wel-body">{s.body}</p>
+    {s.key === 'install' && !out && <InstallActs dev={dev} />}
   </div>
 }
 
@@ -136,15 +151,16 @@ function InstallActs({ dev }) {
   return <div className="wel-acts"><Button variant="primary" icon="download" onClick={async () => { if (await promptInstall()) setCan(false) }}>{t('Install')}</Button></div>
 }
 
-function MeetScene() {
+function MeetScene({ still = false }) {
   return <div className="wel-meet">
     <span className="wel-halo" /><span className="wel-halo h2" />
-    <Buddy mood="new" size={168} enter interactive eyesFollow />
+    <Buddy mood="new" size={168} enter={!still} interactive={!still} eyesFollow={!still} still={still} />
   </div>
 }
 
-// a 6×6 board that plays itself: a block drops into the gap of the bottom row, the row lights and
-// clears, a tall piece slots into the column above, then again
+// a 6×6 board that plays itself: every cell is a slot, a block sits in some; the one gap in the
+// bottom row glows, a block drops into it, the row lights and clears to empty slots, then a tall
+// piece slots into the column above, and it starts over
 const BOARD = [
   '......',
   '......',
@@ -158,8 +174,8 @@ function BlastScene() {
     <div className="wel-board">
       {BOARD.flatMap((row, r) => row.split('').map((c, col) => {
         const filled = c !== '.'
-        const bottom = r === 5
-        return <i key={r + '-' + col} className={'wel-cell' + (filled ? ' rb-k' + c : '') + (bottom && filled ? ' row' : '')} />
+        const gap = (r === 5 && col === 2) ? ' gap' : ((r === 3 || r === 4) && col === 3) ? ' gap2' : ''
+        return <i key={r + '-' + col} className={'wel-cell' + gap}>{filled && <b className={'rb-k' + c + (r === 5 ? ' row' : '')} />}</i>
       }))}
       <div className="wel-piece"><i className="rb-k3" /></div>
       <div className="wel-piece p2"><i className="rb-k6" /><i className="rb-k6" /></div>

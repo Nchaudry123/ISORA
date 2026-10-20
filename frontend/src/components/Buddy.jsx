@@ -27,15 +27,16 @@ function Eyes({ mood, id }) {
   // glossy eyes: a navy oval, a big catchlight and a small one
   // the white of the eye, then the pupil with its catchlights: the pupil moves a little more than
   // the face does (bd-pupil, moved per frame), which is what makes a look read as a look
-  const eye = (cx, cy = 59, ry = 7.4) => <g key={cx}>
-    <ellipse cx={cx} cy={cy} rx={6.4 + 1.9} ry={ry + 1.9} fill="#fff" opacity=".9" />
+  const eye = (cx, cy = 59, ry = 8) => <g key={cx}>
+    <ellipse cx={cx} cy={cy} rx={6.9 + 2.1} ry={ry + 2.1} fill="#fff" opacity=".92" />
     <g className="bd-pupil">
-      <ellipse cx={cx} cy={cy} rx="6.4" ry={ry} fill={INK} />
-      <ellipse cx={cx + 2} cy={cy - 2.8} rx="2" ry="2.3" fill="#fff" />
+      <ellipse cx={cx} cy={cy} rx="6.9" ry={ry} fill={INK} />
+      <ellipse cx={cx + 2.1} cy={cy - 3} rx="2.4" ry="2.8" fill="#fff" />
+      <circle cx={cx - 2.4} cy={cy + 3.4} r="1.1" fill="#fff" opacity=".8" />
     </g>
   </g>
   // a flat upper lid over both eyes: the look is level and steady, not wide-eyed
-  const lidded = (eyes, top = 53) => <g>
+  const lidded = (eyes, top = 52) => <g>
     <clipPath id={id + 'lid'}><rect x="26" y={top} width="68" height="30" /></clipPath>
     <g clipPath={`url(#${id}lid)`}>{eyes}</g>
   </g>
@@ -45,7 +46,7 @@ function Eyes({ mood, id }) {
     case 'proud': return <g>{arc(46)}{arc(74)}</g>
     case 'sleepy': return <g>{arc(46, false)}{arc(74, false)}</g>
     case 'chill': // relaxed: half-lidded
-      return lidded(<g>{eye(46, 60, 7)}{eye(74, 60, 7)}</g>, 56.5)
+      return lidded(<g>{eye(46, 60, 7.4)}{eye(74, 60, 7.4)}</g>, 56.5)
     case 'missing':
       return <g>
         {lidded(<g>{eye(46, 60)}{eye(74, 60)}</g>, 55)}
@@ -53,10 +54,10 @@ function Eyes({ mood, id }) {
       </g>
     case 'active': // game face: lids down, brows driven in
       return <g>
-        {lidded(<g>{eye(46, 59, 7.6)}{eye(74, 59, 7.6)}</g>, 55.5)}
+        {lidded(<g>{eye(46, 59, 8)}{eye(74, 59, 8)}</g>, 55.5)}
         <path d="M36 46l13 5M84 46l-13 5" stroke={INK} strokeWidth="4" strokeLinecap="round" />
       </g>
-    case 'new': return lidded(<g>{eye(46, 58.5, 8.2)}{eye(74, 58.5, 8.2)}</g>, 50)
+    case 'new': return lidded(<g>{eye(46, 58.5, 8.8)}{eye(74, 58.5, 8.8)}</g>, 49)
     default: return lidded(<g>{eye(46)}{eye(74)}</g>) // hyped
   }
 }
@@ -286,8 +287,8 @@ export default function Buddy({ mood = 'chill', level = 1, size = 96, still = fa
           <path d="M30 34q2-5 10-5h18q4 0 3 3-1 3-6 3H40q-6 0-9 4-2 1-1-5Z" fill={`url(#${id}gloss)`} />
           <circle cx="88" cy="33" r="2.4" fill="#fff" opacity=".55" />
           <g ref={R.face}>
-            <g ref={R.browL}><path d="M37.5 45.5q7.5-3.5 15-1.5" stroke={INK} strokeWidth="4.6" fill="none" strokeLinecap="round" /></g>
-            <g ref={R.browR}><path d="M67.5 44q7.5-2 15 1.5" stroke={INK} strokeWidth="4.6" fill="none" strokeLinecap="round" /></g>
+            <g ref={R.browL}><path d="M38 45.2q7-3.2 14.5-1.4" stroke={INK} strokeWidth="4.1" fill="none" strokeLinecap="round" /></g>
+            <g ref={R.browR}><path d="M67.5 43.8q7.5-1.8 14.5 1.4" stroke={INK} strokeWidth="4.1" fill="none" strokeLinecap="round" /></g>
             <g ref={R.eyes}><Eyes mood={face} id={id} /></g>
             <g ref={R.mouth}><Mouth mood={talking && !poked ? 'talk' : face} /></g>
             <ellipse ref={R.o} cx="60" cy="77" rx="4.6" ry="1.5" fill={INK} style={{ opacity: 0 }} />
