@@ -1470,6 +1470,16 @@ export const PT_BR_OVERRIDES = {
   'Last chance': 'Última chance',
   'Change what’s planned on one day': 'Mudar o que está planejado em um dia',
   'The best spot lights up while you hold a piece, and after a moment on its own. A tap sends the piece there.': 'O melhor lugar acende enquanto você segura uma peça e, depois de um momento, sozinho. Um toque envia a peça para lá.',
+  'This is today. One tap starts the workout, or opens what you did.': 'Isto é hoje. Um toque inicia o treino ou abre o que você fez.',
+  'Your week. A ring is a planned day, a filled one is done. Tap a day to change it.': 'Sua semana. Um anel é um dia planejado, um cheio está feito. Toque em um dia para mudar.',
+  'That’s me. I leave you a line every day and grow as you train. Tap me any time.': 'Sou eu. Deixo uma frase para você todo dia e cresço com seu treino. Toque em mim quando quiser.',
+  'Start always lives here. Hold it to pick a different routine.': 'Começar está sempre aqui. Segure para escolher outra rotina.',
+  'Plan, Stats and Exercises sit along the bottom. That’s the tour. Let’s train!': 'Plano, Estatísticas e Exercícios ficam embaixo. Fim do tour. Vamos treinar!',
+  'Set the weight and reps, then tick the circle when the set is done.': 'Defina o peso e as repetições e marque o círculo quando a série terminar.',
+  'I’ll tell you here when it’s time to add weight, and why.': 'Aqui eu digo quando é hora de aumentar o peso, e por quê.',
+  'Every rest is a round of Rest Blast. When you’re done, Finish is up here.': 'Cada descanso é uma rodada de Rest Blast. Quando terminar, Concluir fica aqui em cima.',
+  'Show Iso’s guide again': 'Ver o guia do Iso de novo',
+  'Iso walks you round Home and your first workout.': 'O Iso mostra a Início e seu primeiro treino.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

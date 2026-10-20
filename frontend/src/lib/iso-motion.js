@@ -41,6 +41,8 @@ export const REACTIONS = {
   laugh: { dur: 1.2, brow: 0.4, browIn: 0, wide: 0.35, smile: 1, o: 0.6, shake: true },
   dizzy: { dur: 1.1, brow: 0.9, browIn: 0, wide: 1.1, smile: 0.1, o: 0.5, wobble: true },
   oops: { dur: 0.9, brow: -0.5, browIn: 0.5, wide: 1.15, smile: 0, o: 0.3 },
+  think: { dur: 1.8, brow: 0.7, browIn: 0.25, wide: 1.05, smile: 0.15, o: 0.25, lookUp: true },
+  nod: { dur: 1.1, brow: 0.3, browIn: 0, wide: 1, smile: 0.8, o: 0, nod: true },
 }
 
 // breathing: depth and speed by mood
@@ -116,7 +118,7 @@ export function nudge(st, amount) {
  * null; `talking` opens and shuts the mouth (and Iso glances at what it says, `talkSide`).
  * Returns the pose for the drawing.
  */
-export function step(st, { dt, mood = 'chill', pointer = null, talking = false, talkSide = 1, small = false }, rng = Math.random) {
+export function step(st, { dt, mood = 'chill', pointer = null, talking = false, talkSide = 1, small = false, point = null }, rng = Math.random) {
   dt = Math.min(dt, 0.1)
   const b = BEHAVIORS[mood] || BEHAVIORS.chill
   st.t += dt
@@ -166,6 +168,11 @@ export function step(st, { dt, mood = 'chill', pointer = null, talking = false, 
   if (beh === 'sigh' || beh === 'nod') gy = 0.7
   if (mood === 'sleepy') gy = Math.max(gy, 0.4)
   if (rx?.wobble) { gx = Math.sin(st.rxT * 22) * 0.9; gy = Math.cos(st.rxT * 17) * 0.4 }
+  if (rx?.lookUp) { gx = -0.75; gy = -0.9 }
+  // pointing at something: it looks there too
+  if (point === 'left' || point === 'right') { gx = point === 'left' ? -0.9 : 0.9; gy = gy * 0.3 }
+  if (point === 'down') gy = 0.9
+  if (point === 'up') gy = -0.9
 
   // targets for the springs
   const [depth, speed] = BREATH[mood] || [0.025, 2.2]
@@ -200,6 +207,12 @@ export function step(st, { dt, mood = 'chill', pointer = null, talking = false, 
     alT = idle.alT + (alT - idle.alT) * e; arT = idle.arT + (arT - idle.arT) * e
   }
   if (rx?.shake) { rT += Math.sin(st.rxT * 40) * 5 * rxE; sT += Math.sin(st.rxT * 40) * 0.025 * rxE }
+  if (rx?.nod) sT -= 0.06 * Math.max(0, Math.sin(st.rxT * Math.PI * 3.6)) * rxE
+  // the near arm comes up and out toward what it points at (left arm hangs at 0, up is +; right mirrors)
+  if (point === 'left') { alT = 150; rT -= 4 }
+  if (point === 'right') { arT = -150; rT += 4 }
+  if (point === 'up') { arT = -175 }
+  if (point === 'down') { arT = -40 }
   if (st.rx === 'love') { alT = Math.max(alT, 30 * rxE); arT = Math.min(arT, -30 * rxE) }
 
   // the face: the mood's, with the reaction blended over it

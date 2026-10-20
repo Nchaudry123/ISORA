@@ -24,10 +24,15 @@ const FRONT = { x: 18, y: 24, w: 84, h: 72, r: 24 }
 
 function Eyes({ mood, id }) {
   // glossy eyes: a navy oval, a big catchlight and a small one
+  // the white of the eye, then the pupil with its catchlights: the pupil moves a little more than
+  // the face does (bd-pupil, moved per frame), which is what makes a look read as a look
   const eye = (cx, cy = 58, ry = 9) => <g key={cx}>
-    <ellipse cx={cx} cy={cy} rx="6.8" ry={ry} fill={INK} />
-    <ellipse cx={cx + 2.2} cy={cy - 3.4} rx="2.6" ry="3" fill="#fff" />
-    <circle cx={cx - 2.2} cy={cy + 3.6} r="1.3" fill="#fff" opacity=".85" />
+    <ellipse cx={cx} cy={cy} rx={6.8 + 2.4} ry={ry + 2.4} fill="#fff" opacity=".92" />
+    <g className="bd-pupil">
+      <ellipse cx={cx} cy={cy} rx="6.8" ry={ry} fill={INK} />
+      <ellipse cx={cx + 2.2} cy={cy - 3.4} rx="2.6" ry="3" fill="#fff" />
+      <circle cx={cx - 2.2} cy={cy + 3.6} r="1.3" fill="#fff" opacity=".85" />
+    </g>
   </g>
   const arc = (cx, up = true) => <path key={cx} d={up ? `M${cx - 7} 61q7-9 14 0` : `M${cx - 7} 57q7 7 14 0`}
     stroke={INK} strokeWidth="4" fill="none" strokeLinecap="round" />
@@ -135,7 +140,7 @@ const f2 = n => (Math.round(n * 1000) / 1000)
 
 const HEART = 'M0 3.2c-2.6-5.2-8-2.4-6 1.6 1.2 2.4 4.2 4.4 6 5.8 1.8-1.4 4.8-3.4 6-5.8 2-4-3.4-6.8-6-1.6Z'
 
-export default function Buddy({ mood = 'chill', level = 1, size = 96, still = false, interactive = false, bump, react, talking = false, talkSide = 1, enter = false, eyesFollow, className = '' }) {
+export default function Buddy({ mood = 'chill', level = 1, size = 96, still = false, interactive = false, bump, react, talking = false, talkSide = 1, point = null, enter = false, eyesFollow, className = '' }) {
   const id = 'bd' + useId().replace(/[^a-zA-Z0-9]/g, '')
   const [poked, setPoked] = useState(0)
   const timer = useRef(null)
@@ -143,9 +148,9 @@ export default function Buddy({ mood = 'chill', level = 1, size = 96, still = fa
     armL: useRef(null), armR: useRef(null), face: useRef(null), eyes: useRef(null), mouth: useRef(null),
     browL: useRef(null), browR: useRef(null), o: useRef(null), hearts: useRef(null) }
   const sim = useRef(null)
-  const live = useRef({ mood, talking, talkSide })
+  const live = useRef({ mood, talking, talkSide, point })
   const cheer = mood === 'cheer'
-  live.current = { mood: poked ? 'proud' : mood, talking, talkSide }
+  live.current = { mood: poked ? 'proud' : mood, talking, talkSide, point }
   useEffect(() => () => { clearTimeout(timer.current); clearTimeout(timer.face) }, [])
 
   // the happy face comes once the surprise has passed (lib/iso-motion.js REACTIONS.surprise)
@@ -177,13 +182,14 @@ export default function Buddy({ mood = 'chill', level = 1, size = 96, still = fa
       const dt = last ? (now - last) / 1000 : 1 / 60
       last = now
       const p = iso.step(st, { dt, mood: live.current.mood, talking: live.current.talking, talkSide: live.current.talkSide, small,
-        pointer: now - pointerAt < 2500 ? pointer : null })
+        point: live.current.point, pointer: now - pointerAt < 2500 ? pointer : null })
       set(R.jump, `translate(0 ${f2(p.jy)})`)
       set(R.lean, `rotate(${f2(p.rot)} 60 106)`)
       set(R.body, `translate(60 104) scale(${f2(p.sx)} ${f2(p.sy)}) translate(-60 -104)`)
       set(R.armL, `rotate(${f2(p.al)} 24 72)`)
       set(R.armR, `rotate(${f2(p.ar)} 96 72)`)
       set(R.face, `translate(${f2(p.lx * 5)} ${f2(p.ly * 3.6)})`)
+      if (R.eyes.current) for (const pu of R.eyes.current.querySelectorAll('.bd-pupil')) pu.setAttribute('transform', `translate(${f2(p.lx * 2.4)} ${f2(p.ly * 2)})`)
       set(R.eyes, `translate(0 59) scale(${f2(1 + (p.wide - 1) * 0.35)} ${f2(p.blink * p.wide)}) translate(0 -59)`)
       set(R.mouth, `translate(60 77) scale(${f2((0.85 + 0.3 * p.smile) * (0.9 + 0.1 * p.mouth))} ${f2(p.mouth * (1 - p.o))}) translate(-60 -77)`)
       // eyebrows: raised or drooping with `brow`, knitted with `browIn` (inner ends down)

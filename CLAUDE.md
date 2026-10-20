@@ -23,6 +23,9 @@ its best spot shown as a hint (`bestSpot`/`bestMove`), all in `lib/blockblast.js
 Media: the web builds (frontend/vercel.json, .github/workflows/pages.yml) do not ship the 220 MB
 catalogue; `VITE_IMG_BASE`/`VITE_GIF_BASE` point at jsDelivr over this repo's `catalogue/media`,
 and `public/sw.js` caches that one foreign origin for offline use. Dev still serves it locally.
+Iso's guide (`components/Tour.jsx`): spotlight tours of Home and the first workout, owed in
+localStorage `isora_tour` after the first setup; Settings → Look & Home offers them again. The
+iOS status bar is opaque (`default`): iOS 26 blurs and fades content under a translucent one.
 
 What follows is openGym's own guide, still accurate for the code.
 

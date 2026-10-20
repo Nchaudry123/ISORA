@@ -7,6 +7,7 @@ import { t, tn, dateLocale } from '../lib/i18n.js'
 import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, starterPlanSheet, bwDeltaColor, weighInsSheet, workoutDetailSheet } from '../sheets.jsx'
 import LineChart from '../components/LineChart.jsx'
 import Icon from '../components/Icon.jsx'
+import { useOwedTour } from '../components/Tour.jsx'
 import QueueRow from '../components/QueueRow.jsx'
 import { queueOf, queueView, weekTally, pinState } from '../lib/queue.js'
 import { scheduleModeOf } from '../lib/rotation.js'
@@ -27,6 +28,8 @@ import { cleanProfile, greetingFor } from '../lib/profile.js'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
+  const tourReady = useStore(st => st.S.routines.length > 0 && !st.S.active && !!st.S.onboarded)
+  useOwedTour('home', tourReady)
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const user = useStore(s => s.user)

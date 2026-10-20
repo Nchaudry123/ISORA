@@ -12,6 +12,7 @@ import { loadStarterPlan, PLAN_COPY } from '../sheets.jsx'
 import IsoraMark from './IsoraMark.jsx'
 import Buddy from './Buddy.jsx'
 import { BuddyPicker, currentLevel } from './BuddyParts.jsx'
+import { oweTours } from './Tour.jsx'
 import { cleanBuddy, KIND, DEFAULT_NAME } from '../lib/buddy.js'
 import Icon from './Icon.jsx'
 import { Button } from './ui.jsx'
@@ -42,6 +43,31 @@ function OnboardingChat() {
   const [picked, setPicked] = useState(() => !!cleanBuddy(S.buddy).kind)
   const buddy = cleanBuddy(S.buddy)
   const history = useRef(null)
+  const root = useRef(null)
+  // The overlay is sized to the visual viewport, not the layout one: on iOS the keyboard does not
+  // resize the page, it scrolls it, and a plain inset:0 overlay then sat half off-screen with the
+  // Home page showing under the composer. The page is pinned meanwhile, so nothing scrolls under.
+  useEffect(() => {
+    const vv = window.visualViewport
+    const el = root.current
+    const y = window.scrollY
+    document.body.classList.add('ob-open')
+    document.body.style.top = -y + 'px'
+    const fit = () => {
+      if (!el) return
+      if (vv) { el.style.height = Math.round(vv.height) + 'px'; el.style.transform = `translateY(${Math.round(vv.offsetTop)}px)` }
+      end.current?.scrollIntoView?.({ block: 'end' })
+    }
+    fit()
+    vv?.addEventListener('resize', fit); vv?.addEventListener('scroll', fit)
+    window.addEventListener('orientationchange', fit)
+    return () => {
+      vv?.removeEventListener('resize', fit); vv?.removeEventListener('scroll', fit)
+      window.removeEventListener('orientationchange', fit)
+      document.body.classList.remove('ob-open'); document.body.style.top = ''
+      window.scrollTo(0, y)
+    }
+  }, [])
   const known = useRef({})          // what the server says the chat has learned so far (api/coach-chat.js)
   const declined = useRef([])
   const script = useRef({ i: 0, answers: {} })
@@ -167,6 +193,7 @@ function OnboardingChat() {
       s.onboarded = true
     })
     loadStarterPlan(pickPlan(p), gear, planShape(p))
+    oweTours(['home', 'workout'])   // Iso shows the way round, once Home and the first workout are up
   }
   const skip = () => update(s => { s.onboarded = true })
 
@@ -186,7 +213,7 @@ function OnboardingChat() {
   }
 
   // first: meet Iso; Iso then runs the chat as itself
-  if (!picked) return <div className="ob" role="dialog" aria-label={t('Welcome to ISORA')}>
+  if (!picked) return <div className="ob" ref={root} role="dialog" aria-label={t('Welcome to ISORA')}>
     <div className="ob-head">
       <span className="ob-av"><IsoraMark size={24} /></span>
       <div className="ob-head-t"><div className="ob-name">{t('Welcome to ISORA')}</div><div className="ob-sub">{t('Your ISORA buddy')}</div></div>
@@ -198,7 +225,7 @@ function OnboardingChat() {
     </div>
   </div>
 
-  return <div className="ob" role="dialog" aria-label={t('Welcome to ISORA')}>
+  return <div className="ob" ref={root} role="dialog" aria-label={t('Welcome to ISORA')}>
     <div className="ob-head">
       <span className="ob-av buddy-av"><Buddy mood={result ? 'proud' : 'hyped'} size={44} talking={busy} /></span>
       <div className="ob-head-t"><div className="ob-name">{buddy.name}</div><div className="ob-sub">{busy ? t('typing…') : t('Your ISORA buddy')}</div></div>

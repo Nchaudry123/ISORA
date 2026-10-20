@@ -31,6 +31,7 @@ import { afterScrollRestore, scrollRestorePending } from '../components/Modals.j
 import { effortColor } from '../lib/effort.js'
 import Elapsed from '../components/Elapsed.jsx'
 import Buddy from '../components/Buddy.jsx'
+import { useOwedTour } from '../components/Tour.jsx'
 // Iso, once met, is the one who explains the progression line (components/Buddy.jsx)
 const isoMet = () => !!useStore.getState().S.buddy?.kind
 import Icon from '../components/Icon.jsx'
@@ -950,6 +951,8 @@ function ActiveWorkout() {
   const requestedView = A.workoutView || S.workoutView
   const workoutView = ['list', 'compact', 'focus'].includes(requestedView) ? requestedView : 'cards'
   const listMode = workoutView === 'list' || workoutView === 'compact'
+  // Iso's guide to the screen, the first time a session is open (components/Tour.jsx)
+  useOwedTour('workout', !!S.active && !S.active.editingWorkoutId, 1200)
   const focusMode = workoutView === 'focus'
   const dense = workoutView === 'compact'
   // A superset's heading: its own name and rest between rounds when it has them (#292).

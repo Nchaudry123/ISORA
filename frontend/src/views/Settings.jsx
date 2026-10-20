@@ -40,6 +40,7 @@ import { forgetCoach } from '../lib/coach-api.js'
 import { REST_MAX, REST_PAUSE_MIN, REST_PAUSE_MAX, fmtRest, fmtDuration } from '../lib/duration.js'
 import { starterPlanSheet, confirmSheet, importFromApp, importFromHevy, equipmentProfileSheet, plateInventorySheet, dumbbellInventorySheet, menuSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
+import { oweTours } from '../components/Tour.jsx'
 import { durationSheet } from '../components/DurationWheel.jsx'
 import { showsConnection, showsLocalLine } from '../components/SyncBanner.jsx'
 import BackupFolderRow, { useBackupFolder, autoBackupSubtitle } from '../components/BackupFolderRow.jsx'
@@ -725,6 +726,10 @@ export default function Settings({ page = null, find = null, via = null }) {
     equipment: () => <EquipmentCard S={S} update={update} />,
 
     look: () => <>
+      {PERSONAL && <Section footer={t('Iso walks you round Home and your first workout.')}>
+        <Row icon="sparkles" iconTint="var(--acc)" title={t('Show Iso’s guide again')} accessory="chevron"
+          onClick={() => { oweTours(['home', 'workout']); nav('/home') }} />
+      </Section>}
       <Section footer={DEMO || MOBILE || !user ? undefined : t('synced with your profile')}>
         <Row icon="moon" iconTint="var(--indigo)" title={t('Theme')}>
           <Segmented
