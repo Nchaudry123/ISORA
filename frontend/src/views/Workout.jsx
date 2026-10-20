@@ -32,6 +32,7 @@ import { effortColor } from '../lib/effort.js'
 import Elapsed from '../components/Elapsed.jsx'
 import Buddy from '../components/Buddy.jsx'
 import { useOwedTour } from '../components/Tour.jsx'
+import { cyclingLine } from '../components/CyclingSheet.jsx'
 // Iso, once met, is the one who explains the progression line (components/Buddy.jsx)
 const isoMet = () => !!useStore.getState().S.buddy?.kind
 import Icon from '../components/Icon.jsx'
@@ -691,6 +692,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
         : <Icon name={plan.kind === 'up' ? 'arrowUp' : plan.kind === 'deload' ? 'arrowDown' : 'lightbulb'} />}
       <span><strong>{t(guidance.policyLabel)}</strong> · {t(...guidance.why)}</span>
     </button>}
+    {(() => { const cl = cyclingLine(S, entry.id); return cl ? <div className="exnote cycline"><Icon name="swap" style={{ fontSize: 13, marginInlineEnd: 5, verticalAlign: '-2px' }} />{cl.text}</div> : null })()}
     </>}
     <div className="card" style={{ marginTop: 10, marginBottom: 0 }}>
       {/* the header carries the same eff3/timed sizing as the rows, or the labels drift off their

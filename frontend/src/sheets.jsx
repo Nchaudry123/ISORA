@@ -13,6 +13,8 @@ import { t, tn, dateLocale, instrFor, instrTranslated, descFor, exerciseNameFor,
 import { nav, closeThenNav, navToWorkout } from './lib/nav.js'
 import { buildStarterPlan, starterPlanDays, starterPlanOptions } from './lib/starter.js'
 import { shapeRoutine } from './lib/onboarding.js'
+import { reviewCycling, applySwitch } from './lib/cycling.js'
+import { announceSwitches } from './components/CyclingSheet.jsx'
 import Media, { Thumb } from './components/Media.jsx'
 import CustomMediaField from './components/CustomMediaField.jsx'
 import WorkoutMediaSection, { workoutMediaCount } from './components/WorkoutMedia.jsx'
@@ -3397,6 +3399,7 @@ function doFinishWorkout() {
     const rec = is1RMRecord(st, e.id, e)
     if (rec && !prs.includes(e.id)) e1prs.push({ id: e.id, ...rec })
   })
+  let rotated = []
   const w = buildCompletedWorkout(A, {
     end: past ? backfillEnd(A) : sessionEnd(A),
     prs,
@@ -3425,7 +3428,11 @@ function doFinishWorkout() {
     // A rotation pass this app manages starts its next pass the moment the last session lands
     // (lib/rotation.js). A planner's queue is left alone: it completes and waits for its writer.
     refillAfter(s, w)
+    // Variation Cycling (lib/cycling.js): a pattern three weeks without a new best rotates to its
+    // next variation, in every routine that holds it, at 85% of the peak
+    if (s.cycling?.on) { const r = reviewCycling(s); s.cycling = r.cycling; r.switches.forEach(sw => applySwitch(s, sw)); rotated = r.switches }
   })
+  if (rotated.length) announceSwitches(rotated, useStore.getState().S.unit || 'kg')
   useStore.getState().autoBackupNow()
   useUI.getState().stopRest()
   // A hold still counting (a plank left unchecked, then Finish early) goes with the workout, as

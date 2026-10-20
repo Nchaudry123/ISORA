@@ -651,3 +651,17 @@ body.ob-open{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 .tour-card .tour-iso{animation:iso-cheer .8s var(--spring) .1s both}
 @keyframes tour-in{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){ .tour-card,.tour-card .tour-iso{animation:none} .tour-spot,.tour-card{transition:none} }
+
+/* ---------------------------------------------------------- Variation Cycling -- */
+.cyc-iso{display:flex;align-items:center;gap:10px;margin:6px 0 12px}
+.cyc-iso p{margin:0}
+.cyc-list .item{cursor:pointer}
+.cyc-n{width:28px;height:28px;border-radius:50%;background:var(--surface-2);color:var(--label-2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex:none}
+.cyc-var.is-active .cyc-n{background:var(--acc);color:var(--on-acc)}
+.cyc-var.is-done .cyc-n{background:color-mix(in srgb,var(--acc) 30%,var(--surface-2));color:var(--label)}
+.cyc-var.is-empty .tt{color:var(--label-2)}
+.cyc-tag.active{background:var(--acc);color:var(--on-acc)}
+.cyc-tag.pending{background:var(--surface-2);color:var(--label-2)}
+.cyc-tag.done{background:var(--acc-soft);color:var(--acc)}
+.cyc-tag.stalled{background:color-mix(in srgb,var(--orange) 20%,var(--surface-2));color:var(--orange)}
+.cycline{color:var(--rest)}

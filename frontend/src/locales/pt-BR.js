@@ -1480,6 +1480,16 @@ export const PT_BR_OVERRIDES = {
   'Every rest is a round of Rest Blast. When you’re done, Finish is up here.': 'Cada descanso é uma rodada de Rest Blast. Quando terminar, Concluir fica aqui em cima.',
   'Show Iso’s guide again': 'Ver o guia do Iso de novo',
   'Iso walks you round Home and your first workout.': 'O Iso mostra a Início e seu primeiro treino.',
+  'Hinge': 'Dobradiça de quadril',
+  'Pick {0} variations': 'Escolha {0} variações',
+  'On · only a true plateau switches': 'Ligado · só um platô de verdade troca',
+  'Three variations per movement pattern. You stay on one while it moves; three trained weeks without a new best rotate it to the next, starting at {0}% of your peak. Curls and raises are never rotated.': 'Três variações por padrão de movimento. Você fica em uma enquanto ela evolui; três semanas treinadas sem novo recorde passam para a próxima, começando em {0}% do seu pico. Roscas e elevações nunca rodam.',
+  'Start with your weakest variation. The others follow as each one stalls.': 'Comece pela sua variação mais fraca. As outras vêm conforme cada uma estagna.',
+  'Pick a variation': 'Escolha uma variação',
+  'Tap to choose': 'Toque para escolher',
+  'Switching carries {0}% of the peak over as the new starting weight, in every routine that holds it.': 'Ao trocar, {0}% do pico vira o novo peso inicial em toda rotina que a contém.',
+  '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0} está parado há {1} semanas. Próximo: {2}, começando em {3}.',
+  'Switched to {0}, starting at {1}.': 'Trocado para {0}, começando em {1}.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

@@ -13,6 +13,7 @@ import IsoraMark from './IsoraMark.jsx'
 import Buddy from './Buddy.jsx'
 import { BuddyPicker, currentLevel } from './BuddyParts.jsx'
 import { oweTours } from './Tour.jsx'
+import { seedCycling } from '../lib/cycling.js'
 import { cleanBuddy, KIND, DEFAULT_NAME } from '../lib/buddy.js'
 import Icon from './Icon.jsx'
 import { Button } from './ui.jsx'
@@ -193,6 +194,7 @@ function OnboardingChat() {
       s.onboarded = true
     })
     loadStarterPlan(pickPlan(p), gear, planShape(p))
+    update(s => { s.cycling = seedCycling(s, true) })   // Variation Cycling, on from day one (lib/cycling.js)
     oweTours(['home', 'workout'])   // Iso shows the way round, once Home and the first workout are up
   }
   const skip = () => update(s => { s.onboarded = true })

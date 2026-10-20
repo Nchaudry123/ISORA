@@ -26,6 +26,10 @@ and `public/sw.js` caches that one foreign origin for offline use. Dev still ser
 Iso's guide (`components/Tour.jsx`): spotlight tours of Home and the first workout, owed in
 localStorage `isora_tour` after the first setup; Settings → Look & Home offers them again. The
 iOS status bar is opaque (`default`): iOS 26 blurs and fades content under a translucent one.
+Variation Cycling (`lib/cycling.js`, tested; `components/CyclingSheet.jsx`): three variations per
+movement pattern in `S.cycling`; `reviewCycling` after each finished workout (sheets.jsx
+doFinishWorkout) rotates a pattern after 3 trained weeks without a new best, `applySwitch` swaps
+the lift in every routine at 85% of the peak. Seeded on at the first setup; Plan has the switch.
 
 What follows is openGym's own guide, still accurate for the code.
 
