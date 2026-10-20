@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { Suspense, lazy, useEffect, useLayoutEffect, useRef } from 'react'
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation, useNavigationType } from 'react-router-dom'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
@@ -32,24 +32,24 @@ import Intro from './components/Intro.jsx'
 import TimerFlash from './components/TimerFlash.jsx'
 import { openDeviceLinkRedeem } from './components/Passkeys.jsx'
 import Login from './views/Login.jsx'
-import MobileOnboarding from './views/MobileOnboarding.jsx'
+const MobileOnboarding = lazy(() => import('./views/MobileOnboarding.jsx'))
 import Home from './views/Home.jsx'
-import CheckIn from './views/CheckIn.jsx'
+const CheckIn = lazy(() => import('./views/CheckIn.jsx'))
 import Plan from './views/Plan.jsx'
 import RoutineEdit from './views/RoutineEdit.jsx'
 import Workout from './views/Workout.jsx'
 import Stats from './views/Stats.jsx'
 import History from './views/History.jsx'
 import Library from './views/Library.jsx'
-import Muscles from './views/Muscles.jsx'
-import StructuralBalance from './views/StructuralBalance.jsx'
-import ProgressPhotos from './views/ProgressPhotos.jsx'
+const Muscles = lazy(() => import('./views/Muscles.jsx'))
+const StructuralBalance = lazy(() => import('./views/StructuralBalance.jsx'))
+const ProgressPhotos = lazy(() => import('./views/ProgressPhotos.jsx'))
 import { SettingsRoute } from './views/Settings.jsx'
-import Admin from './views/Admin.jsx'
-import CoachChat from './views/CoachChat.jsx'
-import Measurements from './views/Measurements.jsx'
-import CoachIntake from './views/CoachIntake.jsx'
-import CoachSetup from './views/CoachSetup.jsx'
+const Admin = lazy(() => import('./views/Admin.jsx'))
+const CoachChat = lazy(() => import('./views/CoachChat.jsx'))
+const Measurements = lazy(() => import('./views/Measurements.jsx'))
+const CoachIntake = lazy(() => import('./views/CoachIntake.jsx'))
+const CoachSetup = lazy(() => import('./views/CoachSetup.jsx'))
 
 // last known scrollY per route, so back-navigation can put the page where it was
 const scrollPositions = new Map()
@@ -219,6 +219,9 @@ function Shell() {
           re-mounts the boundary, so the tab bar is always a way out */}
       <div id="app" className={'vfade ' + dir.current} key={loc.pathname}>
         <ErrorBoundary>
+          {/* the rarely opened screens arrive on first use (lazy above); nothing shows while one loads,
+              the page already has its header and tab bar */}
+          <Suspense fallback={null}>
           {!authed ? <Login /> : needsMobileOnboarding ? <MobileOnboarding /> : (
             <Routes>
               <Route path="/home" element={<Home />} />
@@ -248,6 +251,7 @@ function Shell() {
               <Route path="*" element={<Navigate to="/home" replace />} />
             </Routes>
           )}
+          </Suspense>
         </ErrorBoundary>
       </div>
       {/* Outside #app: the view's fade-in animates a transform, and a fixed element inside it
