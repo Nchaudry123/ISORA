@@ -29,6 +29,7 @@ import RestGame from './components/RestGame.jsx'
 import Onboarding from './components/Onboarding.jsx'
 import CloudSync from './components/CloudSync.jsx'
 import Intro from './components/Intro.jsx'
+import { WelcomeHost } from './components/Welcome.jsx'
 import TourHost from './components/Tour.jsx'
 import TimerFlash from './components/TimerFlash.jsx'
 import { openDeviceLinkRedeem } from './components/Passkeys.jsx'
@@ -268,6 +269,7 @@ function Shell() {
       <Toast />
       <TimerFlash />
       <TourHost />
+      <WelcomeHost />
       <Intro />
     </>
   )

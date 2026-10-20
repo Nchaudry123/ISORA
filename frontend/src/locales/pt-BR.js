@@ -1499,6 +1499,14 @@ export const PT_BR_OVERRIDES = {
   'Rest over on the lock screen': 'Fim do descanso na tela de bloqueio',
   'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'Uma notificação quando o descanso acaba, mesmo com o celular bloqueado. No iPhone, o ISORA precisa estar na tela inicial.',
   'Lock-screen alerts aren’t set up on this server yet.': 'Os alertas de tela de bloqueio ainda não estão configurados neste servidor.',
+  'Hi, I’m Iso.': 'Oi, eu sou o Iso.',
+  'Your ISORA buddy. I cheer you on, keep an eye on your week and grow as you train. Go on, tap me.': 'Seu parceiro do ISORA. Eu torço por você, fico de olho na sua semana e cresço enquanto você treina. Vai, toca em mim.',
+  'Every rest is a round of Rest Blast.': 'Cada descanso é uma rodada de Rest Blast.',
+  'Three minutes of puzzle while you rest. Easy pieces early, harder later. Clear lines, beat your best, then back to the bar.': 'Três minutos de quebra-cabeça enquanto você descansa. Peças fáceis no começo, mais difíceis depois. Limpe linhas, bata seu recorde e volte pra barra.',
+  'Tell me your goal and I build the plan. When you’re ready I add weight, and when a lift stalls I switch the variation.': 'Me diz seu objetivo e eu monto o plano. Quando você estiver pronto eu subo o peso, e se um exercício travar eu troco a variação.',
+  'Train, rest, repeat. Let’s set you up. It takes about a minute.': 'Treine, descanse, repita. Vamos configurar você. Leva cerca de um minuto.',
+  'Play the welcome again': 'Ver as boas-vindas de novo',
+  'The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.': 'As boas-vindas são as quatro telas da primeira abertura. O guia do Iso mostra a Início e o seu primeiro treino.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

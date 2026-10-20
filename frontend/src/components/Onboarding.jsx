@@ -13,6 +13,7 @@ import IsoraMark from './IsoraMark.jsx'
 import Buddy from './Buddy.jsx'
 import { BuddyPicker, currentLevel } from './BuddyParts.jsx'
 import { oweTours } from './Tour.jsx'
+import Welcome from './Welcome.jsx'
 import { seedCycling } from '../lib/cycling.js'
 import { cleanBuddy, KIND, DEFAULT_NAME } from '../lib/buddy.js'
 import Icon from './Icon.jsx'
@@ -42,6 +43,7 @@ function OnboardingChat() {
   const [restoring, setRestoring] = useState(false)
   const mode = useRef('ai')
   const [picked, setPicked] = useState(() => !!cleanBuddy(S.buddy).kind)
+  const [welcomed, setWelcomed] = useState(() => !!cleanBuddy(S.buddy).kind)   // the welcome screens come before meeting Iso
   const buddy = cleanBuddy(S.buddy)
   const history = useRef(null)
   const root = useRef(null)
@@ -214,7 +216,8 @@ function OnboardingChat() {
     } finally { setBusy(false) }
   }
 
-  // first: meet Iso; Iso then runs the chat as itself
+  // first the welcome screens (components/Welcome.jsx), then meet Iso; Iso then runs the chat as itself
+  if (!welcomed) return <Welcome onDone={() => setWelcomed(true)} />
   if (!picked) return <div className="ob" ref={root} role="dialog" aria-label={t('Welcome to ISORA')}>
     <div className="ob-head">
       <span className="ob-av"><IsoraMark size={24} /></span>

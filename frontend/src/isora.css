@@ -679,3 +679,91 @@ body.ob-open{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 .inst-x{position:absolute;top:8px;inset-inline-end:8px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--label-2);background:color-mix(in srgb,var(--label) 8%,transparent)}
 .inst{animation:rise .6s var(--spring-soft) both}
 @media (prefers-reduced-motion:reduce){ .inst{animation:none} }
+
+/* ---- the welcome (components/Welcome.jsx): four screens before Iso's setup chat ---- */
+.wel{position:fixed;inset:0;z-index:96;background:var(--bg);display:flex;flex-direction:column;padding:var(--sat) 0 calc(var(--sab,0px) + 16px);overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.wel.replay{z-index:350}
+.wel-top{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 0}
+.wel-brand{display:inline-flex;align-items:center;gap:8px;font-family:var(--display);font-stretch:116%;font-weight:800;letter-spacing:.06em;font-size:15px;color:var(--label)}
+.wel-skip{background:none;border:0;color:var(--label-2);font-weight:600;font-size:15px;padding:8px 2px;min-width:44px;min-height:36px}
+.wel-slide{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 24px 4dvh;text-align:center}
+.wel-scene{position:relative;flex:1;min-height:200px;max-height:46dvh;width:100%;display:flex;align-items:center;justify-content:center}
+.wel-stage{position:relative;display:flex;align-items:center;justify-content:center;max-width:100%}
+.wel-iso{position:absolute;right:-44px;bottom:-4px;filter:drop-shadow(0 12px 18px rgba(0,0,0,.45))}
+.is-plan .wel-iso{right:-76px;bottom:54px}
+.is-balance .wel-iso{right:-82px;bottom:-4px}
+.wel-title{font-family:var(--display);font-stretch:112%;font-weight:800;font-size:30px;line-height:1.1;letter-spacing:-.02em;color:var(--label);margin:18px 0 10px;text-wrap:balance}
+.wel-body{font-size:17px;line-height:1.4;color:var(--label-2);margin:0;max-width:34ch;text-wrap:pretty}
+.wel-foot{display:flex;flex-direction:column;align-items:center;gap:18px;padding:12px 24px 0}
+.wel-dots{display:flex;gap:6px}
+.wel-dots i{width:7px;height:7px;border-radius:99px;background:var(--surface-3);transition:background .3s,width .35s var(--spring-soft)}
+.wel-dots i.on{background:var(--acc);width:22px}
+.wel-dots i.done{background:color-mix(in srgb,var(--acc) 50%,transparent)}
+.wel-next.btn{width:100%;max-width:360px;border-radius:99px;padding:15px;font-size:17px}
+
+/* meet: Iso on a soft halo */
+.wel-meet{position:relative;display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.wel-halo{position:absolute;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--acc) 30%,transparent),transparent 68%);animation:wel-halo 3.6s ease-in-out infinite}
+.wel-halo.h2{width:320px;height:320px;opacity:.5;animation-delay:-1.8s}
+@keyframes wel-halo{0%,100%{transform:scale(.92)}50%{transform:scale(1.06)}}
+
+/* blast: a board plays itself */
+.wel-blast{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+.wel-board{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;padding:8px;border-radius:18px;width:min(236px,60vw);aspect-ratio:1;background:var(--surface);box-shadow:inset 0 2px 10px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.04),0 30px 50px -30px rgba(0,0,0,.9)}
+:root[data-theme="light"] .wel-board{background:#dfe1e8;box-shadow:inset 0 2px 8px rgba(0,0,0,.14),0 24px 40px -28px rgba(0,0,0,.35)}
+.wel-cell{position:relative;overflow:hidden;border-radius:6px;background:color-mix(in srgb,var(--bg) 35%,var(--surface));box-shadow:inset 0 2px 3px rgba(0,0,0,.35)}
+:root[data-theme="light"] .wel-cell{background:#cfd2dc;box-shadow:inset 0 2px 3px rgba(0,0,0,.12)}
+.wel-cell[class*="rb-k"],:root[data-theme="light"] .wel-cell[class*="rb-k"],.wel-piece i{border-radius:6px;background:linear-gradient(155deg,color-mix(in srgb,var(--k) 55%,#fff) 0%,var(--k) 42%,color-mix(in srgb,var(--k) 72%,#000) 100%);box-shadow:inset 0 1.5px 0 rgba(255,255,255,.55),inset 0 -3px 0 rgba(0,0,0,.28),0 1px 0 rgba(0,0,0,.35)}
+.wel-cell.row{animation:wel-row 3.6s ease-in-out infinite}
+@keyframes wel-row{0%,46%{filter:none;transform:none;opacity:1}52%{filter:brightness(1.6);transform:scale(1.08)}60%{opacity:0;transform:scale(.4)}61%,100%{opacity:0;transform:scale(.4)}}
+/* the pieces: one block falls into the gap of the bottom row (column 3); a tall one into the column above (column 4, rows 4–5) */
+.wel-piece{position:absolute;display:grid;gap:4px;left:calc(8px + 2 * ((100% - 16px - 20px) / 6 + 4px));top:8px;width:calc((100% - 16px - 20px) / 6);aspect-ratio:1;animation:wel-drop 3.6s cubic-bezier(.5,0,.8,.3) infinite;will-change:transform}
+.wel-piece i{display:block;width:100%;aspect-ratio:1}
+@keyframes wel-drop{0%{transform:translateY(-10px);opacity:0}8%{opacity:1}40%{transform:translateY(calc(500% + 20px))}46%{transform:translateY(calc(500% + 20px))}60%,100%{transform:translateY(calc(500% + 20px));opacity:0}}
+.wel-piece.p2{aspect-ratio:1/2;left:calc(8px + 3 * ((100% - 16px - 20px) / 6 + 4px));animation:wel-drop2 3.6s cubic-bezier(.5,0,.8,.3) infinite}
+@keyframes wel-drop2{0%,60%{transform:translateY(-10px);opacity:0}66%{opacity:1}96%{transform:translateY(calc(150% + 12px))}100%{transform:translateY(calc(150% + 12px))}}
+.wel-pop{position:absolute;left:50%;bottom:22%;transform:translateX(-50%);font-family:var(--display);font-stretch:110%;font-weight:800;font-size:26px;color:#ffd23f;text-shadow:0 2px 14px rgba(0,0,0,.7);opacity:0;animation:wel-pop 3.6s ease-out infinite}
+@keyframes wel-pop{0%,48%{opacity:0;transform:translate(-50%,0) scale(.6)}54%{opacity:1;transform:translate(-50%,-10px) scale(1.1)}80%{opacity:0;transform:translate(-50%,-44px) scale(1)}100%{opacity:0}}
+.wel-blast-bar{width:min(236px,60vw);height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.wel-blast-bar i{display:block;height:100%;width:100%;border-radius:99px;background:linear-gradient(90deg,var(--acc),var(--rest) 60%,#ff4d5e);transform-origin:0 50%;animation:wel-bar 7.2s linear infinite}
+@keyframes wel-bar{from{transform:scaleX(.08)}to{transform:scaleX(1)}}
+
+/* plan: six weeks of one lift */
+.wel-plan{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%}
+.wel-bars{display:flex;align-items:flex-end;gap:10px;height:150px}
+.wel-bar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;width:30px;height:100%}
+.wel-bar i{display:block;width:100%;height:calc(70% * var(--h) + 20%);border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,color-mix(in srgb,var(--acc) 85%,#fff),var(--acc));transform-origin:50% 100%;animation:wel-grow .7s var(--spring) both;animation-delay:calc(.12s * var(--i) + .2s)}
+.wel-bar.pr i{background:linear-gradient(180deg,#ffe27a,#ffb02e);box-shadow:0 0 22px rgba(255,180,46,.45)}
+.wel-bar span{font-size:12px;font-weight:600;color:var(--label-2);font-variant-numeric:tabular-nums}
+.wel-bar b{font-family:var(--display);font-weight:800;font-size:15px;color:#ffd23f;min-height:18px;animation:rise .5s var(--spring) 1.05s both}
+@keyframes wel-grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.wel-note{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:99px;background:var(--surface);font-size:14px;font-weight:600;color:var(--label);box-shadow:0 0 0 1px var(--sep-op);animation:rise .55s var(--spring) 1.2s both}
+.wel-note-dot{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 25%,transparent)}
+
+/* balance: the ring closes on the mark */
+.wel-balance{display:flex;flex-direction:column;align-items:center;gap:22px}
+.wel-ringwrap{position:relative;display:flex;align-items:center;justify-content:center;width:124px;height:124px}
+.wel-ringwrap svg{position:absolute;inset:0}
+.wel-ringwrap .isora-mark{position:relative;filter:drop-shadow(0 12px 24px color-mix(in srgb,var(--acc) 40%,transparent));animation:wel-mark .8s var(--spring) .2s both}
+@keyframes wel-mark{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.wel-ring{stroke-dashoffset:var(--c);animation:wel-ring 1.6s cubic-bezier(.3,0,.2,1) .3s forwards}
+@keyframes wel-ring{to{stroke-dashoffset:0}}
+.wel-week{display:flex;gap:9px}
+.wel-week i{width:14px;height:14px;border-radius:50%;background:var(--surface-3);animation:wel-day .45s var(--spring) both;animation-delay:calc(.9s + .1s * var(--i))}
+.wel-week i.on{background:var(--acc)}
+@keyframes wel-day{from{transform:scale(0)}to{transform:none}}
+
+/* screens slide in from the side they came from, the words a beat behind the scene */
+.wel-slide{animation:wel-in .55s var(--spring) both}
+.wel-slide.back{animation-name:wel-in-back}
+.wel-slide .wel-title{animation:rise .55s var(--spring) .12s both}
+.wel-slide .wel-body{animation:rise .55s var(--spring) .2s both}
+.wel-slide .wel-iso{animation:iso-cheer .7s var(--spring) .15s both}
+@keyframes wel-in{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}
+@keyframes wel-in-back{from{opacity:0;transform:translateX(-36px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .wel-slide,.wel-slide .wel-title,.wel-slide .wel-body,.wel-slide .wel-iso,.wel-halo,.wel-bar i,.wel-bar b,.wel-note,.wel-ringwrap .isora-mark,.wel-week i{animation:none}
+  .wel-ring{animation:none;stroke-dashoffset:0}
+  .wel-cell.row,.wel-piece,.wel-pop,.wel-blast-bar i{animation:none}.wel-piece{opacity:0}.wel-blast-bar i{transform:scaleX(.5)}
+}
+@media (max-height:700px){.wel-title{font-size:26px;margin-top:12px}.wel-body{font-size:15px}.wel-scene{max-height:40dvh}.wel-bars{height:120px}}

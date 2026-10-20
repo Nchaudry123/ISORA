@@ -39,6 +39,10 @@ Push (needs VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY / VAPID_SUBJECT env; maxDuratio
 vercel.json; `web-push` is a function-only dependency). `lib/push.js` keeps the subscription in
 localStorage `isora_push_sub` and books on every rest (useUI bookRestEnd); `public/sw.js` drops a
 push whose rest was skipped, moved, or is on screen. Settings → Timer alerts → Lock screen.
+The welcome (`components/Welcome.jsx`, tested): four swipeable screens on the first open, before
+the buddy picker and Iso's setup chat (Onboarding.jsx `welcomed`): meet Iso, a Rest Blast board that
+plays itself, a lift climbing week by week, the ring closing on "Find your balance". Settings →
+Look & Home plays it again (`showWelcome`, mounted as `WelcomeHost` in App.jsx).
 
 What follows is openGym's own guide, still accurate for the code.
 
