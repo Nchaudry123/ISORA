@@ -70,7 +70,7 @@ function OnboardingChat() {
       document.body.classList.remove('ob-open'); document.body.style.top = ''
       window.scrollTo(0, y)
     }
-  }, [])
+  }, [welcomed])   // the chat's root exists only once the welcome is over
   const known = useRef({})          // what the server says the chat has learned so far (api/coach-chat.js)
   const declined = useRef([])
   const script = useRef({ i: 0, answers: {} })

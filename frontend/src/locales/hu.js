@@ -2481,4 +2481,5 @@ export default {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Koppints a Safari alján a Megosztásra, majd a „Hozzáadás a kezdőképernyőhöz” lehetőségre. Teljes képernyő, offline is megy, és a Rest Blast egy koppintásra van.',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Nyisd meg ezt az oldalt Safariban, koppints a Megosztásra, majd a „Hozzáadás a kezdőképernyőhöz” lehetőségre. Teljes képernyő, offline, egy koppintásra.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Koppints a böngésző tetején a ⋮ gombra, majd a „Hozzáadás a kezdőképernyőhöz” lehetőségre. Teljes képernyő, offline, egy koppintásra.',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0} {1} hete megakadt. Következik: {2}.',
 }

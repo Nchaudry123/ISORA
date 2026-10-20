@@ -1511,6 +1511,7 @@ export const PT_BR_OVERRIDES = {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Toque em Compartilhar na parte de baixo do Safari e depois em “Adicionar à Tela de Início”. Tela cheia, funciona offline e o Rest Blast fica a um toque.',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Abra esta página no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”. Tela cheia, offline, a um toque.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Toque em ⋮ no topo do navegador e depois em “Adicionar à tela inicial”. Tela cheia, offline, a um toque.',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0} está parado há {1} semanas. Próximo: {2}.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

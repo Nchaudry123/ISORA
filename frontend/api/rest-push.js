@@ -28,7 +28,7 @@ export default async function handler(req, res) {
 
   webpush.setVapidDetails(process.env.VAPID_SUBJECT || 'mailto:hello@isora.app', pub, priv)
   // the push service is told to keep it a minute only: a late delivery of "rest over" is noise
-  const payload = JSON.stringify({ title: r.title, body: r.body, tag: 'isora-rest', endsAt: Date.now() + r.seconds * 1000 })
+  const payload = JSON.stringify({ title: r.title, body: r.body, tag: 'isora-rest', endsAt: r.endsAt || Date.now() + r.seconds * 1000 })
   await sleep(Math.max(0, r.seconds * 1000 - 1200))
   try {
     await webpush.sendNotification(r.subscription, payload, { TTL: 60, urgency: 'high' })

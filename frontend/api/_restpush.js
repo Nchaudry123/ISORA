@@ -13,10 +13,13 @@ export function restPushRequest(body) {
   const n = typeof b.seconds === 'number' || typeof b.seconds === 'string' ? Number(b.seconds) : NaN
   if (!(n >= 1)) return null
   const seconds = Math.min(MAX_WAIT_SEC, Math.round(n))
+  // the page's own end time for this rest, echoed in the push so the worker can match it exactly
+  const endsAt = Number.isFinite(Number(b.endsAt)) && Number(b.endsAt) > 0 ? Math.round(Number(b.endsAt)) : null
   const text = (v, fallback) => (typeof v === 'string' && v.trim() ? v.trim().slice(0, TEXT_MAX) : fallback)
   return {
     subscription: { endpoint: sub.endpoint, keys: { p256dh: keys.p256dh, auth: keys.auth }, ...(sub.expirationTime ? { expirationTime: sub.expirationTime } : {}) },
     seconds,
+    ...(endsAt ? { endsAt } : {}),
     title: text(b.title, 'ISORA'),
     body: text(b.body, 'Rest’s over. Next set!'),
   }

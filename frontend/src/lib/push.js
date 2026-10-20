@@ -81,7 +81,7 @@ export function bookRestPush(endsAt) {
   const seconds = Math.max(1, Math.round((endsAt - Date.now()) / 1000))
   tellWorker({ type: 'isora-rest', endsAt })
   fetch('/api/rest-push', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ subscription: sub, seconds, title: 'ISORA', body: t('Rest’s over. Next set!') }) })
+    body: JSON.stringify({ subscription: sub, seconds, endsAt, title: 'ISORA', body: t('Rest’s over. Next set!') }) })
     .then(r => { if (r.status === 410) keepSub(null) }).catch(() => {})
 }
 /** The rest was skipped or ended by hand: the push that is already on its way shows nothing. */

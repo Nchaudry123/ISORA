@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { create } from 'zustand'
 import { t } from '../lib/i18n.js'
 import Buddy from './Buddy.jsx'
@@ -30,6 +30,9 @@ const STEPS = {
     { sel: ['.whdr-finish'], say: t('Every rest is a round of Rest Blast. When you’re done, Finish is up here.'), cheer: true },
   ],
 }
+
+// what must still be on screen for the tour to go on: the tab bar alone is not it, it is on every page
+const SCREEN = { home: ['.today-hero', '.week', '.queue', '.bcard'], workout: ['.setrow', '.progline', '.whdr-finish'] }
 
 const useTour = create(set => ({ name: null, start: name => set({ name }), end: () => set({ name: null }) }))
 /** Open a tour by name; nothing if it has no steps on this screen. */
@@ -70,7 +73,30 @@ function TourOverlay({ name }) {
 
   const finish = () => { settleTour(name); end() }
   const next = () => { if (i + 1 >= steps.length) finish(); else { setReact({ kind: 'nod', id: Date.now() }); setI(i + 1) } }
-  if (!step) return null
+
+  // The screen moves on whether or not the tour is followed: a step whose target has gone is
+  // skipped to the next one that is still there, and when none is left (another screen, a
+  // workout started from Home, the summary after it) the tour ends. While Rest Blast, a sheet or
+  // the first-run screens cover the page it waits out of sight. The spotlight tracks its target.
+  const [hidden, setHidden] = useState(false)
+  const seen = useRef('')
+  useEffect(() => {
+    const id = setInterval(() => {
+      const covered = !!document.querySelector('#rest-game, .sheet, .ob, .wel, .intro')
+      setHidden(covered)
+      if (covered) return
+      const el = step && findTarget(step.sel)
+      if (el) {
+        const r = el.getBoundingClientRect(), key = [r.top, r.left, r.width, r.height].map(Math.round).join()
+        if (key !== seen.current) { seen.current = key; measure() }
+        return
+      }
+      const k = findTarget(SCREEN[name]) ? steps.findIndex((st, j) => j > i && findTarget(st.sel)) : -1
+      if (k < 0) finish(); else { setReact({ kind: 'nod', id: Date.now() }); setI(k) }
+    }, 350)
+    return () => clearInterval(id)
+  }, [i])
+  if (!step || hidden) return null
 
   // Iso and the bubble stand below the target when there is room, above it otherwise
   const vh = window.innerHeight

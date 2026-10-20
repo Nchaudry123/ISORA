@@ -2489,4 +2489,5 @@ export default {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'แตะ แชร์ ด้านล่างของ Safari แล้วเลือก “เพิ่มไปยังหน้าจอโฮม” เต็มหน้าจอ ใช้งานออฟไลน์ได้ และ Rest Blast อยู่แค่แตะเดียว',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'เปิดหน้านี้ใน Safari แตะ แชร์ แล้วเลือก “เพิ่มไปยังหน้าจอโฮม” เต็มหน้าจอ ออฟไลน์ได้ แค่แตะเดียว',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'แตะ ⋮ ด้านบนของเบราว์เซอร์ แล้วเลือก “เพิ่มไปยังหน้าจอหลัก” เต็มหน้าจอ ออฟไลน์ได้ แค่แตะเดียว',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0} ตันมา {1} สัปดาห์แล้ว ถัดไป: {2}',
 }

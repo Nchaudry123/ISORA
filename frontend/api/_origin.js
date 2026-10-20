@@ -13,6 +13,9 @@ export function allowedOrigins(env = process.env) {
   const list = [...DEFAULT_ORIGINS, ...extra]
   // the project's own deployment URL, whatever its hash, and local development
   if (env.VERCEL_URL) list.push('https://' + env.VERCEL_URL)
+  // a preview is opened by its branch alias; the production alias may differ from the defaults
+  if (env.VERCEL_BRANCH_URL) list.push('https://' + env.VERCEL_BRANCH_URL)
+  if (env.VERCEL_PROJECT_PRODUCTION_URL) list.push('https://' + env.VERCEL_PROJECT_PRODUCTION_URL)
   if (env.VERCEL_ENV !== 'production') list.push('http://localhost:5199', 'http://localhost:5173', 'http://localhost:3000')
   return list
 }

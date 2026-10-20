@@ -2498,4 +2498,5 @@ export default {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Tippe unten in Safari auf Teilen, dann „Zum Home-Bildschirm“. Vollbild, funktioniert offline, und Rest Blast ist einen Tipp entfernt.',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Öffne diese Seite in Safari, tippe auf Teilen, dann „Zum Home-Bildschirm“. Vollbild, funktioniert offline, einen Tipp entfernt.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Tippe oben im Browser auf ⋮, dann „Zum Startbildschirm hinzufügen“. Vollbild, funktioniert offline, einen Tipp entfernt.',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0} stockt seit {1} Wochen. Als Nächstes: {2}.',
 }

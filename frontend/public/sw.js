@@ -227,8 +227,17 @@ self.addEventListener('push', e => {
     try { data = e.data ? e.data.json() : {} } catch { data = { body: (() => { try { return e.data.text() } catch { return '' } })() } }
     if (data.tag === 'isora-rest') {
       const rec = await restRecord()
-      const stale = rec && (rec.endsAt == null || (data.endsAt && rec.endsAt > data.endsAt + 5000))
-      if (stale || await appOnScreen()) return
+      const onScreen = await appOnScreen()
+      // only the push for the rest the page last booked shows: one for a rest since skipped
+      // (null), moved by ±15 s, paused, or replaced by a newer rest is not it
+      const stale = rec && (rec.endsAt == null || !data.endsAt || Math.abs(rec.endsAt - data.endsAt) > 5000)
+      if (stale || onScreen) {
+        // With no window of the site visible, a push that shows nothing is a "silent push" to
+        // Chrome, which counts them and in the end shows its own notice instead; one shown and
+        // closed in the same breath is not.
+        if (!onScreen) { try { await self.registration.showNotification('ISORA', { tag: 'isora-rest', silent: true }); for (const n of await self.registration.getNotifications({ tag: 'isora-rest' })) n.close() } catch {} }
+        return
+      }
     }
     // One alert per kind: a new rest-timer push replaces the last one instead of stacking
     // up in the tray (issue #172). `tag` alone should do that, but iOS keeps every one, so

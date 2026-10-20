@@ -8,6 +8,8 @@ describe('who may call the functions', () => {
     expect(originAllowed({ origin: 'https://nchaudry123.github.io' }, prod)).toBe(true)
     expect(originAllowed({ referer: 'https://nchaudry123.github.io/ISORA/#/home' }, prod)).toBe(true)
     expect(originAllowed({ origin: 'https://isora-abc123.vercel.app' }, prod)).toBe(true)
+    expect(originAllowed({ origin: 'https://isora-git-feature-x-team.vercel.app' }, { VERCEL_ENV: 'preview', VERCEL_URL: 'isora-abc.vercel.app', VERCEL_BRANCH_URL: 'isora-git-feature-x-team.vercel.app' })).toBe(true)
+    expect(originAllowed({ origin: 'https://isora.example' }, { ...prod, VERCEL_PROJECT_PRODUCTION_URL: 'isora.example' })).toBe(true)
     expect(originAllowed({ origin: 'https://evil.example' }, prod)).toBe(false)
     expect(originAllowed({ referer: 'not a url' }, prod)).toBe(false)
     expect(originAllowed({}, prod)).toBe(false)

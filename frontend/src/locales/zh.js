@@ -2478,4 +2478,5 @@ export default {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': '点 Safari 底部的分享，再点“添加到主屏幕”。全屏、可离线，Rest Blast 一点即达。',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': '在 Safari 中打开此页，点分享，再点“添加到主屏幕”。全屏、可离线，一点即达。',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': '点浏览器顶部的 ⋮，再点“添加到主屏幕”。全屏、可离线，一点即达。',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0} 已停滞 {1} 周。接下来：{2}。',
 }

@@ -2478,4 +2478,5 @@ export default {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Safari’nin altındaki Paylaş’a, sonra “Ana Ekrana Ekle”ye dokun. Tam ekran, çevrimdışı çalışır ve Rest Blast bir dokunuş uzakta.',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Bu sayfayı Safari’de aç, Paylaş’a, sonra “Ana Ekrana Ekle”ye dokun. Tam ekran, çevrimdışı, bir dokunuş uzakta.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Tarayıcının üstündeki ⋮ simgesine, sonra “Ana ekrana ekle”ye dokun. Tam ekran, çevrimdışı, bir dokunuş uzakta.',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0} {1} haftadır tıkandı. Sırada: {2}.',
 }

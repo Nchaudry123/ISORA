@@ -7,7 +7,8 @@
 // The weekly +weight / +rep inside a variation is the ordinary progression rule of the routine
 // (lib/progression.js); this file is the layer above it: which variation sits in the slot, and
 // when it changes. Pure, apart from `applySwitch`, which edits a store draft the caller holds.
-import { EXIDX, allExercises, defaultIncrement } from './exercises.js'
+import { EXIDX, allExercises, defaultIncrement, isBodyweightEq } from './exercises.js'
+import { todayISO } from './format.js'
 import { exAvailable } from './equipment.js'
 import { isWarmupRow } from './workout-model.js'
 import { replaceSlotExercise } from './routines.js'
@@ -55,6 +56,8 @@ const cleanVar = v => (v && typeof v === 'object' && typeof v.id === 'string' ? 
   id: v.id, status: STATUS.includes(v.status) ? v.status : 'pending',
   peakW: Number.isFinite(v.peakW) ? v.peakW : null, peakR: Number.isFinite(v.peakR) ? v.peakR : null,
   weeksStalled: Number.isInteger(v.weeksStalled) && v.weeksStalled >= 0 ? v.weeksStalled : 0,
+  // the day it became the active one: only weeks from then on can count as its stall
+  since: typeof v.since === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v.since) ? v.since : null,
 } : null)
 export function cleanCycling(c) {
   const o = c && typeof c === 'object' ? c : {}
@@ -93,11 +96,11 @@ export function suggestVariations(S, pattern, keep = []) {
 }
 
 /** A cycling state for this profile: every pattern filled, the plan's lift active. */
-export function seedCycling(S, on = true) {
+export function seedCycling(S, on = true, today = todayISO()) {
   const c = emptyCycling(); c.on = on
   for (const p of PATTERNS) {
     const ids = suggestVariations(S, p)
-    c.patterns[p] = { vars: ids.map((id, i) => ({ id, status: i === 0 ? 'active' : 'pending', peakW: null, peakR: null, weeksStalled: 0 })) }
+    c.patterns[p] = { vars: ids.map((id, i) => ({ id, status: i === 0 ? 'active' : 'pending', peakW: null, peakR: null, weeksStalled: 0, since: i === 0 ? today : null })) }
   }
   return c
 }
@@ -141,10 +144,13 @@ export function peakOf(S, exId) {
 }
 /**
  * Trained weeks in a row, up to the latest, without a new best (heavier, or more reps at the
- * same weight). The first week trained is the baseline and never counts as a stall.
+ * same weight). The first week trained is the baseline and never counts as a stall. With `since`
+ * (the day the variation became active) only the weeks from then on are read: what it did in an
+ * earlier turn, or in history imported from elsewhere, is not this turn's plateau.
  */
-export function stallWeeks(S, exId) {
-  const weeks = weeklyBests(S, exId)
+export function stallWeeks(S, exId, since = null) {
+  const from = since ? weekOf(since) : null
+  const weeks = weeklyBests(S, exId).filter(b => !from || b.week >= from)
   let peak = null, run = 0
   weeks.forEach((b, i) => {
     if (i === 0) { peak = { w: b.w, r: b.r }; return }
@@ -158,7 +164,7 @@ export function stallWeeks(S, exId) {
  * The state brought up to date with the history, and the switches a plateau calls for:
  * [{ pattern, from, to, carryW }]. Only the pattern that stalled moves; the others stand.
  */
-export function reviewCycling(S) {
+export function reviewCycling(S, today = todayISO()) {
   const c = cleanCycling(S.cycling)
   const switches = []
   for (const p of PATTERNS) {
@@ -168,18 +174,19 @@ export function reviewCycling(S) {
     const v = vars[i]
     const peak = peakOf(S, v.id)
     v.peakW = peak ? peak.w : v.peakW; v.peakR = peak ? peak.r : v.peakR
-    v.weeksStalled = stallWeeks(S, v.id)
+    v.weeksStalled = stallWeeks(S, v.id, v.since)
     if (v.weeksStalled < STALL_WEEKS || vars.length < 2) continue
     // a full-blown plateau: this one is done, the next starts at 85% of its peak
     v.status = 'done'
     const j = (i + 1) % vars.length
     const next = vars[j]
-    next.status = 'active'; next.weeksStalled = 0
+    next.status = 'active'; next.weeksStalled = 0; next.since = today
     // round trip through every variation: the ones done come back as pending
     vars.forEach((x, k) => { if (k !== j && x.status !== 'active') x.status = k < j && j > 0 ? 'done' : x.status })
     if (j === 0) vars.forEach((x, k) => { if (k !== 0) x.status = 'pending' })
     const unit = S.unit || 'kg'
-    const carryW = v.peakW > 0 ? snapWeight(v.peakW * CARRY, defaultIncrement(next.id, unit) / 2) : 0
+    // bodyweight work takes no carried load: its "weight" would be plates on a belt
+    const carryW = v.peakW > 0 && !isBodyweightEq(next.id) ? snapWeight(v.peakW * CARRY, defaultIncrement(next.id, unit) / 2) : 0
     switches.push({ pattern: p, from: v.id, to: next.id, carryW, peakW: v.peakW, peakR: v.peakR })
   }
   return { cycling: c, switches }
@@ -191,7 +198,7 @@ export function applySwitch(s, sw) {
     for (let k = 0; k < (r.ex || []).length; k++) {
       if (r.ex[k]?.id !== sw.from) continue
       const slot = replaceSlotExercise(r.ex[k], sw.to, s, r.id)
-      if (sw.carryW > 0) slot.weight = sw.carryW
+      if (sw.carryW > 0 && !isBodyweightEq(sw.to)) slot.weight = sw.carryW
       r.ex[k] = slot
     }
   }

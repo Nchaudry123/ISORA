@@ -2478,4 +2478,5 @@ export default {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Safari में नीचे Share टैप करो, फिर “Add to Home Screen”। फ़ुल स्क्रीन, ऑफ़लाइन चलता है, और Rest Blast एक टैप दूर।',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'यह पेज Safari में खोलो, Share टैप करो, फिर “Add to Home Screen”। फ़ुल स्क्रीन, ऑफ़लाइन, एक टैप दूर।',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'ब्राउज़र में ऊपर ⋮ टैप करो, फिर “होम स्क्रीन पर जोड़ें”। फ़ुल स्क्रीन, ऑफ़लाइन, एक टैप दूर।',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0} {1} हफ़्तों से अटका है। अगला: {2}।',
 }

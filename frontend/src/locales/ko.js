@@ -2478,4 +2478,5 @@ export default {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Safari 하단의 공유를 누른 다음 “홈 화면에 추가”를 눌러. 전체 화면, 오프라인 지원, Rest Blast가 한 번의 탭 거리에 있어.',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': '이 페이지를 Safari에서 열고 공유를 누른 다음 “홈 화면에 추가”를 눌러. 전체 화면, 오프라인, 한 번의 탭.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': '브라우저 상단의 ⋮을 누른 다음 “홈 화면에 추가”를 눌러. 전체 화면, 오프라인, 한 번의 탭.',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0}이(가) {1}주째 정체 중. 다음: {2}.',
 }

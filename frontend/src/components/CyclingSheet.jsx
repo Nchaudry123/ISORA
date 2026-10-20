@@ -1,8 +1,8 @@
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
-import { fmtNum, exerciseNameText } from '../lib/format.js'
-import { exOr } from '../lib/exercises.js'
+import { fmtNum, exerciseNameText, todayISO } from '../lib/format.js'
+import { exOr, isBodyweightEq } from '../lib/exercises.js'
 import { PATTERNS, PATTERN_NAME, PATTERN_ICON, VARIATIONS, STALL_WEEKS, CARRY, cleanCycling, seedCycling, suggestVariations, applySwitch, peakOf, stallWeeks } from '../lib/cycling.js'
 import { exercisePicker } from '../sheets.jsx'
 import { Section, Row, Switch, Button } from './ui.jsx'
@@ -20,7 +20,9 @@ const STATUS_LABEL = { active: 'Active', pending: 'Pending', stalled: 'Stalled',
 
 /** The toasts for switches a review made; shared with the finish of a workout (sheets.jsx). */
 export function announceSwitches(switches, unit) {
-  for (const sw of switches) toast(t('{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.', nameOf(sw.from), STALL_WEEKS, nameOf(sw.to), fmtNum(sw.carryW) + ' ' + unit))
+  for (const sw of switches) toast(sw.carryW > 0
+    ? t('{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.', nameOf(sw.from), STALL_WEEKS, nameOf(sw.to), fmtNum(sw.carryW) + ' ' + unit)
+    : t('{0} has stalled for {1} weeks. Next up: {2}.', nameOf(sw.from), STALL_WEEKS, nameOf(sw.to)))
 }
 
 export function CyclingSection() {
@@ -31,7 +33,7 @@ export function CyclingSection() {
     const vars = c.patterns[p].vars
     const a = vars.find(v => v.status === 'active')
     if (!a || vars.length < VARIATIONS) return t('Pick {0} variations', VARIATIONS)
-    const weeks = stallWeeks(S, a.id)
+    const weeks = stallWeeks(S, a.id, a.since)
     const peak = peakOf(S, a.id)
     return [nameOf(a.id), peak && fmtNum(peak.w) + ' ' + S.unit + ' × ' + peak.r, t('{0} of {1} weeks without progress', weeks, STALL_WEEKS)].filter(Boolean).join(' · ')
   }
@@ -74,10 +76,10 @@ function PatternSheet({ pattern, close }) {
       const j = (i + 1) % list.length
       const peak = peakOf(s, list[i].id)
       list[i].status = 'done'; list[i].peakW = peak?.w ?? list[i].peakW; list[i].peakR = peak?.r ?? list[i].peakR
-      list[j].status = 'active'; list[j].weeksStalled = 0
+      list[j].status = 'active'; list[j].weeksStalled = 0; list[j].since = todayISO()
       if (j === 0) list.forEach((x, k) => { if (k !== 0) x.status = 'pending' })
       const unit = s.unit || 'kg'
-      const carryW = peak?.w > 0 ? Math.round(peak.w * CARRY * 4) / 4 : 0
+      const carryW = peak?.w > 0 && !isBodyweightEq(list[j].id) ? Math.round(peak.w * CARRY * 4) / 4 : 0
       switches = [{ pattern, from: list[i].id, to: list[j].id, carryW }]
       applySwitch(s, switches[0])
       s.cycling = cc
@@ -95,7 +97,7 @@ function PatternSheet({ pattern, close }) {
     <div className="list grouped cyc-list">
       {slots.map((v, i) => {
         const peak = v && peakOf(S, v.id)
-        const weeks = v && v.status === 'active' ? stallWeeks(S, v.id) : null
+        const weeks = v && v.status === 'active' ? stallWeeks(S, v.id, v.since) : null
         return <div key={i} className={'item cyc-var' + (v ? ' is-' + v.status : ' is-empty')} role="button" tabIndex={0} onClick={() => pick(i)} onKeyDown={e => { if (e.key === 'Enter') pick(i) }}>
           <span className="cyc-n">{i + 1}</span>
           <div className="grow">
@@ -122,7 +124,7 @@ export function cyclingLine(S, exId) {
     const i = c.patterns[p].vars.findIndex(v => v.id === exId)
     if (i < 0) continue
     const v = c.patterns[p].vars[i]
-    const weeks = v.status === 'active' ? stallWeeks(S, exId) : null
+    const weeks = v.status === 'active' ? stallWeeks(S, exId, v.since) : null
     return { pattern: p, text: [t(PATTERN_NAME[p]), t('Variation {0}', i + 1) + ' / ' + c.patterns[p].vars.length, weeks != null && t('{0} of {1} weeks without progress', weeks, STALL_WEEKS)].filter(Boolean).join(' · ') }
   }
   return null

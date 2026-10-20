@@ -2533,4 +2533,5 @@ export default {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'اضغط مشاركة أسفل Safari ثم «إضافة إلى الشاشة الرئيسية». ملء الشاشة، يعمل بلا إنترنت، وRest Blast على بعد لمسة.',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'افتح هذه الصفحة في Safari، اضغط مشاركة ثم «إضافة إلى الشاشة الرئيسية». ملء الشاشة، بلا إنترنت، على بعد لمسة.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'اضغط ⋮ أعلى المتصفح ثم «إضافة إلى الشاشة الرئيسية». ملء الشاشة، بلا إنترنت، على بعد لمسة.',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0} متوقف منذ {1} أسابيع. التالي: {2}.',
 }

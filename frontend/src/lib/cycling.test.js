@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { patternOf, weeklyBests, stallWeeks, peakOf, reviewCycling, applySwitch, cleanCycling, seedCycling, suggestVariations, weekOf, PATTERNS } from './cycling.js'
+import { allExercises, isBodyweightEq } from './exercises.js'
 
 const wk = (d, id, sets) => ({ id: 'w' + d, d, start: 0, end: 0, entries: [{ id, sets: sets.map(([w, r]) => ({ w, r, done: true })) }] })
 const S = (workouts, extra = {}) => ({ unit: 'kg', workouts, routines: [], exWeights: {}, ...extra })
@@ -53,9 +54,10 @@ describe('the rotation', () => {
 
   it('switches only the stalled pattern, to the next variation at 85% of the peak, on the load grid', () => {
     const s = stalled()
-    const { cycling: c, switches } = reviewCycling(s)
+    const { cycling: c, switches } = reviewCycling(s, '2026-10-01')
     expect(switches).toEqual([{ pattern: 'hpress', from: 'a', to: 'b', carryW: 70, peakW: 82.5, peakR: 5 }])
     expect(c.patterns.hpress.vars.map(v => v.status)).toEqual(['done', 'active', 'pending'])
+    expect(c.patterns.hpress.vars[1].since).toBe('2026-10-01')
     expect(c.patterns.hpress.vars[0]).toMatchObject({ peakW: 82.5, peakR: 5, weeksStalled: 3 })
     for (const p of PATTERNS.filter(p => p !== 'hpress')) expect(c.patterns[p].vars).toEqual([])
     applySwitch(s, switches[0])
@@ -73,17 +75,45 @@ describe('the rotation', () => {
     expect(c.patterns.hpress.vars.map(v => v.status)).toEqual(['active', 'pending', 'pending'])
   })
 
+  it('counts a stall only from the day the variation took over, so a round trip does not rotate every workout', () => {
+    // b stalled in an earlier turn (and in history before the plan); it has just come back round
+    const back = { on: true, patterns: { hpress: { vars: [{ id: 'a', status: 'done' }, { id: 'b', status: 'active', since: '2026-10-05' }, { id: 'c', status: 'pending' }] } } }
+    const s = S([
+      wk('2026-09-01', 'b', [[60, 8]]), wk('2026-09-08', 'b', [[60, 8]]), wk('2026-09-15', 'b', [[60, 8]]), wk('2026-09-22', 'b', [[60, 8]]),
+      wk('2026-10-06', 'b', [[50, 8]]),
+    ], { cycling: back })
+    expect(stallWeeks(s, 'b')).toBe(4)
+    expect(stallWeeks(s, 'b', '2026-10-05')).toBe(0)
+    const r = reviewCycling(s, '2026-10-06')
+    expect(r.switches).toEqual([])
+    expect(r.cycling.patterns.hpress.vars[1]).toMatchObject({ status: 'active', weeksStalled: 0, since: '2026-10-05' })
+    // the same workouts reviewed again (the next finished session) still switch nothing
+    expect(reviewCycling({ ...s, cycling: r.cycling }, '2026-10-07').switches).toEqual([])
+  })
+
+  it('carries no load into a bodyweight variation', () => {
+    const bw = allExercises({}).find(e => isBodyweightEq(e) && patternOf(e) === 'hpress')
+    expect(bw).toBeTruthy()
+    const c = { on: true, patterns: { hpress: { vars: [{ id: 'a', status: 'active' }, { id: bw.id, status: 'pending' }] } } }
+    const s = stalled(); s.cycling = c
+    const { switches } = reviewCycling(s)
+    expect(switches[0]).toMatchObject({ from: 'a', to: bw.id, carryW: 0 })
+    applySwitch(s, switches[0])
+    expect(s.routines[0].ex[0]).toMatchObject({ id: bw.id, weight: 0 })
+  })
+
   it('cleans a stored state and seeds one from the plan', () => {
     expect(cleanCycling(undefined)).toMatchObject({ on: false })
     const c = cleanCycling({ on: true, patterns: { squat: { vars: [{ id: 'x', status: 'nonsense', weeksStalled: -1 }, { id: 'y' }] } } })
-    expect(c.patterns.squat.vars).toEqual([{ id: 'x', status: 'active', peakW: null, peakR: null, weeksStalled: 0 }, { id: 'y', status: 'pending', peakW: null, peakR: null, weeksStalled: 0 }])
+    expect(c.patterns.squat.vars).toEqual([{ id: 'x', status: 'active', peakW: null, peakR: null, weeksStalled: 0, since: null }, { id: 'y', status: 'pending', peakW: null, peakR: null, weeksStalled: 0, since: null }])
     // the real library: the plan's bench leads the horizontal press, two alternates follow
     const s = S([], { routines: [{ id: 'r', name: 'Push', ex: [{ id: '0025', sets: 4, reps: 5, weight: 0 }] }], equipProfiles: [], equipFilterOn: false })
     const ids = suggestVariations(s, 'hpress')
     expect(ids[0]).toBe('0025'); expect(ids).toHaveLength(3); expect(new Set(ids).size).toBe(3)
-    const seeded = seedCycling(s)
+    const seeded = seedCycling(s, true, '2026-10-20')
     expect(seeded.on).toBe(true)
     for (const p of PATTERNS) expect(seeded.patterns[p].vars.length).toBe(3)
-    expect(seeded.patterns.hpress.vars[0]).toMatchObject({ id: '0025', status: 'active' })
+    expect(seeded.patterns.hpress.vars[0]).toMatchObject({ id: '0025', status: 'active', since: '2026-10-20' })
+    expect(seeded.patterns.hpress.vars[1].since).toBeNull()
   })
 })

@@ -30,6 +30,8 @@ Variation Cycling (`lib/cycling.js`, tested; `components/CyclingSheet.jsx`): thr
 movement pattern in `S.cycling`; `reviewCycling` after each finished workout (sheets.jsx
 doFinishWorkout) rotates a pattern after 3 trained weeks without a new best, `applySwitch` swaps
 the lift in every routine at 85% of the peak. Seeded on at the first setup; Plan has the switch.
+A variation's stall counts only from `since`, the day it became active (a round trip or imported
+history is not this turn's plateau); a switch into bodyweight work carries no load.
 Install prompt (`lib/install.js`, tested; `components/InstallBanner.jsx` on Home): shown in a
 phone's browser tab (standalone display mode is detectable, an existing icon is not); iPhone gets
 Share → Add to Home Screen, Android the captured `beforeinstallprompt` or the ⋮ steps; Later
@@ -38,7 +40,10 @@ Lock-screen rest alert (personal build): `api/rest-push.js` waits out the rest a
 Push (needs VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY / VAPID_SUBJECT env; maxDuration 300 in
 vercel.json; `web-push` is a function-only dependency). `lib/push.js` keeps the subscription in
 localStorage `isora_push_sub` and books on every rest (useUI bookRestEnd); `public/sw.js` drops a
-push whose rest was skipped, moved, or is on screen. Settings → Timer alerts → Lock screen.
+push unless it is the one for the rest the page last booked (the push echoes the page's endsAt;
+skipped, paused, moved either way or replaced is not it), or the app is on screen; a dropped push
+still shows-and-closes a notification so Chrome does not count a silent push. Settings → Timer
+alerts → Lock screen. Iso's guide (Tour.jsx) hides under overlays and ends when its screen is gone.
 The welcome (`components/Welcome.jsx`, tested): four swipeable screens on the first open, before
 the buddy picker and Iso's setup chat (Onboarding.jsx `welcomed`): meet Iso, a Rest Blast board that
 plays itself, a lift climbing week by week, the ring closing on "Find your balance". Settings →

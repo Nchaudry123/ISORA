@@ -2475,4 +2475,5 @@ export default {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Натисни «Поділитися» внизу Safari, потім «На Початковий екран». Повний екран, працює офлайн, а Rest Blast за один дотик.',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Відкрий цю сторінку в Safari, натисни «Поділитися», потім «На Початковий екран». Повний екран, офлайн, один дотик.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Натисни ⋮ вгорі браузера, потім «Додати на головний екран». Повний екран, офлайн, один дотик.',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0} стоїть на місці {1} тиж. Далі: {2}.',
 }

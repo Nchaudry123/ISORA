@@ -2557,4 +2557,5 @@ export default {
   'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Safari-র নিচে Share ট্যাপ করো, তারপর “Add to Home Screen”। ফুল স্ক্রিন, অফলাইনে চলে, আর Rest Blast এক ট্যাপ দূরে।',
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'এই পেজটি Safari-তে খোলো, Share ট্যাপ করো, তারপর “Add to Home Screen”। ফুল স্ক্রিন, অফলাইন, এক ট্যাপ দূরে।',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'ব্রাউজারের উপরে ⋮ ট্যাপ করো, তারপর “হোম স্ক্রিনে যোগ করুন”। ফুল স্ক্রিন, অফলাইন, এক ট্যাপ দূরে।',
+  '{0} has stalled for {1} weeks. Next up: {2}.': '{0} {1} সপ্তাহ ধরে আটকে আছে। পরের: {2}।',
 }

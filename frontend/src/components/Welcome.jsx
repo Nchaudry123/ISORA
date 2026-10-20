@@ -84,8 +84,9 @@ export default function Welcome({ onDone, replay = false }) {
   // the page under it stays put
   useEffect(() => {
     if (!replay) return
-    document.body.classList.add('ob-open')
-    return () => document.body.classList.remove('ob-open')
+    const y = window.scrollY
+    document.body.classList.add('ob-open'); document.body.style.top = -y + 'px'
+    return () => { document.body.classList.remove('ob-open'); document.body.style.top = ''; window.scrollTo(0, y) }
   }, [replay])
 
   return <div className={'wel' + (replay ? ' replay' : '')} ref={root} role="dialog" aria-label={t('Welcome to ISORA')}
@@ -148,7 +149,8 @@ function InstallActs({ dev }) {
     return () => clearInterval(id)
   }, [can])
   if (!can) return null
-  return <div className="wel-acts"><Button variant="primary" icon="download" onClick={async () => { if (await promptInstall()) setCan(false) }}>{t('Install')}</Button></div>
+  // the browser hands over one prompt: answered either way, it is gone, and so is the button
+  return <div className="wel-acts"><Button variant="primary" icon="download" onClick={async () => { await promptInstall(); setCan(false) }}>{t('Install')}</Button></div>
 }
 
 function MeetScene({ still = false }) {
