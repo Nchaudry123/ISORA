@@ -20,6 +20,9 @@ App.jsx, cascades, celebrations) and `components/confetti.js`; Iso, the buddy, i
 frame by `lib/iso-motion.js` (tested) and drawn by `components/Buddy.jsx`. Rest Blast's touch:
 a lifted piece rides just above the fingertip and drops on the nearest valid cell (`snapSpot`),
 its best spot shown as a hint (`bestSpot`/`bestMove`), all in `lib/blockblast.js` (tested).
+Media: the web builds (frontend/vercel.json, .github/workflows/pages.yml) do not ship the 220 MB
+catalogue; `VITE_IMG_BASE`/`VITE_GIF_BASE` point at jsDelivr over this repo's `catalogue/media`,
+and `public/sw.js` caches that one foreign origin for offline use. Dev still serves it locally.
 
 What follows is openGym's own guide, still accurate for the code.
 

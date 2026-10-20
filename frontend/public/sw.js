@@ -33,7 +33,11 @@ const MEDIA_GUESS_BYTES = 64 * 1024
 // Trimming lists the whole cache, so it runs after every MEDIA_TRIM_EVERY new entries rather
 // than after each one, and once when a new worker activates.
 const MEDIA_TRIM_EVERY = 20
-const isMediaPath = p => p.includes('/exercise-media/') || p.includes('/img/') || p.includes('/gif/')
+const isMediaPath = p => p.includes('/exercise-media/') || p.includes('/catalogue/media/') || p.includes('/img/') || p.includes('/gif/')
+// The web builds take the exercise media from a CDN over the repository (vercel.json, pages.yml):
+// the one other origin this worker handles, for the media cache only.
+const MEDIA_HOST = 'cdn.jsdelivr.net'
+const cdnMedia = url => url.hostname === MEDIA_HOST && isMediaPath(url.pathname)
 
 // The code the app loads only when it needs it (the photo and video ingest, the QR reader...),
 // listed by the build (vite.config.js, scripts/sw-stamp.mjs). Without it the first photo added
@@ -185,8 +189,10 @@ function media(e) {
       }
       return range ? slice(hit, range) : hit
     }
-    // The whole file for a range request: the one answer that can be kept.
-    return fetch(range ? e.request.url : e.request).then(res => {
+    // The whole file for a range request: the one answer that can be kept. A CDN file is asked
+    // for with CORS, so the answer can be read (and judged) rather than being opaque.
+    const cdn = cdnMedia(new URL(e.request.url))
+    return fetch(cdn ? new Request(e.request.url, { mode: 'cors', credentials: 'omit' }) : range ? e.request.url : e.request).then(res => {
       const whole = range ? res.status === 200 : true
       if (whole && realMedia(res)) {
         touched.add(e.request.url)
@@ -254,7 +260,7 @@ const NET_WAIT_MS = 3000
 
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url)
-  if (e.request.method !== 'GET' || url.origin !== location.origin) return
+  if (e.request.method !== 'GET' || (url.origin !== location.origin && !cdnMedia(url))) return
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith(API)) return    // never cache auth/data
 
   if (isMediaPath(url.pathname)) {
