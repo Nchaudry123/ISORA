@@ -2474,4 +2474,8 @@ export default {
   'Time to add weight': 'È ora di aggiungere peso',
   'Play the welcome again': 'Rivedi il benvenuto',
   'The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.': 'Il benvenuto sono le quattro schermate della prima apertura. La guida di Iso ti mostra Home e il tuo primo allenamento.',
+  'Put ISORA on your home screen.': 'Metti ISORA nella schermata Home.',
+  'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Tocca Condividi in basso in Safari, poi «Aggiungi alla schermata Home». Schermo intero, funziona offline e Rest Blast è a un tocco.',
+  'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Apri questa pagina in Safari, tocca Condividi, poi «Aggiungi alla schermata Home». Schermo intero, offline, a un tocco.',
+  'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Tocca ⋮ in alto nel browser, poi «Aggiungi a schermata Home». Schermo intero, offline, a un tocco.',
 }

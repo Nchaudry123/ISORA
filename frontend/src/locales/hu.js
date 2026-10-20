@@ -2477,4 +2477,8 @@ export default {
   'Time to add weight': 'Ideje súlyt rakni',
   'Play the welcome again': 'Üdvözlő képernyők újra',
   'The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.': 'Az üdvözlés az első megnyitás négy képernyője. Iso útmutatója végigvezet a Kezdőlapon és az első edzésen.',
+  'Put ISORA on your home screen.': 'Tedd az ISORA-t a kezdőképernyőre.',
+  'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Koppints a Safari alján a Megosztásra, majd a „Hozzáadás a kezdőképernyőhöz” lehetőségre. Teljes képernyő, offline is megy, és a Rest Blast egy koppintásra van.',
+  'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Nyisd meg ezt az oldalt Safariban, koppints a Megosztásra, majd a „Hozzáadás a kezdőképernyőhöz” lehetőségre. Teljes képernyő, offline, egy koppintásra.',
+  'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Koppints a böngésző tetején a ⋮ gombra, majd a „Hozzáadás a kezdőképernyőhöz” lehetőségre. Teljes képernyő, offline, egy koppintásra.',
 }

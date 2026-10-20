@@ -1,13 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
 import { create } from 'zustand'
 import { t } from '../lib/i18n.js'
+import { PERSONAL } from '../lib/demo.js'
+import { MOBILE } from '../lib/mobile.js'
+import { shouldOfferInstall, deviceOf, canPromptInstall, promptInstall } from '../lib/install.js'
 import Buddy from './Buddy.jsx'
 import IsoraMark from './IsoraMark.jsx'
+import Icon from './Icon.jsx'
 import { Button } from './ui.jsx'
 
 // The welcome: four short screens the very first time ISORA opens, before Iso's setup chat.
 // Iso introduces itself, a round of Rest Blast plays by itself, a lift climbs week by week, and
-// the ring closes on "Find your balance". Swipe or tap Next; Skip jumps straight to the chat.
+// the ring closes on "Find your balance". In a phone's browser tab there is one more, before the
+// last: put ISORA on the home screen (lib/install.js), with the steps for this phone and browser.
+// Swipe or tap Next; Skip jumps straight to the chat.
 // Settings → Look & Home plays it again (useWelcome), so it is also the app's "what is this".
 
 const useWelcome = create(set => ({ open: false, show: () => set({ open: true }), hide: () => set({ open: false }) }))
@@ -20,15 +26,24 @@ export function WelcomeHost() {
   return open ? <Welcome onDone={hide} replay /> : null
 }
 
-const SLIDES = () => [
+const installBody = dev => dev.os === 'ios'
+  ? (dev.safari ? t('Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.')
+    : t('Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.'))
+  : t('Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.')
+
+const SLIDES = (dev) => [
   { key: 'meet', mood: 'new', react: null, title: t('Hi, I’m Iso.'), body: t('Your ISORA buddy. I cheer you on, keep an eye on your week and grow as you train. Go on, tap me.') },
   { key: 'blast', mood: 'hyped', react: 'surprise', title: t('Every rest is a round of Rest Blast.'), body: t('Three minutes of puzzle while you rest. Easy pieces early, harder later. Clear lines, beat your best, then back to the bar.') },
   { key: 'plan', mood: 'active', react: 'nod', title: t('A plan that keeps up.'), body: t('Tell me your goal and I build the plan. When you’re ready I add weight, and when a lift stalls I switch the variation.') },
+  ...(dev ? [{ key: 'install', mood: 'hyped', react: 'nod', title: t('Put ISORA on your home screen.'), body: installBody(dev) }] : []),
   { key: 'balance', mood: 'cheer', react: 'love', title: t('Find your balance.'), body: t('Train, rest, repeat. Let’s set you up. It takes about a minute.') },
 ]
+/** The install screen belongs in a phone's browser tab only (never from the icon, never the native app). */
+const installDevice = () => (PERSONAL && !MOBILE && shouldOfferInstall() ? deviceOf() : null)
 
 export default function Welcome({ onDone, replay = false }) {
-  const slides = SLIDES()
+  const [dev] = useState(installDevice)
+  const slides = SLIDES(dev)
   const [i, setI] = useState(0)
   const [dir, setDir] = useState('fwd')
   const [rx, setRx] = useState(null)
@@ -72,17 +87,19 @@ export default function Welcome({ onDone, replay = false }) {
       <span className="wel-brand"><IsoraMark size={22} /><b>ISORA</b></span>
       <button type="button" className="wel-skip" onClick={onDone}>{last ? '' : t('Skip')}</button>
     </div>
-    <div className={'wel-slide ' + dir + ' is-' + s.key} key={s.key}>
+    <div className={'wel-slide ' + dir + ' is-' + s.key + (s.key === 'install' && dev.os !== 'ios' ? ' is-up' : '')} key={s.key}>
       <div className="wel-scene">
         {s.key === 'meet' ? <MeetScene /> : <div className="wel-stage">
           {s.key === 'blast' && <BlastScene />}
           {s.key === 'plan' && <PlanScene />}
+          {s.key === 'install' && <InstallScene dev={dev} />}
           {s.key === 'balance' && <BalanceScene />}
-          <div className="wel-iso"><Buddy mood={s.mood} size={s.key === 'balance' ? 84 : 72} react={rx} point={s.key === 'balance' ? null : 'left'} eyesFollow /></div>
+          <div className="wel-iso"><Buddy mood={s.mood} size={s.key === 'balance' ? 84 : 72} react={rx} point={s.key === 'balance' ? null : s.key === 'install' ? (dev.os === 'ios' ? 'down' : 'up') : 'left'} eyesFollow /></div>
         </div>}
       </div>
       <h1 className="wel-title">{s.title}</h1>
       <p className="wel-body">{s.body}</p>
+      {s.key === 'install' && <InstallActs dev={dev} />}
     </div>
     <div className="wel-foot">
       <div className="wel-dots" aria-hidden="true">{slides.map((x, k) => <i key={x.key} className={k === i ? 'on' : k < i ? 'done' : ''} />)}</div>
@@ -92,6 +109,32 @@ export default function Welcome({ onDone, replay = false }) {
 }
 
 // --- the scenes -----------------------------------------------------------
+
+// a phone: a home screen of quiet tiles, ISORA's icon drops into the free slot; Safari's Share
+// button glows at the bottom (iPhone), the browser's ⋮ at the top (Android)
+function InstallScene({ dev }) {
+  const ios = dev.os === 'ios'
+  return <div className={'wel-phone' + (ios ? ' is-ios' : ' is-android')} aria-hidden="true">
+    <div className="wel-phone-bar">{!ios && <><i /><i /><i /></>}</div>
+    <div className="wel-phone-grid">
+      {Array.from({ length: 11 }, (_, k) => <i key={k} style={{ '--i': k }} />)}
+      <span className="wel-phone-app"><IsoraMark size={30} /></span>
+    </div>
+    <div className="wel-phone-dock">{ios ? <><i /><span className="wel-phone-share"><Icon name="share" /></span><i /></> : <i className="wide" />}</div>
+  </div>
+}
+
+// Android with the browser's own install dialog in hand: one button does it
+function InstallActs({ dev }) {
+  const [can, setCan] = useState(canPromptInstall)
+  useEffect(() => {
+    if (dev.os !== 'android' || can) return
+    const id = setInterval(() => { if (canPromptInstall()) { setCan(true); clearInterval(id) } }, 800)
+    return () => clearInterval(id)
+  }, [can])
+  if (!can) return null
+  return <div className="wel-acts"><Button variant="primary" icon="download" onClick={async () => { if (await promptInstall()) setCan(false) }}>{t('Install')}</Button></div>
+}
 
 function MeetScene() {
   return <div className="wel-meet">

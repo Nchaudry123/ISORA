@@ -2474,4 +2474,8 @@ export default {
   'Time to add weight': 'Ağırlık ekleme zamanı',
   'Play the welcome again': 'Karşılamayı yeniden oynat',
   'The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.': 'Karşılama, ilk açılıştaki dört ekran. Iso’nun rehberi sana Ana sayfayı ve ilk antrenmanını gezdirir.',
+  'Put ISORA on your home screen.': 'ISORA’yı ana ekranına ekle.',
+  'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Safari’nin altındaki Paylaş’a, sonra “Ana Ekrana Ekle”ye dokun. Tam ekran, çevrimdışı çalışır ve Rest Blast bir dokunuş uzakta.',
+  'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Bu sayfayı Safari’de aç, Paylaş’a, sonra “Ana Ekrana Ekle”ye dokun. Tam ekran, çevrimdışı, bir dokunuş uzakta.',
+  'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Tarayıcının üstündeki ⋮ simgesine, sonra “Ana ekrana ekle”ye dokun. Tam ekran, çevrimdışı, bir dokunuş uzakta.',
 }

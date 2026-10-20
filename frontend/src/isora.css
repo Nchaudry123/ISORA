@@ -361,7 +361,6 @@ body.ob-open{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 @keyframes bd-z{0%{opacity:0;transform:translate(0,4px)}40%{opacity:1}100%{opacity:0;transform:translate(4px,-10px)}}
 @keyframes bd-sweat{0%{opacity:0;transform:translateY(-2px)}25%{opacity:1}100%{opacity:0;transform:translateY(12px)}}
 @keyframes bd-spark{0%,100%{transform:scale(.4) rotate(0);opacity:.2}50%{transform:scale(1.1) rotate(45deg);opacity:1}}
-.buddy .bd-blush{transform-box:fill-box;transform-origin:center}
 .buddy .bd-spark{transform-box:fill-box;transform-origin:center}
 @media (prefers-reduced-motion:reduce){ .buddy *{animation:none !important} }
 /* the buddy card on Home: the buddy, its speech bubble, its level */
@@ -767,3 +766,30 @@ body.ob-open{position:fixed;inset-inline:0;width:100%;overflow:hidden}
   .wel-cell.row,.wel-piece,.wel-pop,.wel-blast-bar i{animation:none}.wel-piece{opacity:0}.wel-blast-bar i{transform:scaleX(.5)}
 }
 @media (max-height:700px){.wel-title{font-size:26px;margin-top:12px}.wel-body{font-size:15px}.wel-scene{max-height:40dvh}.wel-bars{height:120px}}
+
+/* install: a phone, ISORA's icon lands on its home screen; Share glows below (iPhone), ⋮ above (Android) */
+.wel-phone{position:relative;width:168px;height:300px;border-radius:30px;background:var(--surface);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 30px 50px -30px rgba(0,0,0,.9);padding:14px 14px 12px;display:flex;flex-direction:column;overflow:hidden}
+:root[data-theme="light"] .wel-phone{background:#e6e7ee;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06),0 24px 40px -28px rgba(0,0,0,.35)}
+.wel-phone-bar{height:18px;display:flex;justify-content:flex-end;align-items:center;gap:3px;padding:0 4px}
+.wel-phone-bar i{width:4px;height:4px;border-radius:50%;background:var(--label-2)}
+.is-android .wel-phone-bar{animation:wel-menu 2.4s ease-in-out infinite}
+.wel-phone-grid{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;align-content:start;padding:8px 2px 0}
+.wel-phone-grid i{aspect-ratio:1;border-radius:9px;background:var(--surface-3);opacity:.7;animation:wel-tile .5s var(--spring) both;animation-delay:calc(.04s * var(--i))}
+.wel-phone-app{aspect-ratio:1;border-radius:9px;background:var(--acc);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px color-mix(in srgb,var(--acc) 50%,transparent);animation:wel-app 2.4s cubic-bezier(.2,.8,.2,1.1) infinite}
+.wel-phone-app .isora-mark path:first-child{fill:#fff}
+.wel-phone-app .isora-mark path:not(:first-child),.wel-phone-app .isora-mark rect{fill:var(--acc)}
+.wel-phone-dock{height:40px;border-radius:14px;background:color-mix(in srgb,var(--label) 10%,transparent);display:flex;align-items:center;justify-content:space-evenly;padding:0 6px}
+.wel-phone-dock i{width:22px;height:22px;border-radius:7px;background:var(--surface-3);opacity:.6}
+.wel-phone-dock i.wide{width:60%;height:6px;border-radius:99px}
+.wel-phone-share{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--acc);background:color-mix(in srgb,var(--acc) 16%,transparent);font-size:20px;animation:wel-share 2.4s ease-in-out infinite}
+@keyframes wel-app{0%{transform:translateY(-140px) scale(.6);opacity:0}22%{opacity:1}38%{transform:none;opacity:1}85%{transform:none;opacity:1}100%{transform:none;opacity:0}}
+@keyframes wel-tile{from{transform:scale(.6);opacity:0}to{transform:none;opacity:.7}}
+@keyframes wel-share{0%,30%{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 50%,transparent)}60%{box-shadow:0 0 0 12px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes wel-menu{0%,30%{filter:drop-shadow(0 0 0 transparent)}55%{filter:drop-shadow(0 0 6px var(--acc))}100%{filter:drop-shadow(0 0 0 transparent)}}
+.is-android .wel-phone-bar i{background:var(--acc)}
+.is-install .wel-iso{right:-70px;bottom:14px}
+.is-install.is-up .wel-iso{bottom:auto;top:10px}
+.wel-acts{margin-top:14px;animation:rise .55s var(--spring) .3s both}
+.wel-acts .btn{width:auto;padding:10px 22px;border-radius:99px}
+@media (max-height:700px){.wel-phone{height:240px}}
+@media (prefers-reduced-motion:reduce){.wel-phone-grid i,.wel-phone-app,.wel-phone-share,.is-android .wel-phone-bar,.wel-acts{animation:none}}

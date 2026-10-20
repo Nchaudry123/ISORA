@@ -43,6 +43,11 @@ The welcome (`components/Welcome.jsx`, tested): four swipeable screens on the fi
 the buddy picker and Iso's setup chat (Onboarding.jsx `welcomed`): meet Iso, a Rest Blast board that
 plays itself, a lift climbing week by week, the ring closing on "Find your balance". Settings →
 Look & Home plays it again (`showWelcome`, mounted as `WelcomeHost` in App.jsx).
+In a phone's browser tab the welcome has a fifth screen before the last, "Put ISORA on your home
+screen" (lib/install.js decides; Safari / other iOS browser / Android wording), and Settings →
+Look & Home keeps an "Add ISORA to your home screen" row, so the Home banner is not the only way.
+Iso's face is drawn masculine on purpose (Buddy.jsx: heavy level brows, lidded eyes, no blush, a
+grin with teeth, gold sparks instead of hearts) and should stay that way in any redraw.
 
 What follows is openGym's own guide, still accurate for the code.
 

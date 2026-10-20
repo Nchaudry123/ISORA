@@ -25,10 +25,10 @@ const DUR = { hop: 0.7, dance: 2.2, wave: 1.7, spin: 1.1, look: 1.6, tilt: 1.3, 
 
 // the face by mood: brow (−1 drooping … 1 raised), browIn (knitted, focused), wide (eye size), smile
 const FACE = {
-  hyped: { brow: 0.35, browIn: 0, wide: 1.05, smile: 0.7 },
-  cheer: { brow: 0.6, browIn: 0, wide: 1.1, smile: 1 },
+  hyped: { brow: 0.3, browIn: 0.05, wide: 1, smile: 0.75 },
+  cheer: { brow: 0.55, browIn: 0, wide: 1.02, smile: 1 },
   proud: { brow: 0.25, browIn: 0, wide: 1, smile: 1 },
-  new: { brow: 0.7, browIn: 0, wide: 1.2, smile: 0.3 },
+  new: { brow: 0.55, browIn: 0, wide: 1.08, smile: 0.35 },
   chill: { brow: 0, browIn: 0, wide: 0.9, smile: 0.4 },
   active: { brow: -0.15, browIn: 1, wide: 0.95, smile: 0.2 },
   missing: { brow: -0.75, browIn: 0.2, wide: 1, smile: 0 },
@@ -36,8 +36,8 @@ const FACE = {
 }
 // reactions: how long they last, and the face they hold (blended in and out)
 export const REACTIONS = {
-  surprise: { dur: 0.45, brow: 1, browIn: 0, wide: 1.45, smile: 0, o: 1 },
-  love: { dur: 1.3, brow: 0.5, browIn: 0, wide: 0.7, smile: 1, hearts: true },
+  surprise: { dur: 0.45, brow: 1, browIn: 0, wide: 1.4, smile: 0, o: 1 },
+  love: { dur: 1.3, brow: 0.4, browIn: 0, wide: 0.75, smile: 1, hearts: true },   // hearts: sparks, in the drawing
   laugh: { dur: 1.2, brow: 0.4, browIn: 0, wide: 0.35, smile: 1, o: 0.6, shake: true },
   dizzy: { dur: 1.1, brow: 0.9, browIn: 0, wide: 1.1, smile: 0.1, o: 0.5, wobble: true },
   oops: { dur: 0.9, brow: -0.5, browIn: 0.5, wide: 1.15, smile: 0, o: 0.3 },

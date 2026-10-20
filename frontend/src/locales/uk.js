@@ -2471,4 +2471,8 @@ export default {
   'Time to add weight': 'Час додати вагу',
   'Play the welcome again': 'Показати привітання знову',
   'The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.': 'Привітання — чотири екрани під час першого відкриття. Гід Iso проведе Головною і першим тренуванням.',
+  'Put ISORA on your home screen.': 'Додай ISORA на головний екран.',
+  'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Натисни «Поділитися» внизу Safari, потім «На Початковий екран». Повний екран, працює офлайн, а Rest Blast за один дотик.',
+  'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Відкрий цю сторінку в Safari, натисни «Поділитися», потім «На Початковий екран». Повний екран, офлайн, один дотик.',
+  'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Натисни ⋮ вгорі браузера, потім «Додати на головний екран». Повний екран, офлайн, один дотик.',
 }

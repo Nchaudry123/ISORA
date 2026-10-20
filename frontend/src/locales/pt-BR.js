@@ -1507,6 +1507,10 @@ export const PT_BR_OVERRIDES = {
   'Train, rest, repeat. Let’s set you up. It takes about a minute.': 'Treine, descanse, repita. Vamos configurar você. Leva cerca de um minuto.',
   'Play the welcome again': 'Ver as boas-vindas de novo',
   'The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.': 'As boas-vindas são as quatro telas da primeira abertura. O guia do Iso mostra a Início e o seu primeiro treino.',
+  'Put ISORA on your home screen.': 'Coloque o ISORA na sua tela inicial.',
+  'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Toque em Compartilhar na parte de baixo do Safari e depois em “Adicionar à Tela de Início”. Tela cheia, funciona offline e o Rest Blast fica a um toque.',
+  'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Abra esta página no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”. Tela cheia, offline, a um toque.',
+  'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Toque em ⋮ no topo do navegador e depois em “Adicionar à tela inicial”. Tela cheia, offline, a um toque.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

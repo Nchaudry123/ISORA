@@ -10,13 +10,14 @@ import * as iso from '../lib/iso-motion.js'
 // when the page scrolls, and little things it does by itself for its mood (dance, wave, spin, tilt,
 // stretch, yawn …). `interactive` lets a tap poke it; a new `bump` value pokes it from outside (a
 // cleared line in Rest Blast); `talking` moves its mouth and it glances at what it says
-// (`talkSide`); a new `react` {kind, id} plays a reaction (surprise, love, laugh, dizzy, oops);
+// (`talkSide`); a new `react` {kind, id} plays a reaction (surprise, love → sparks, laugh, dizzy, oops);
 // `enter` drops it in; `mood="cheer"` throws both arms up. Its eyebrows, eye size and smile come
 // from the simulation too. Under reduced motion, or `still`, it stands still.
 
 const INK = '#0b1736'      // eyes and mouth: a deep navy that reads on any blue, in both themes
-const BLUSH = '#ff7aa8'
-const TONGUE = '#ff6b8f'
+// The face is drawn on the masculine side and stays there: heavy straight brows set low, eyes
+// under a flat lid rather than round and doe-like, no blush, a wide grin with teeth instead of a
+// tongue, and sparks rather than hearts when it is pleased.
 
 // the block: its back (the depth you see below the face) and its face, each a rounded square
 const BACK = { x: 18, y: 30, w: 84, h: 72, r: 24 }
@@ -26,61 +27,61 @@ function Eyes({ mood, id }) {
   // glossy eyes: a navy oval, a big catchlight and a small one
   // the white of the eye, then the pupil with its catchlights: the pupil moves a little more than
   // the face does (bd-pupil, moved per frame), which is what makes a look read as a look
-  const eye = (cx, cy = 58, ry = 9) => <g key={cx}>
-    <ellipse cx={cx} cy={cy} rx={6.8 + 2.4} ry={ry + 2.4} fill="#fff" opacity=".92" />
+  const eye = (cx, cy = 59, ry = 7.4) => <g key={cx}>
+    <ellipse cx={cx} cy={cy} rx={6.4 + 1.9} ry={ry + 1.9} fill="#fff" opacity=".9" />
     <g className="bd-pupil">
-      <ellipse cx={cx} cy={cy} rx="6.8" ry={ry} fill={INK} />
-      <ellipse cx={cx + 2.2} cy={cy - 3.4} rx="2.6" ry="3" fill="#fff" />
-      <circle cx={cx - 2.2} cy={cy + 3.6} r="1.3" fill="#fff" opacity=".85" />
+      <ellipse cx={cx} cy={cy} rx="6.4" ry={ry} fill={INK} />
+      <ellipse cx={cx + 2} cy={cy - 2.8} rx="2" ry="2.3" fill="#fff" />
     </g>
+  </g>
+  // a flat upper lid over both eyes: the look is level and steady, not wide-eyed
+  const lidded = (eyes, top = 53) => <g>
+    <clipPath id={id + 'lid'}><rect x="26" y={top} width="68" height="30" /></clipPath>
+    <g clipPath={`url(#${id}lid)`}>{eyes}</g>
   </g>
   const arc = (cx, up = true) => <path key={cx} d={up ? `M${cx - 7} 61q7-9 14 0` : `M${cx - 7} 57q7 7 14 0`}
     stroke={INK} strokeWidth="4" fill="none" strokeLinecap="round" />
   switch (mood) {
     case 'proud': return <g>{arc(46)}{arc(74)}</g>
     case 'sleepy': return <g>{arc(46, false)}{arc(74, false)}</g>
-    case 'chill': // relaxed: eyes a little smaller, softly lidded
-      return <g>
-        <clipPath id={id + 'lid'}><path d="M30 56q16-5 32 0q16-5 32 0V72H30Z" /></clipPath>
-        <g clipPath={`url(#${id}lid)`}>{eye(46, 60, 7.6)}{eye(74, 60, 7.6)}</g>
-      </g>
+    case 'chill': // relaxed: half-lidded
+      return lidded(<g>{eye(46, 60, 7)}{eye(74, 60, 7)}</g>, 56.5)
     case 'missing':
       return <g>
-        <g>{eye(46, 60)}{eye(74, 60)}</g>
-        <ellipse cx="47" cy="68.5" rx="4.5" ry="1.6" fill="#fff" opacity=".55" />
-        <path d="M37 47.5l10-3.5M83 47.5l-10-3.5" stroke={INK} strokeWidth="3.2" strokeLinecap="round" />
+        {lidded(<g>{eye(46, 60)}{eye(74, 60)}</g>, 55)}
+        <path d="M37 47.5l10-3.5M83 47.5l-10-3.5" stroke={INK} strokeWidth="3.6" strokeLinecap="round" />
       </g>
-    case 'active':
+    case 'active': // game face: lids down, brows driven in
       return <g>
-        <g>{eye(46, 59, 8)}{eye(74, 59, 8)}</g>
-        <path d="M37 46.5l12 4.5M83 46.5l-12 4.5" stroke={INK} strokeWidth="3.6" strokeLinecap="round" />
+        {lidded(<g>{eye(46, 59, 7.6)}{eye(74, 59, 7.6)}</g>, 55.5)}
+        <path d="M36 46l13 5M84 46l-13 5" stroke={INK} strokeWidth="4" strokeLinecap="round" />
       </g>
-    case 'new': return <g>{eye(46, 58, 9.6)}{eye(74, 58, 9.6)}</g>
-    default: return <g>{eye(46)}{eye(74)}</g> // hyped
+    case 'new': return lidded(<g>{eye(46, 58.5, 8.2)}{eye(74, 58.5, 8.2)}</g>, 50)
+    default: return lidded(<g>{eye(46)}{eye(74)}</g>) // hyped
   }
 }
 
 function Mouth({ mood }) {
   const line = d => <path d={d} stroke={INK} strokeWidth="3.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
   switch (mood) {
-    case 'proud': case 'hyped':
+    case 'proud': case 'hyped': // a wide grin, teeth showing
       return <g>
-        <path d="M49 72h22a11 11 0 0 1-22 0Z" fill={INK} />
-        <path d="M53.5 79.4a7 5 0 0 1 13 0a11 11 0 0 1-13 0Z" fill={TONGUE} />
+        <path d="M47 72h26a13 11 0 0 1-26 0Z" fill={INK} />
+        <path d="M49.5 72h21v2.6a2.2 2.2 0 0 1-2.2 2.2H51.7a2.2 2.2 0 0 1-2.2-2.2Z" fill="#fff" opacity=".92" />
       </g>
-    case 'sleepy': return <ellipse cx="60" cy="77" rx="3.6" ry="4.4" fill={INK} />
-    case 'chill': return line('M53 75q7 5 14 0')
-    case 'missing': return line('M53 79q3.5-4 7-1.5t7-1.5')
+    case 'sleepy': return <ellipse cx="60" cy="77" rx="3.4" ry="4" fill={INK} />
+    case 'chill': return line('M52 75.5q8 4 16-.5')
+    case 'missing': return line('M52.5 79q7.5-4 15 0')
     case 'active': return <g>
       <rect x="51" y="72" width="18" height="8" rx="4" fill={INK} />
       <path d="M53 76h14" stroke="#fff" strokeWidth="1.6" opacity=".9" />
     </g>
-    case 'new': return <ellipse cx="60" cy="77" rx="4.2" ry="4.8" fill={INK} />
+    case 'new': return <ellipse cx="60" cy="77" rx="3.6" ry="3.8" fill={INK} />
     case 'talk': return <g>
       <path d="M51 73h18a9 8 0 0 1-18 0Z" fill={INK} />
-      <path d="M55 79a5 3.4 0 0 1 10 0a9 7 0 0 1-10 0Z" fill={TONGUE} />
+      <path d="M53 73h14v2.2a1.8 1.8 0 0 1-1.8 1.8H54.8a1.8 1.8 0 0 1-1.8-1.8Z" fill="#fff" opacity=".92" />
     </g>
-    default: return line('M53 75q7 5 14 0')
+    default: return line('M52 75.5q8 4 16-.5')
   }
 }
 
@@ -138,7 +139,8 @@ function follow(fn) {
 
 const f2 = n => (Math.round(n * 1000) / 1000)
 
-const HEART = 'M0 3.2c-2.6-5.2-8-2.4-6 1.6 1.2 2.4 4.2 4.4 6 5.8 1.8-1.4 4.8-3.4 6-5.8 2-4-3.4-6.8-6-1.6Z'
+// what flies up when it is pleased: four-point sparks (the simulation still calls them hearts)
+const SPARK = 'M0-7q1.3 5.7 7 7q-5.7 1.3-7 7q-1.3-5.7-7-7q5.7-1.3 7-7Z'
 
 export default function Buddy({ mood = 'chill', level = 1, size = 96, still = false, interactive = false, bump, react, talking = false, talkSide = 1, point = null, enter = false, eyesFollow, className = '' }) {
   const id = 'bd' + useId().replace(/[^a-zA-Z0-9]/g, '')
@@ -259,7 +261,6 @@ export default function Buddy({ mood = 'chill', level = 1, size = 96, still = fa
         <linearGradient id={id + 'gloss'} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#fff" stopOpacity=".7" /><stop offset="1" stopColor="#fff" stopOpacity="0" />
         </linearGradient>
-        <radialGradient id={id + 'blush'}><stop offset="0" stopColor={BLUSH} stopOpacity=".75" /><stop offset="1" stopColor={BLUSH} stopOpacity="0" /></radialGradient>
         <linearGradient id={id + 'gold'} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#ffe27a" /><stop offset="1" stopColor="#f4a100" /></linearGradient>
         <linearGradient id={id + 'cup'} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#ffffff" /><stop offset="1" stopColor="#c9d3e0" /></linearGradient>
         <clipPath id={id + 'face'}><rect x={f.x} y={f.y} width={f.w} height={f.h} rx={f.r} /></clipPath>
@@ -285,10 +286,8 @@ export default function Buddy({ mood = 'chill', level = 1, size = 96, still = fa
           <path d="M30 34q2-5 10-5h18q4 0 3 3-1 3-6 3H40q-6 0-9 4-2 1-1-5Z" fill={`url(#${id}gloss)`} />
           <circle cx="88" cy="33" r="2.4" fill="#fff" opacity=".55" />
           <g ref={R.face}>
-            <ellipse className="bd-blush" cx="33" cy="70" rx="8.5" ry="5.2" fill={`url(#${id}blush)`} />
-            <ellipse className="bd-blush" cx="87" cy="70" rx="8.5" ry="5.2" fill={`url(#${id}blush)`} />
-            <g ref={R.browL}><path d="M39.5 44q6.5-3 13 0" stroke={INK} strokeWidth="3.2" fill="none" strokeLinecap="round" opacity=".85" /></g>
-            <g ref={R.browR}><path d="M67.5 44q6.5-3 13 0" stroke={INK} strokeWidth="3.2" fill="none" strokeLinecap="round" opacity=".85" /></g>
+            <g ref={R.browL}><path d="M37.5 45.5q7.5-3.5 15-1.5" stroke={INK} strokeWidth="4.6" fill="none" strokeLinecap="round" /></g>
+            <g ref={R.browR}><path d="M67.5 44q7.5-2 15 1.5" stroke={INK} strokeWidth="4.6" fill="none" strokeLinecap="round" /></g>
             <g ref={R.eyes}><Eyes mood={face} id={id} /></g>
             <g ref={R.mouth}><Mouth mood={talking && !poked ? 'talk' : face} /></g>
             <ellipse ref={R.o} cx="60" cy="77" rx="4.6" ry="1.5" fill={INK} style={{ opacity: 0 }} />
@@ -297,8 +296,8 @@ export default function Buddy({ mood = 'chill', level = 1, size = 96, still = fa
         </g>
       </g></g>
       <Extras mood={face} />
-      <g ref={R.hearts} fill="#ff5d8a" stroke="#fff" strokeWidth=".8">
-        {[0, 1, 2, 3, 4].map(i => <path key={i} d={HEART} style={{ opacity: 0 }} />)}
+      <g ref={R.hearts} fill="#ffd23f">
+        {[0, 1, 2, 3, 4].map(i => <path key={i} d={SPARK} style={{ opacity: 0 }} />)}
       </g>
     </svg>
   )

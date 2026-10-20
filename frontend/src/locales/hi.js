@@ -2474,4 +2474,8 @@ export default {
   'Time to add weight': 'वज़न बढ़ाने का समय',
   'Play the welcome again': 'वेलकम फिर से देखें',
   'The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.': 'वेलकम पहली बार खोलने की चार स्क्रीन हैं। Iso की गाइड तुम्हें होम और पहली वर्कआउट घुमाती है।',
+  'Put ISORA on your home screen.': 'ISORA को अपनी होम स्क्रीन पर रखो।',
+  'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Safari में नीचे Share टैप करो, फिर “Add to Home Screen”। फ़ुल स्क्रीन, ऑफ़लाइन चलता है, और Rest Blast एक टैप दूर।',
+  'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'यह पेज Safari में खोलो, Share टैप करो, फिर “Add to Home Screen”। फ़ुल स्क्रीन, ऑफ़लाइन, एक टैप दूर।',
+  'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'ब्राउज़र में ऊपर ⋮ टैप करो, फिर “होम स्क्रीन पर जोड़ें”। फ़ुल स्क्रीन, ऑफ़लाइन, एक टैप दूर।',
 }

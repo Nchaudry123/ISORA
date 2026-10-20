@@ -2474,4 +2474,8 @@ export default {
   'Time to add weight': '该加重量了',
   'Play the welcome again': '再看一次欢迎页',
   'The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.': '欢迎页是首次打开时的四个画面。Iso 的向导会带你看主页和第一次训练。',
+  'Put ISORA on your home screen.': '把 ISORA 放到主屏幕上。',
+  'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': '点 Safari 底部的分享，再点“添加到主屏幕”。全屏、可离线，Rest Blast 一点即达。',
+  'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': '在 Safari 中打开此页，点分享，再点“添加到主屏幕”。全屏、可离线，一点即达。',
+  'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': '点浏览器顶部的 ⋮，再点“添加到主屏幕”。全屏、可离线，一点即达。',
 }

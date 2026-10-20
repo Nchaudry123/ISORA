@@ -42,6 +42,7 @@ import { starterPlanSheet, confirmSheet, importFromApp, importFromHevy, equipmen
 import Icon from '../components/Icon.jsx'
 import { oweTours } from '../components/Tour.jsx'
 import { showWelcome } from '../components/Welcome.jsx'
+import { isStandalone, deviceOf, canPromptInstall, promptInstall } from '../lib/install.js'
 import { durationSheet } from '../components/DurationWheel.jsx'
 import { showsConnection, showsLocalLine } from '../components/SyncBanner.jsx'
 import BackupFolderRow, { useBackupFolder, autoBackupSubtitle } from '../components/BackupFolderRow.jsx'
@@ -728,6 +729,7 @@ export default function Settings({ page = null, find = null, via = null }) {
     equipment: () => <EquipmentCard S={S} update={update} />,
 
     look: () => <>
+      {PERSONAL && !MOBILE && !isStandalone() && deviceOf().os !== 'other' && <HomeScreenSection toast={toast} />}
       {PERSONAL && <Section footer={t('The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.')}>
         <Row icon="play" iconTint="var(--acc)" title={t('Play the welcome again')} accessory="chevron" onClick={showWelcome} />
         <Row icon="sparkles" iconTint="var(--acc)" title={t('Show Iso’s guide again')} accessory="chevron"
@@ -1554,5 +1556,18 @@ function LockScreenRest() {
       <Switch aria-label={t('Rest over on the lock screen')} checked={on} disabled={busy || !supported} onChange={toggle} />
     </Row>
     {on && <Row icon="bell" iconTint="var(--blue)" title={t('Send a test')} accessory="chevron" onClick={test} />}
+  </Section>
+}
+
+// In a phone's browser tab: the way to the home screen, always within reach (the Home banner and
+// the welcome's screen can be dismissed; this row cannot). lib/install.js.
+function HomeScreenSection({ toast }) {
+  const dev = deviceOf()
+  const steps = dev.os === 'ios'
+    ? (dev.safari ? t('Tap Share, then “Add to Home Screen”.') : t('Open this page in Safari first, then Share → Add to Home Screen.'))
+    : t('Tap ⋮, then “Add to Home screen”.')
+  const go = async () => { if (canPromptInstall()) { if (await promptInstall()) return } toast(steps) }
+  return <Section footer={steps + ' ' + t('Full screen, works offline, one tap away. Like a real app.')}>
+    <Row icon="share" iconTint="var(--acc)" title={t('Add ISORA to your home screen')} accessory="chevron" onClick={go} />
   </Section>
 }

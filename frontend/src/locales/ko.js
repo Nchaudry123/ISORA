@@ -2474,4 +2474,8 @@ export default {
   'Time to add weight': '무게를 올릴 때야',
   'Play the welcome again': '환영 화면 다시 보기',
   'The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.': '환영 화면은 처음 열 때 나오는 네 화면이야. Iso의 안내는 홈과 첫 운동을 둘러보게 해 줘.',
+  'Put ISORA on your home screen.': 'ISORA를 홈 화면에 추가해.',
+  'Tap Share at the bottom of Safari, then “Add to Home Screen”. Full screen, works offline, and Rest Blast is one tap away.': 'Safari 하단의 공유를 누른 다음 “홈 화면에 추가”를 눌러. 전체 화면, 오프라인 지원, Rest Blast가 한 번의 탭 거리에 있어.',
+  'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': '이 페이지를 Safari에서 열고 공유를 누른 다음 “홈 화면에 추가”를 눌러. 전체 화면, 오프라인, 한 번의 탭.',
+  'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': '브라우저 상단의 ⋮을 누른 다음 “홈 화면에 추가”를 눌러. 전체 화면, 오프라인, 한 번의 탭.',
 }
