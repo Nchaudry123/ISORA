@@ -8,6 +8,7 @@ import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, starter
 import LineChart from '../components/LineChart.jsx'
 import Icon from '../components/Icon.jsx'
 import { useOwedTour } from '../components/Tour.jsx'
+import InstallBanner from '../components/InstallBanner.jsx'
 import QueueRow from '../components/QueueRow.jsx'
 import { queueOf, queueView, weekTally, pinState } from '../lib/queue.js'
 import { scheduleModeOf } from '../lib/rotation.js'
@@ -146,6 +147,8 @@ export default function Home() {
     </div>
 
     {/* your buddy: its mood, its line of the day, its level (components/BuddyParts.jsx) */}
+    {/* in a phone's browser tab: the way to the home screen (components/InstallBanner.jsx) */}
+    <InstallBanner />
     <BuddyCard doneToday={!!doneToday} plannedToday={!!routine && !doneToday} todayName={routine && !doneToday ? todayName : ''}
       facts={{ weekDone: doneThisWeek, lastRecord: recs[0] ? exerciseNameText(exOr(recs[0].exId)) + ' ' + setText(recs[0].set, S.unit) : null }} />
 

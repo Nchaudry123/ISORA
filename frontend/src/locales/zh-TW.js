@@ -2445,4 +2445,10 @@ export default {
   '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0} 已停滯 {1} 週。接下來：{2}，從 {3} 開始。',
   'Switched to {0}, starting at {1}.': '已切換到 {0}，從 {1} 開始。',
   'That one is already in this pattern.': '這個已經在該模式中了。',
+  'Add ISORA to your home screen': '把 ISORA 加到主畫面',
+  'Full screen, works offline, one tap away. Like a real app.': '全螢幕、可離線、一鍵打開。像真正的 App。',
+  'Tap Share, then “Add to Home Screen”.': '點「分享」，然後選「加入主畫面」。',
+  'Open this page in Safari first, then Share → Add to Home Screen.': '先用 Safari 打開此頁，再分享 → 加入主畫面。',
+  'Tap ⋮, then “Add to Home screen”.': '點 ⋮，然後選「加到主畫面」。',
+  'Install': '安裝',
 }

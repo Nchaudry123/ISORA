@@ -2463,4 +2463,10 @@ export default {
   '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0} หยุดนิ่งมา {1} สัปดาห์ ต่อไป: {2} เริ่มที่ {3}',
   'Switched to {0}, starting at {1}.': 'สลับเป็น {0} เริ่มที่ {1}',
   'That one is already in this pattern.': 'ท่านี้อยู่ในรูปแบบนี้แล้ว',
+  'Add ISORA to your home screen': 'เพิ่ม ISORA ไปยังหน้าจอหลัก',
+  'Full screen, works offline, one tap away. Like a real app.': 'เต็มจอ ใช้ออฟไลน์ได้ แตะเดียวถึง เหมือนแอปจริง',
+  'Tap Share, then “Add to Home Screen”.': 'แตะแชร์ แล้วเลือก “เพิ่มไปยังหน้าจอโฮม”',
+  'Open this page in Safari first, then Share → Add to Home Screen.': 'เปิดหน้านี้ใน Safari ก่อน แล้วแชร์ → เพิ่มไปยังหน้าจอโฮม',
+  'Tap ⋮, then “Add to Home screen”.': 'แตะ ⋮ แล้วเลือก “เพิ่มไปยังหน้าจอหลัก”',
+  'Install': 'ติดตั้ง',
 }

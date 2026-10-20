@@ -2455,4 +2455,10 @@ export default {
   '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0} {1} hete megállt. Következik: {2}, {3}-tól.',
   'Switched to {0}, starting at {1}.': 'Váltás erre: {0}, {1}-tól.',
   'That one is already in this pattern.': 'Az már benne van ebben a mintában.',
+  'Add ISORA to your home screen': 'Tedd az ISORA-t a kezdőképernyőre',
+  'Full screen, works offline, one tap away. Like a real app.': 'Teljes képernyő, offline is megy, egy koppintásra. Mint egy igazi app.',
+  'Tap Share, then “Add to Home Screen”.': 'Koppints a Megosztásra, majd „Főképernyőhöz adás”.',
+  'Open this page in Safari first, then Share → Add to Home Screen.': 'Nyisd meg ezt az oldalt előbb Safariban, majd Megosztás → Főképernyőhöz adás.',
+  'Tap ⋮, then “Add to Home screen”.': 'Koppints a ⋮-ra, majd „Hozzáadás a kezdőképernyőhöz”.',
+  'Install': 'Telepítés',
 }

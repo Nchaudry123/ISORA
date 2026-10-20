@@ -2452,4 +2452,10 @@ export default {
   '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0} è fermo da {1} settimane. Prossimo: {2}, a partire da {3}.',
   'Switched to {0}, starting at {1}.': 'Passato a {0}, a partire da {1}.',
   'That one is already in this pattern.': 'Quella è già in questo schema.',
+  'Add ISORA to your home screen': 'Aggiungi ISORA alla schermata Home',
+  'Full screen, works offline, one tap away. Like a real app.': 'A schermo intero, funziona offline, a un tocco. Come una vera app.',
+  'Tap Share, then “Add to Home Screen”.': 'Tocca Condividi, poi “Aggiungi alla schermata Home”.',
+  'Open this page in Safari first, then Share → Add to Home Screen.': 'Apri prima questa pagina in Safari, poi Condividi → Aggiungi alla schermata Home.',
+  'Tap ⋮, then “Add to Home screen”.': 'Tocca ⋮, poi “Aggiungi a schermata Home”.',
+  'Install': 'Installa',
 }

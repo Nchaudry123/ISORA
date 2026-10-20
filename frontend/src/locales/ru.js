@@ -2456,4 +2456,10 @@ export default {
   '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0} стоит уже {1} недели. Дальше: {2}, старт с {3}.',
   'Switched to {0}, starting at {1}.': 'Переключено на {0}, старт с {1}.',
   'That one is already in this pattern.': 'Эта уже есть в этом паттерне.',
+  'Add ISORA to your home screen': 'Добавь ISORA на главный экран',
+  'Full screen, works offline, one tap away. Like a real app.': 'На весь экран, работает офлайн, в одно касание. Как настоящее приложение.',
+  'Tap Share, then “Add to Home Screen”.': 'Нажми «Поделиться», затем «На экран “Домой”».',
+  'Open this page in Safari first, then Share → Add to Home Screen.': 'Сначала открой эту страницу в Safari, затем «Поделиться» → «На экран “Домой”».',
+  'Tap ⋮, then “Add to Home screen”.': 'Нажми ⋮, затем «Добавить на главный экран».',
+  'Install': 'Установить',
 }

@@ -1490,6 +1490,11 @@ export const PT_BR_OVERRIDES = {
   'Switching carries {0}% of the peak over as the new starting weight, in every routine that holds it.': 'Ao trocar, {0}% do pico vira o novo peso inicial em toda rotina que a contém.',
   '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0} está parado há {1} semanas. Próximo: {2}, começando em {3}.',
   'Switched to {0}, starting at {1}.': 'Trocado para {0}, começando em {1}.',
+  'Add ISORA to your home screen': 'Adicione o ISORA à tela inicial',
+  'Full screen, works offline, one tap away. Like a real app.': 'Tela cheia, funciona offline, a um toque. Como um app de verdade.',
+  'Tap Share, then “Add to Home Screen”.': 'Toque em Compartilhar e depois em “Adicionar à Tela de Início”.',
+  'Open this page in Safari first, then Share → Add to Home Screen.': 'Abra esta página no Safari primeiro, depois Compartilhar → Adicionar à Tela de Início.',
+  'Tap ⋮, then “Add to Home screen”.': 'Toque em ⋮ e depois em “Adicionar à tela inicial”.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

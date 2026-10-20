@@ -2449,4 +2449,10 @@ export default {
   '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0} стоїть уже {1} тижні. Далі: {2}, старт з {3}.',
   'Switched to {0}, starting at {1}.': 'Перемкнено на {0}, старт з {1}.',
   'That one is already in this pattern.': 'Ця вже є в цьому патерні.',
+  'Add ISORA to your home screen': 'Додай ISORA на головний екран',
+  'Full screen, works offline, one tap away. Like a real app.': 'На весь екран, працює офлайн, в один дотик. Як справжній застосунок.',
+  'Tap Share, then “Add to Home Screen”.': 'Натисни «Поділитися», потім «На Початковий екран».',
+  'Open this page in Safari first, then Share → Add to Home Screen.': 'Спершу відкрий цю сторінку в Safari, потім «Поділитися» → «На Початковий екран».',
+  'Tap ⋮, then “Add to Home screen”.': 'Натисни ⋮, потім «Додати на головний екран».',
+  'Install': 'Встановити',
 }

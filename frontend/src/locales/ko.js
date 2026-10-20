@@ -2452,4 +2452,10 @@ export default {
   '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0}이(가) {1}주째 정체예요. 다음: {2}, {3}부터 시작.',
   'Switched to {0}, starting at {1}.': '{0}(으)로 전환, {1}부터 시작.',
   'That one is already in this pattern.': '이미 이 패턴에 있어요.',
+  'Add ISORA to your home screen': 'ISORA를 홈 화면에 추가',
+  'Full screen, works offline, one tap away. Like a real app.': '전체 화면, 오프라인 지원, 한 번의 탭. 진짜 앱처럼요.',
+  'Tap Share, then “Add to Home Screen”.': '공유를 탭한 뒤 “홈 화면에 추가”를 선택하세요.',
+  'Open this page in Safari first, then Share → Add to Home Screen.': '먼저 이 페이지를 Safari에서 연 뒤 공유 → 홈 화면에 추가.',
+  'Tap ⋮, then “Add to Home screen”.': '⋮을 탭한 뒤 “홈 화면에 추가”를 선택하세요.',
+  'Install': '설치',
 }

@@ -8,6 +8,7 @@ import { startNativeKeyboard } from './lib/native-keyboard.js'
 import './index.css'
 import './isora.css'
 import './motion.css'
+import './lib/install.js'   // catches the browser's install prompt early (components/InstallBanner.jsx)
 
 // App.jsx restores per-route scroll itself; the browser's own attempt races it.
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual'

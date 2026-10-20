@@ -2452,4 +2452,10 @@ export default {
   '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0} {1} haftadır duruyor. Sıradaki: {2}, {3} ile başlıyor.',
   'Switched to {0}, starting at {1}.': '{0} olarak değiştirildi, {1} ile başlıyor.',
   'That one is already in this pattern.': 'O zaten bu kalıpta var.',
+  'Add ISORA to your home screen': 'ISORA’yı ana ekrana ekle',
+  'Full screen, works offline, one tap away. Like a real app.': 'Tam ekran, çevrimdışı çalışır, bir dokunuş uzakta. Gerçek bir uygulama gibi.',
+  'Tap Share, then “Add to Home Screen”.': 'Paylaş’a, sonra “Ana Ekrana Ekle”ye dokun.',
+  'Open this page in Safari first, then Share → Add to Home Screen.': 'Bu sayfayı önce Safari’de aç, sonra Paylaş → Ana Ekrana Ekle.',
+  'Tap ⋮, then “Add to Home screen”.': '⋮’ye, sonra “Ana ekrana ekle”ye dokun.',
+  'Install': 'Yükle',
 }

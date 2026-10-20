@@ -30,6 +30,10 @@ Variation Cycling (`lib/cycling.js`, tested; `components/CyclingSheet.jsx`): thr
 movement pattern in `S.cycling`; `reviewCycling` after each finished workout (sheets.jsx
 doFinishWorkout) rotates a pattern after 3 trained weeks without a new best, `applySwitch` swaps
 the lift in every routine at 85% of the peak. Seeded on at the first setup; Plan has the switch.
+Install prompt (`lib/install.js`, tested; `components/InstallBanner.jsx` on Home): shown in a
+phone's browser tab (standalone display mode is detectable, an existing icon is not); iPhone gets
+Share → Add to Home Screen, Android the captured `beforeinstallprompt` or the ⋮ steps; Later
+puts it off a week (`isora_install_later`). No web API reaches the Dynamic Island.
 
 What follows is openGym's own guide, still accurate for the code.
 

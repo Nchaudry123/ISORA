@@ -2531,4 +2531,10 @@ export default {
   '{0} has stalled for {1} weeks. Next up: {2}, starting at {3}.': '{0} {1} সপ্তাহ ধরে থেমে আছে। পরেরটি: {2}, {3} থেকে শুরু।',
   'Switched to {0}, starting at {1}.': '{0}-এ বদলানো হয়েছে, {1} থেকে শুরু।',
   'That one is already in this pattern.': 'ওটা এই প্যাটার্নে আগে থেকেই আছে।',
+  'Add ISORA to your home screen': 'ISORA হোম স্ক্রিনে যোগ করো',
+  'Full screen, works offline, one tap away. Like a real app.': 'ফুল স্ক্রিন, অফলাইনে চলে, এক ট্যাপ দূরে। আসল অ্যাপের মতো।',
+  'Tap Share, then “Add to Home Screen”.': 'শেয়ারে ট্যাপ করো, তারপর “হোম স্ক্রিনে যোগ করুন”।',
+  'Open this page in Safari first, then Share → Add to Home Screen.': 'প্রথমে এই পেজটি Safari-তে খোলো, তারপর শেয়ার → হোম স্ক্রিনে যোগ করুন।',
+  'Tap ⋮, then “Add to Home screen”.': '⋮-এ ট্যাপ করো, তারপর “হোম স্ক্রিনে যোগ করুন”।',
+  'Install': 'ইনস্টল করো',
 }
