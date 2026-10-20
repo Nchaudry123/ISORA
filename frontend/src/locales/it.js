@@ -2479,4 +2479,8 @@ export default {
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Apri questa pagina in Safari, tocca Condividi, poi «Aggiungi alla schermata Home». Schermo intero, offline, a un tocco.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Tocca ⋮ in alto nel browser, poi «Aggiungi a schermata Home». Schermo intero, offline, a un tocco.',
   '{0} has stalled for {1} weeks. Next up: {2}.': '{0} è fermo da {1} settimane. Prossimo: {2}.',
+  'Not on your home screen yet': 'Non ancora nella schermata Home',
+  'On your home screen': 'Nella schermata Home',
+  'ISORA is running as an app': 'ISORA gira come app',
+  'Full screen, works offline, and the lock-screen rest alert can reach you here.': 'Schermo intero, funziona offline e l’avviso di riposo sulla schermata di blocco ti raggiunge qui.',
 }

@@ -1512,6 +1512,10 @@ export const PT_BR_OVERRIDES = {
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Abra esta página no Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”. Tela cheia, offline, a um toque.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Toque em ⋮ no topo do navegador e depois em “Adicionar à tela inicial”. Tela cheia, offline, a um toque.',
   '{0} has stalled for {1} weeks. Next up: {2}.': '{0} está parado há {1} semanas. Próximo: {2}.',
+  'Not on your home screen yet': 'Ainda não está na sua tela inicial',
+  'On your home screen': 'Na sua tela inicial',
+  'ISORA is running as an app': 'O ISORA está rodando como app',
+  'Full screen, works offline, and the lock-screen rest alert can reach you here.': 'Tela cheia, funciona offline e o alerta de descanso na tela de bloqueio chega até você aqui.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

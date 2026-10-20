@@ -26,10 +26,17 @@ export function deviceOf(nav = globalThis.navigator) {
   return { os: 'other', safari: false }
 }
 
-const KEY = 'isora_install_later'
-/** Whether the prompt was put off, and for how long it stays away (a week). */
+// a new key: a Later tapped before this build, when the card was the only way, starts over
+const KEY = 'isora_install_later_v2'
+/** Whether the card was put off, and for how long it stays away (a week). */
 export function putOff(store = globalThis.localStorage) {
   try { const at = Number(store?.getItem(KEY)) || 0; return at > 0 && Date.now() - at < 7 * 864e5 } catch { return false }
+}
+/** Where ISORA is running: from its icon, in a phone's browser tab, or on a desktop. */
+export function installState({ win = globalThis.window, nav = globalThis.navigator } = {}) {
+  if (!win) return 'desktop'
+  if (isStandalone(win)) return 'standalone'
+  return deviceOf(nav).os === 'other' ? 'desktop' : 'tab'
 }
 export function putOffNow(store = globalThis.localStorage) { try { store?.setItem(KEY, String(Date.now())) } catch {} }
 

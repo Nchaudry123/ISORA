@@ -677,6 +677,10 @@ body.ob-open{position:fixed;inset-inline:0;width:100%;overflow:hidden}
 .inst-acts .btn{width:auto;padding:7px 14px;border-radius:99px}
 .inst-x{position:absolute;top:8px;inset-inline-end:8px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--label-2);background:color-mix(in srgb,var(--label) 8%,transparent)}
 .inst{animation:rise .6s var(--spring-soft) both}
+.inst-pill{display:flex;align-items:center;gap:8px;width:100%;margin:2px 0 12px;padding:9px 12px;border-radius:99px;background:color-mix(in srgb,var(--acc) 10%,var(--surface));color:var(--label);font-size:14px;font-weight:600;text-align:start;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--acc) 28%,transparent);animation:rise .5s var(--spring-soft) both}
+.inst-pill .icn{color:var(--acc);font-size:17px;flex:none}
+.inst-pill span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inst-pill b{color:var(--acc);font-weight:700}
 @media (prefers-reduced-motion:reduce){ .inst{animation:none} }
 
 /* ---- the welcome (components/Welcome.jsx): four screens before Iso's setup chat ---- */

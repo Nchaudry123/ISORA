@@ -2483,4 +2483,8 @@ export default {
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Открой эту страницу в Safari, нажми «Поделиться», затем «На экран “Домой”». Полный экран, офлайн, одно касание.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Нажми ⋮ вверху браузера, затем «Добавить на главный экран». Полный экран, офлайн, одно касание.',
   '{0} has stalled for {1} weeks. Next up: {2}.': '{0} стоит на месте {1} нед. Следующее: {2}.',
+  'Not on your home screen yet': 'Ещё не на главном экране',
+  'On your home screen': 'На главном экране',
+  'ISORA is running as an app': 'ISORA работает как приложение',
+  'Full screen, works offline, and the lock-screen rest alert can reach you here.': 'Полный экран, работает офлайн, и уведомление об отдыхе на экране блокировки дойдёт сюда.',
 }

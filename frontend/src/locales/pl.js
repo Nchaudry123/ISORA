@@ -2479,4 +2479,8 @@ export default {
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Otwórz tę stronę w Safari, stuknij Udostępnij, potem „Do ekranu początkowego”. Pełny ekran, offline, jedno stuknięcie.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Stuknij ⋮ u góry przeglądarki, potem „Dodaj do ekranu głównego”. Pełny ekran, offline, jedno stuknięcie.',
   '{0} has stalled for {1} weeks. Next up: {2}.': '{0} stoi w miejscu od {1} tygodni. Następne: {2}.',
+  'Not on your home screen yet': 'Jeszcze nie na ekranie głównym',
+  'On your home screen': 'Na ekranie głównym',
+  'ISORA is running as an app': 'ISORA działa jako aplikacja',
+  'Full screen, works offline, and the lock-screen rest alert can reach you here.': 'Pełny ekran, działa offline, a alert przerwy na ekranie blokady dotrze tu do ciebie.',
 }

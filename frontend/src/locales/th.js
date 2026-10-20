@@ -2490,4 +2490,8 @@ export default {
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'เปิดหน้านี้ใน Safari แตะ แชร์ แล้วเลือก “เพิ่มไปยังหน้าจอโฮม” เต็มหน้าจอ ออฟไลน์ได้ แค่แตะเดียว',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'แตะ ⋮ ด้านบนของเบราว์เซอร์ แล้วเลือก “เพิ่มไปยังหน้าจอหลัก” เต็มหน้าจอ ออฟไลน์ได้ แค่แตะเดียว',
   '{0} has stalled for {1} weeks. Next up: {2}.': '{0} ตันมา {1} สัปดาห์แล้ว ถัดไป: {2}',
+  'Not on your home screen yet': 'ยังไม่อยู่บนหน้าจอหลัก',
+  'On your home screen': 'อยู่บนหน้าจอหลักของคุณ',
+  'ISORA is running as an app': 'ISORA กำลังทำงานเป็นแอป',
+  'Full screen, works offline, and the lock-screen rest alert can reach you here.': 'เต็มหน้าจอ ใช้งานออฟไลน์ได้ และการแจ้งเตือนพักบนหน้าจอล็อกส่งถึงคุณได้ที่นี่',
 }

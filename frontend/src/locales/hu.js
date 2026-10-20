@@ -2482,4 +2482,8 @@ export default {
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Nyisd meg ezt az oldalt Safariban, koppints a Megosztásra, majd a „Hozzáadás a kezdőképernyőhöz” lehetőségre. Teljes képernyő, offline, egy koppintásra.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Koppints a böngésző tetején a ⋮ gombra, majd a „Hozzáadás a kezdőképernyőhöz” lehetőségre. Teljes képernyő, offline, egy koppintásra.',
   '{0} has stalled for {1} weeks. Next up: {2}.': '{0} {1} hete megakadt. Következik: {2}.',
+  'Not on your home screen yet': 'Még nincs a kezdőképernyőn',
+  'On your home screen': 'A kezdőképernyődön',
+  'ISORA is running as an app': 'Az ISORA appként fut',
+  'Full screen, works offline, and the lock-screen rest alert can reach you here.': 'Teljes képernyő, offline is megy, és a zárolt képernyős pihenő-értesítés itt elér.',
 }

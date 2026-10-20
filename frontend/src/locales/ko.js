@@ -2479,4 +2479,8 @@ export default {
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': '이 페이지를 Safari에서 열고 공유를 누른 다음 “홈 화면에 추가”를 눌러. 전체 화면, 오프라인, 한 번의 탭.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': '브라우저 상단의 ⋮을 누른 다음 “홈 화면에 추가”를 눌러. 전체 화면, 오프라인, 한 번의 탭.',
   '{0} has stalled for {1} weeks. Next up: {2}.': '{0}이(가) {1}주째 정체 중. 다음: {2}.',
+  'Not on your home screen yet': '아직 홈 화면에 없어요',
+  'On your home screen': '홈 화면에 있어요',
+  'ISORA is running as an app': 'ISORA가 앱으로 실행 중이에요',
+  'Full screen, works offline, and the lock-screen rest alert can reach you here.': '전체 화면, 오프라인 지원, 잠금 화면 휴식 알림도 여기서 받을 수 있어요.',
 }

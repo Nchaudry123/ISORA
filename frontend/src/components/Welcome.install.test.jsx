@@ -13,7 +13,7 @@ const IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebK
 beforeEach(() => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
   Object.defineProperty(navigator, 'userAgent', { value: IPHONE, configurable: true })
-  localStorage.removeItem('isora_install_later')
+  localStorage.removeItem('isora_install_later_v2')
   host = document.createElement('div'); document.body.append(host)
   root = createRoot(host)
 })
@@ -47,7 +47,7 @@ describe('the welcome in a phone’s browser tab', () => {
   })
 
   it('leaves the screen out once the app runs from its icon, or after Later', () => {
-    localStorage.setItem('isora_install_later', String(Date.now()))
+    localStorage.setItem('isora_install_later_v2', String(Date.now()))
     act(() => root.render(<Welcome onDone={() => {}} />))
     expect(host.querySelectorAll('.wel-dots i')).toHaveLength(4)
   })

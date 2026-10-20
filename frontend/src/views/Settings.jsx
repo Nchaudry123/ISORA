@@ -42,7 +42,7 @@ import { starterPlanSheet, confirmSheet, importFromApp, importFromHevy, equipmen
 import Icon from '../components/Icon.jsx'
 import { oweTours } from '../components/Tour.jsx'
 import { showWelcome } from '../components/Welcome.jsx'
-import { isStandalone, deviceOf, canPromptInstall, promptInstall } from '../lib/install.js'
+import { deviceOf, canPromptInstall, promptInstall, installState } from '../lib/install.js'
 import { durationSheet } from '../components/DurationWheel.jsx'
 import { showsConnection, showsLocalLine } from '../components/SyncBanner.jsx'
 import BackupFolderRow, { useBackupFolder, autoBackupSubtitle } from '../components/BackupFolderRow.jsx'
@@ -729,7 +729,10 @@ export default function Settings({ page = null, find = null, via = null }) {
     equipment: () => <EquipmentCard S={S} update={update} />,
 
     look: () => <>
-      {PERSONAL && !MOBILE && !isStandalone() && deviceOf().os !== 'other' && <HomeScreenSection toast={toast} />}
+      {PERSONAL && !MOBILE && installState() === 'tab' && <HomeScreenSection toast={toast} />}
+      {PERSONAL && !MOBILE && installState() === 'standalone' && <Section footer={t('Full screen, works offline, and the lock-screen rest alert can reach you here.')}>
+        <Row icon="checkCircle" iconTint="var(--green)" title={t('On your home screen')} subtitle={t('ISORA is running as an app')} />
+      </Section>}
       {PERSONAL && <Section footer={t('The welcome is the four screens from the first open. Iso’s guide walks you round Home and your first workout.')}>
         <Row icon="play" iconTint="var(--acc)" title={t('Play the welcome again')} accessory="chevron" onClick={showWelcome} />
         <Row icon="sparkles" iconTint="var(--acc)" title={t('Show Iso’s guide again')} accessory="chevron"

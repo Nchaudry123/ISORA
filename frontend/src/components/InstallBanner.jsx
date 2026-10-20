@@ -3,7 +3,9 @@ import { useStore } from '../store/useStore.js'
 import { t } from '../lib/i18n.js'
 import { PERSONAL } from '../lib/demo.js'
 import { MOBILE } from '../lib/mobile.js'
-import { shouldOfferInstall, deviceOf, putOffNow, canPromptInstall, promptInstall, isStandalone } from '../lib/install.js'
+import { shouldOfferInstall, deviceOf, putOffNow, canPromptInstall, promptInstall, isStandalone, installState } from '../lib/install.js'
+
+const isPhoneTab = () => installState() === 'tab'
 import Buddy from './Buddy.jsx'
 import Icon from './Icon.jsx'
 import { Button } from './ui.jsx'
@@ -12,11 +14,14 @@ import { Button } from './ui.jsx'
 // than from its icon (lib/install.js). iPhone: the Share → Add to Home Screen steps (Safari
 // only; another iOS browser is told to open the page in Safari). Android: the browser's own
 // install dialog when it offered one, the ⋮ menu steps otherwise. Later puts it away for a
-// week; it is gone for good once the app opens from the icon.
+// week, but only the card: it folds into a one-line pill that stays until the app runs from the
+// icon, so the way to the home screen is never more than a tap away.
 
 export default function InstallBanner() {
   const onboarded = useStore(s => !!s.S.onboarded)
+  const offer = PERSONAL && !MOBILE && isPhoneTab()
   const [show, setShow] = useState(() => PERSONAL && !MOBILE && shouldOfferInstall())
+  const [gone, setGone] = useState(false)   // launched from the icon meanwhile
   const [canPrompt, setCanPrompt] = useState(canPromptInstall)
   const dev = deviceOf()
   // the Android prompt may arrive a moment after the page does
@@ -28,12 +33,15 @@ export default function InstallBanner() {
   // launched from the icon meanwhile (another tab): nothing to ask
   useEffect(() => {
     const mq = window.matchMedia?.('(display-mode: standalone)')
-    const on = () => { if (isStandalone()) setShow(false) }
+    const on = () => { if (isStandalone()) { setShow(false); setGone(true) } }
     mq?.addEventListener?.('change', on)
     return () => mq?.removeEventListener?.('change', on)
   }, [])
-  if (!show || !onboarded) return null
+  if (!onboarded || !offer || gone) return null
   const later = () => { putOffNow(); setShow(false) }
+  if (!show) return <button type="button" className="inst-pill" onClick={() => setShow(true)}>
+    <Icon name={dev.os === 'ios' ? 'share' : 'download'} /><span>{t('Not on your home screen yet')}</span><b>{t('Add')}</b>
+  </button>
   const install = async () => { const ok = await promptInstall(); if (ok) setShow(false); else setCanPrompt(false) }
   const steps = dev.os === 'ios'
     ? (dev.safari ? t('Tap Share, then “Add to Home Screen”.') : t('Open this page in Safari first, then Share → Add to Home Screen.'))

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { isStandalone, deviceOf, shouldOfferInstall, putOffNow } from './install.js'
+import { isStandalone, deviceOf, shouldOfferInstall, putOffNow, putOff, installState } from './install.js'
 
 const win = (standalone, nav = {}) => ({ navigator: nav, matchMedia: q => ({ matches: standalone && q.includes('standalone') }) })
 const IPHONE_SAFARI = 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1'
@@ -32,5 +32,24 @@ describe('where ISORA runs', () => {
     expect(shouldOfferInstall({ win: win(false), nav: { userAgent: MAC }, store })).toBe(false)
     putOffNow(store)
     expect(shouldOfferInstall({ win: win(false, nav), nav, store })).toBe(false)
+  })
+})
+
+describe('where ISORA runs, and an old Later', () => {
+  const iphone = { userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 26_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1', maxTouchPoints: 5 }
+  const mq = m => ({ matches: m === '(display-mode: standalone)' })
+  it('tells a tab from the icon from a desktop', () => {
+    expect(installState({ win: { navigator: {}, matchMedia: () => ({ matches: false }) }, nav: iphone })).toBe('tab')
+    expect(installState({ win: { navigator: { standalone: true }, matchMedia: () => ({ matches: false }) }, nav: iphone })).toBe('standalone')
+    expect(installState({ win: { navigator: {}, matchMedia: mq }, nav: iphone })).toBe('standalone')
+    expect(installState({ win: { navigator: {}, matchMedia: () => ({ matches: false }) }, nav: { userAgent: 'Mozilla/5.0 (Windows NT 10.0) Chrome/130' } })).toBe('desktop')
+    expect(installState({ win: null })).toBe('desktop')
+  })
+  it('forgets a Later tapped before the pill existed, keeps a recent one for a week', () => {
+    const store = new Map(); const st = { getItem: k => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) }
+    st.setItem('isora_install_later', String(Date.now()))   // the old key, from before the pill
+    expect(putOff(st)).toBe(false)
+    putOffNow(st)
+    expect(putOff(st)).toBe(true)
   })
 })

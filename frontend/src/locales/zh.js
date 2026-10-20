@@ -2479,4 +2479,8 @@ export default {
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': '在 Safari 中打开此页，点分享，再点“添加到主屏幕”。全屏、可离线，一点即达。',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': '点浏览器顶部的 ⋮，再点“添加到主屏幕”。全屏、可离线，一点即达。',
   '{0} has stalled for {1} weeks. Next up: {2}.': '{0} 已停滞 {1} 周。接下来：{2}。',
+  'Not on your home screen yet': '还没有添加到主屏幕',
+  'On your home screen': '已在主屏幕上',
+  'ISORA is running as an app': 'ISORA 正以应用形式运行',
+  'Full screen, works offline, and the lock-screen rest alert can reach you here.': '全屏、可离线，锁屏休息提醒也能在这里送达。',
 }

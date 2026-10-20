@@ -35,7 +35,9 @@ history is not this turn's plateau); a switch into bodyweight work carries no lo
 Install prompt (`lib/install.js`, tested; `components/InstallBanner.jsx` on Home): shown in a
 phone's browser tab (standalone display mode is detectable, an existing icon is not); iPhone gets
 Share → Add to Home Screen, Android the captured `beforeinstallprompt` or the ⋮ steps; Later
-puts it off a week (`isora_install_later`). No web API reaches the Dynamic Island.
+puts the card off a week (`isora_install_later_v2`), but it folds into a one-line pill that stays
+until the app runs from the icon; Settings → Look & Home shows "Add ISORA to your home screen"
+in a tab and "On your home screen" from the icon (`installState`). No web API reaches the Dynamic Island.
 Lock-screen rest alert (personal build): `api/rest-push.js` waits out the rest and sends one Web
 Push (needs VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY / VAPID_SUBJECT env; maxDuration 300 in
 vercel.json; `web-push` is a function-only dependency). `lib/push.js` keeps the subscription in

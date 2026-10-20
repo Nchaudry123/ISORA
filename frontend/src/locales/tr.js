@@ -2479,4 +2479,8 @@ export default {
   'Open this page in Safari, tap Share, then “Add to Home Screen”. Full screen, works offline, one tap away.': 'Bu sayfayı Safari’de aç, Paylaş’a, sonra “Ana Ekrana Ekle”ye dokun. Tam ekran, çevrimdışı, bir dokunuş uzakta.',
   'Tap ⋮ at the top of the browser, then “Add to Home screen”. Full screen, works offline, one tap away.': 'Tarayıcının üstündeki ⋮ simgesine, sonra “Ana ekrana ekle”ye dokun. Tam ekran, çevrimdışı, bir dokunuş uzakta.',
   '{0} has stalled for {1} weeks. Next up: {2}.': '{0} {1} haftadır tıkandı. Sırada: {2}.',
+  'Not on your home screen yet': 'Henüz ana ekranında değil',
+  'On your home screen': 'Ana ekranında',
+  'ISORA is running as an app': 'ISORA uygulama olarak çalışıyor',
+  'Full screen, works offline, and the lock-screen rest alert can reach you here.': 'Tam ekran, çevrimdışı çalışır ve kilit ekranı dinlenme uyarısı sana burada ulaşır.',
 }
