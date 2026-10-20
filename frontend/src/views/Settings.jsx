@@ -21,7 +21,7 @@ import { REST_SOUND_IDS, restSoundOf } from '../lib/rest-sounds.js'
 import { scheduleModeOf, chooseFixedWeek, chooseRotation } from '../lib/rotation.js'
 import { queueOf } from '../lib/queue.js'
 import { api, webauthnOK, passkeyRegister, passkeyError, IS_ANDROID } from '../lib/api.js'
-import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscription } from '../lib/push.js'
+import { pushSupported, enablePush, disablePush, sendTestPush, syncPushSubscription, restPushOn } from '../lib/push.js'
 import { wakeLockSupported } from '../lib/wakelock.js'
 import { t, tn, LANGS, INSTR_LANGS, EXERCISE_NAME_LANGS, baseLang, dateLocale } from '../lib/i18n.js'
 import { effectiveLang } from '../lib/default-lang.js'
@@ -585,6 +585,7 @@ export default function Settings({ page = null, find = null, via = null }) {
     alerts: () => {
       const iPhone = appleTouchDevice()
       return <>
+        {PERSONAL && !MOBILE && <LockScreenRest />}
         <Section title={t('When a rest ends')}>
           <Row icon="speaker" iconTint="var(--pink)" title={t('Play a sound')}>
             {/* Turning the sound on is a tap: unlock the audio context now so a timer that ends
@@ -1526,4 +1527,30 @@ function HealthConnectCard({ S, toast }) {
         accessory="chevron" onClick={() => openHealthConnect().catch(() => {})} />}
     </Section>
   )
+}
+
+// The rest timer on the lock screen, for the personal app (lib/push.js, api/rest-push.js): a
+// switch that asks for notification permission and subscribes this phone; a test button once on.
+function LockScreenRest() {
+  const toast = useUI(s => s.toast)
+  const [on, setOn] = useState(() => restPushOn())
+  const [busy, setBusy] = useState(false)
+  const supported = pushSupported()
+  const toggle = async v => {
+    setBusy(true)
+    try {
+      if (!v) { await disablePush(); setOn(false); toast(t('Notifications off')) }
+      else { await enablePush(); setOn(true); toast(t('Notifications on')) }
+    } catch (e) { toast(e.message || t('Could not change notification settings')) }
+    setBusy(false)
+  }
+  const test = async () => { try { await sendTestPush(); toast(t('Test sent! Should pop up any second')) } catch (e) { toast(e.message || t('Test failed')) } }
+  return <Section title={t('Lock screen')} footer={supported
+    ? t('A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.')
+    : t('Not supported in this browser.')}>
+    <Row icon="bell" iconTint="var(--red)" title={t('Rest over on the lock screen')}>
+      <Switch aria-label={t('Rest over on the lock screen')} checked={on} disabled={busy || !supported} onChange={toggle} />
+    </Row>
+    {on && <Row icon="bell" iconTint="var(--blue)" title={t('Send a test')} accessory="chevron" onClick={test} />}
+  </Section>
 }

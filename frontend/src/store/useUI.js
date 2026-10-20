@@ -4,8 +4,9 @@ import { beep, chime, vibrate, alertBuzz } from '../lib/sound.js'
 import { restSoundOf } from '../lib/rest-sounds.js'
 import { api } from '../lib/api.js'
 import { t } from '../lib/i18n.js'
-import { deviceId } from '../lib/push.js'
+import { deviceId, bookRestPush, cancelRestPush } from '../lib/push.js'
 import { MOBILE } from '../lib/mobile.js'
+import { PERSONAL } from '../lib/demo.js'
 import { armRestAlert, bindNativeRest, disarmRestAlert, holdRestAlert, toneNative } from '../lib/rest-alert.js'
 import { useStore } from './useStore.js'
 import { REST_MAX } from '../lib/duration.js'
@@ -15,7 +16,11 @@ import { accentValue } from '../lib/accent.js'
 // before the local timer completes. No-ops for guests / offline. The device id keeps the
 // timer this browser's own: a desktop tab finishing its rest on screen used to cancel the
 // alert the phone in the gym was waiting for, because the server held one timer per account.
-const pushRestTimer = sec => { if (useStore.getState().user) api('/api/push/rest-timer', { method: 'POST', body: JSON.stringify({ seconds: sec, deviceId: deviceId() }) }).catch(() => {}) }
+const pushRestTimer = (sec, endsAt) => {
+  // the personal app has no account: its own lock-screen path (lib/push.js bookRestPush)
+  if (PERSONAL) { bookRestPush(endsAt || Date.now() + sec * 1000); return }
+  if (useStore.getState().user) api('/api/push/rest-timer', { method: 'POST', body: JSON.stringify({ seconds: sec, deviceId: deviceId() }) }).catch(() => {})
+}
 const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push/rest-timer/cancel', { method: 'POST', body: JSON.stringify({ deviceId: deviceId() }) }).catch(() => {}) }
 
 // Books the end of a rest with whatever can announce it while the app is not looking: in the
@@ -25,13 +30,13 @@ const cancelPushRestTimer = () => { if (useStore.getState().user) api('/api/push
 // it is ten seconds between the two sides of a hold, and the app is in your hand.
 const bookRestEnd = (endsAt, totalSec, kind) => {
   const switching = kind === 'switch'
-  if (!MOBILE) { if (!switching) pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000))); return }
+  if (!MOBILE) { if (!switching) pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000)), endsAt); return }
   const { S } = useStore.getState()
   armRestAlert(endsAt, { title: switching ? t('Switch sides') : t('Rest’s over. Next set!'), countdownTitle: switching ? t('Switch sides') : t('Rest'), totalSec, accent: accentValue(S), sound: !!S.sound, classic: restSoundOf(S) === 'classic', tone: restSoundOf(S), vibrate: S.vibrate !== false, alarmBuzz: S.vibrate !== false && !!S.vibrateOnSilent })
     .then(ok => {
       // Only for the rest that asked: one skipped or moved since then has booked its own end.
       const tm = useUI.getState().timer
-      if (!ok && !switching && tm && !tm.paused && !tm.ready && tm.endsAt === endsAt) pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000)))
+      if (!ok && !switching && tm && !tm.paused && !tm.ready && tm.endsAt === endsAt) pushRestTimer(Math.max(1, Math.round((endsAt - Date.now()) / 1000)), endsAt)
     })
 }
 
@@ -371,6 +376,7 @@ export const useUI = create((set, get) => ({
     runRest(set, get)
   },
   stopRest() {
+    if (!MOBILE) cancelRestPush()   // a push already booked for this rest shows nothing (lib/push.js)
     stopRestTicking()
     // Skip, Dismiss, a rest replacing this one and "rest off" all take the native alarm and
     // its notifications down with it, or the alert fires after the user already moved on.

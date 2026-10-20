@@ -1,6 +1,8 @@
 // Web Push subscribe/unsubscribe — requires a signed-in profile (subscriptions are stored
 // server-side per user, same as everything else under /api).
 import { api } from './api.js'
+import { PERSONAL } from './demo.js'
+import { t } from './i18n.js'
 
 // main.jsx registers the service worker on https only, so on any other origin there is no
 // worker and `navigator.serviceWorker.ready` never settles — the toggle looked usable and hung.
@@ -57,11 +59,47 @@ const readyWorker = (ms = 8000) => Promise.race([
 
 const register = sub => api('/api/push/subscribe', { method: 'POST', body: JSON.stringify({ subscription: sub.toJSON(), deviceId: deviceId() }) })
 
+// --- the personal app: the rest timer on the lock screen without an account ------------------
+// The subscription stays in this browser; every booking carries it (api/rest-push.js), so the
+// server keeps nothing. The worker is told when the rest ends (and when it is cancelled), so a
+// push for a rest that was skipped shows nothing (public/sw.js).
+const SUB_KEY = 'isora_push_sub'
+const savedSub = () => { try { return JSON.parse(localStorage.getItem(SUB_KEY) || 'null') } catch { return null } }
+const keepSub = sub => { try { sub ? localStorage.setItem(SUB_KEY, JSON.stringify(sub)) : localStorage.removeItem(SUB_KEY) } catch {} }
+const personalKey = async () => {
+  const r = await fetch('/api/rest-push')
+  if (r.status === 503) throw Object.assign(new Error(t('Lock-screen alerts aren’t set up on this server yet.')), { code: 'not-configured' })
+  if (!r.ok) throw new Error(t('Couldn’t reach the cloud. Check your connection and try again.'))
+  return (await r.json()).key
+}
+export const restPushOn = () => PERSONAL && pushSupported() && Notification.permission === 'granted' && !!savedSub()
+const tellWorker = msg => { try { navigator.serviceWorker?.controller?.postMessage(msg) } catch {} }
+/** Books "rest over" for `endsAt` on this phone's lock screen; a no-op when the switch is off. */
+export function bookRestPush(endsAt) {
+  const sub = restPushOn() && savedSub()
+  if (!sub) return
+  const seconds = Math.max(1, Math.round((endsAt - Date.now()) / 1000))
+  tellWorker({ type: 'isora-rest', endsAt })
+  fetch('/api/rest-push', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ subscription: sub, seconds, title: 'ISORA', body: t('Rest’s over. Next set!') }) })
+    .then(r => { if (r.status === 410) keepSub(null) }).catch(() => {})
+}
+/** The rest was skipped or ended by hand: the push that is already on its way shows nothing. */
+export const cancelRestPush = () => { if (PERSONAL) tellWorker({ type: 'isora-rest', endsAt: null }) }
+
 export async function enablePush() {
   if (!pushSupported()) throw new Error('Push notifications are not supported in this browser')
   const perm = await Notification.requestPermission()
   if (perm !== 'granted') throw new Error('Notifications permission was not granted')
   const reg = await readyWorker()
+  if (PERSONAL) {
+    const key = await personalKey()
+    let sub = await reg.pushManager.getSubscription()
+    if (sub && sub.options?.applicationServerKey && bytesToUrlBase64(sub.options.applicationServerKey) !== key.replace(/=+$/, '')) { await sub.unsubscribe().catch(() => {}); sub = null }
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(key) })
+    keepSub(sub.toJSON())
+    return
+  }
   const { key } = await api('/api/push/public-key')
   const subscription = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlBase64ToUint8Array(key) })
   await shareDeviceId()
@@ -72,8 +110,10 @@ export async function disablePush() {
   if (!pushSupported()) return
   const reg = await readyWorker()
   const sub = await reg.pushManager.getSubscription()
+  keepSub(null)
   if (!sub) return
   await sub.unsubscribe()
+  if (PERSONAL) return
   await api('/api/push/unsubscribe', { method: 'POST', body: JSON.stringify({ endpoint: sub.endpoint }) }).catch(() => {})
 }
 
@@ -94,6 +134,7 @@ export async function syncPushSubscription() {
   const reg = await readyWorker()
   let sub = await reg.pushManager.getSubscription()
   if (!sub) return false
+  if (PERSONAL) { keepSub(sub.toJSON()); return true }
   await shareDeviceId()
   const { key } = await api('/api/push/public-key')
   const mine = sub.options?.applicationServerKey
@@ -116,4 +157,11 @@ export async function syncPushSubscription() {
   return true
 }
 
-export const sendTestPush = () => api('/api/push/test', { method: 'POST', body: '{}' })
+export const sendTestPush = async () => {
+  if (!PERSONAL) return api('/api/push/test', { method: 'POST', body: '{}' })
+  const sub = savedSub()
+  if (!sub) throw new Error(t('Notifications off'))
+  const r = await fetch('/api/rest-push', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ subscription: sub, seconds: 3, title: 'ISORA', body: t('Test sent! Should pop up any second') }) })
+  if (!r.ok) throw new Error(r.status === 503 ? t('Lock-screen alerts aren’t set up on this server yet.') : t('Test failed'))
+}

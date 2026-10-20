@@ -2458,4 +2458,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': 'पहले इस पेज को Safari में खोलें, फिर शेयर → होम स्क्रीन में जोड़ें।',
   'Tap ⋮, then “Add to Home screen”.': '⋮ पर टैप करें, फिर “होम स्क्रीन पर जोड़ें”।',
   'Install': 'इंस्टॉल करें',
+  'Lock screen': 'लॉक स्क्रीन',
+  'Rest over on the lock screen': 'लॉक स्क्रीन पर रेस्ट ख़त्म',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'रेस्ट ख़त्म होने पर नोटिफ़िकेशन, फ़ोन लॉक होने पर भी। iPhone पर इसके लिए ISORA होम स्क्रीन पर होना चाहिए।',
+  'Lock-screen alerts aren’t set up on this server yet.': 'इस सर्वर पर लॉक-स्क्रीन अलर्ट अभी सेट नहीं हैं।',
+  'Send a test': 'टेस्ट भेजें',
 }

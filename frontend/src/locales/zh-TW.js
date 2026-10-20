@@ -2451,4 +2451,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': '先用 Safari 打開此頁，再分享 → 加入主畫面。',
   'Tap ⋮, then “Add to Home screen”.': '點 ⋮，然後選「加到主畫面」。',
   'Install': '安裝',
+  'Lock screen': '鎖定畫面',
+  'Rest over on the lock screen': '鎖定畫面上的休息結束提醒',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': '休息結束時發送通知，手機鎖定也行。iPhone 上需要先把 ISORA 加到主畫面。',
+  'Lock-screen alerts aren’t set up on this server yet.': '此伺服器尚未設定鎖定畫面提醒。',
+  'Send a test': '發送測試',
 }

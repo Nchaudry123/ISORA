@@ -2513,4 +2513,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': 'افتح هذه الصفحة في Safari أولًا، ثم مشاركة ← إضافة إلى الشاشة الرئيسية.',
   'Tap ⋮, then “Add to Home screen”.': 'انقر على ⋮ ثم «إضافة إلى الشاشة الرئيسية».',
   'Install': 'تثبيت',
+  'Lock screen': 'شاشة القفل',
+  'Rest over on the lock screen': 'انتهاء الاستراحة على شاشة القفل',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'إشعار عند انتهاء الاستراحة حتى والهاتف مقفل. على iPhone يجب أن يكون ISORA على الشاشة الرئيسية.',
+  'Lock-screen alerts aren’t set up on this server yet.': 'تنبيهات شاشة القفل غير مُعدّة على هذا الخادم بعد.',
+  'Send a test': 'إرسال اختبار',
 }

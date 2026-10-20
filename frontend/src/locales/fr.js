@@ -2458,4 +2458,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': 'Ouvre d’abord cette page dans Safari, puis Partager → Sur l’écran d’accueil.',
   'Tap ⋮, then “Add to Home screen”.': 'Tape ⋮, puis « Ajouter à l’écran d’accueil ».',
   'Install': 'Installer',
+  'Lock screen': 'Écran verrouillé',
+  'Rest over on the lock screen': 'Fin du repos sur l’écran verrouillé',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'Une notification à la fin du repos, même téléphone verrouillé. Sur iPhone, ISORA doit être sur l’écran d’accueil.',
+  'Lock-screen alerts aren’t set up on this server yet.': 'Les alertes d’écran verrouillé ne sont pas encore configurées sur ce serveur.',
+  'Send a test': 'Envoyer un test',
 }

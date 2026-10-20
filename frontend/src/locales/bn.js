@@ -2537,4 +2537,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': 'প্রথমে এই পেজটি Safari-তে খোলো, তারপর শেয়ার → হোম স্ক্রিনে যোগ করুন।',
   'Tap ⋮, then “Add to Home screen”.': '⋮-এ ট্যাপ করো, তারপর “হোম স্ক্রিনে যোগ করুন”।',
   'Install': 'ইনস্টল করো',
+  'Lock screen': 'লক স্ক্রিন',
+  'Rest over on the lock screen': 'লক স্ক্রিনে বিশ্রাম শেষ',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'বিশ্রাম শেষ হলে নোটিফিকেশন, ফোন লক থাকলেও। iPhone-এ এর জন্য ISORA হোম স্ক্রিনে থাকতে হবে।',
+  'Lock-screen alerts aren’t set up on this server yet.': 'এই সার্ভারে লক-স্ক্রিন অ্যালার্ট এখনও সেট করা নেই।',
+  'Send a test': 'একটি টেস্ট পাঠাও',
 }

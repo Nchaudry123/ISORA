@@ -1495,6 +1495,10 @@ export const PT_BR_OVERRIDES = {
   'Tap Share, then “Add to Home Screen”.': 'Toque em Compartilhar e depois em “Adicionar à Tela de Início”.',
   'Open this page in Safari first, then Share → Add to Home Screen.': 'Abra esta página no Safari primeiro, depois Compartilhar → Adicionar à Tela de Início.',
   'Tap ⋮, then “Add to Home screen”.': 'Toque em ⋮ e depois em “Adicionar à tela inicial”.',
+  'Lock screen': 'Tela de bloqueio',
+  'Rest over on the lock screen': 'Fim do descanso na tela de bloqueio',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'Uma notificação quando o descanso acaba, mesmo com o celular bloqueado. No iPhone, o ISORA precisa estar na tela inicial.',
+  'Lock-screen alerts aren’t set up on this server yet.': 'Os alertas de tela de bloqueio ainda não estão configurados neste servidor.',
 }
 
 export default { ...pt, ...PT_BR_OVERRIDES }

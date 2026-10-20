@@ -34,6 +34,11 @@ Install prompt (`lib/install.js`, tested; `components/InstallBanner.jsx` on Home
 phone's browser tab (standalone display mode is detectable, an existing icon is not); iPhone gets
 Share → Add to Home Screen, Android the captured `beforeinstallprompt` or the ⋮ steps; Later
 puts it off a week (`isora_install_later`). No web API reaches the Dynamic Island.
+Lock-screen rest alert (personal build): `api/rest-push.js` waits out the rest and sends one Web
+Push (needs VAPID_PUBLIC_KEY / VAPID_PRIVATE_KEY / VAPID_SUBJECT env; maxDuration 300 in
+vercel.json; `web-push` is a function-only dependency). `lib/push.js` keeps the subscription in
+localStorage `isora_push_sub` and books on every rest (useUI bookRestEnd); `public/sw.js` drops a
+push whose rest was skipped, moved, or is on screen. Settings → Timer alerts → Lock screen.
 
 What follows is openGym's own guide, still accurate for the code.
 

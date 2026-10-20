@@ -2455,4 +2455,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': 'Спершу відкрий цю сторінку в Safari, потім «Поділитися» → «На Початковий екран».',
   'Tap ⋮, then “Add to Home screen”.': 'Натисни ⋮, потім «Додати на головний екран».',
   'Install': 'Встановити',
+  'Lock screen': 'Екран блокування',
+  'Rest over on the lock screen': 'Кінець відпочинку на екрані блокування',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'Сповіщення, коли відпочинок закінчиться, навіть із заблокованим телефоном. На iPhone для цього ISORA має бути на головному екрані.',
+  'Lock-screen alerts aren’t set up on this server yet.': 'Сповіщення на екран блокування на цьому сервері ще не налаштовані.',
+  'Send a test': 'Надіслати тест',
 }

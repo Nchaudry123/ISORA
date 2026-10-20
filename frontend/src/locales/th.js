@@ -2469,4 +2469,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': 'เปิดหน้านี้ใน Safari ก่อน แล้วแชร์ → เพิ่มไปยังหน้าจอโฮม',
   'Tap ⋮, then “Add to Home screen”.': 'แตะ ⋮ แล้วเลือก “เพิ่มไปยังหน้าจอหลัก”',
   'Install': 'ติดตั้ง',
+  'Lock screen': 'หน้าจอล็อก',
+  'Rest over on the lock screen': 'หมดเวลาพักบนหน้าจอล็อก',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'แจ้งเตือนเมื่อหมดเวลาพัก แม้โทรศัพท์ล็อกอยู่ บน iPhone ต้องเพิ่ม ISORA ไว้ที่หน้าจอหลัก',
+  'Lock-screen alerts aren’t set up on this server yet.': 'การแจ้งเตือนบนหน้าจอล็อกยังไม่ได้ตั้งค่าบนเซิร์ฟเวอร์นี้',
+  'Send a test': 'ส่งทดสอบ',
 }

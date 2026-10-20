@@ -2461,4 +2461,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': 'Nyisd meg ezt az oldalt előbb Safariban, majd Megosztás → Főképernyőhöz adás.',
   'Tap ⋮, then “Add to Home screen”.': 'Koppints a ⋮-ra, majd „Hozzáadás a kezdőképernyőhöz”.',
   'Install': 'Telepítés',
+  'Lock screen': 'Zárolt képernyő',
+  'Rest over on the lock screen': 'Pihenő vége a zárolt képernyőn',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'Értesítés a pihenő végén, zárolt telefonon is. iPhone-on ehhez az ISORA-nak a kezdőképernyőn kell lennie.',
+  'Lock-screen alerts aren’t set up on this server yet.': 'A zárolt képernyős értesítések még nincsenek beállítva ezen a szerveren.',
+  'Send a test': 'Teszt küldése',
 }

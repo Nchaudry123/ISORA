@@ -2458,4 +2458,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': 'Bu sayfayı önce Safari’de aç, sonra Paylaş → Ana Ekrana Ekle.',
   'Tap ⋮, then “Add to Home screen”.': '⋮’ye, sonra “Ana ekrana ekle”ye dokun.',
   'Install': 'Yükle',
+  'Lock screen': 'Kilit ekranı',
+  'Rest over on the lock screen': 'Kilit ekranında dinlenme bitti',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'Telefon kilitliyken bile dinlenme bitince bir bildirim. iPhone’da bunun için ISORA ana ekranda olmalı.',
+  'Lock-screen alerts aren’t set up on this server yet.': 'Kilit ekranı uyarıları bu sunucuda henüz ayarlanmadı.',
+  'Send a test': 'Test gönder',
 }

@@ -2478,4 +2478,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': 'Öffne diese Seite zuerst in Safari, dann Teilen → Zum Home-Bildschirm.',
   'Tap ⋮, then “Add to Home screen”.': 'Tippe auf ⋮, dann „Zum Startbildschirm hinzufügen“.',
   'Install': 'Installieren',
+  'Lock screen': 'Sperrbildschirm',
+  'Rest over on the lock screen': 'Pausenende auf dem Sperrbildschirm',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'Eine Mitteilung, wenn die Pause endet, auch bei gesperrtem Telefon. Auf dem iPhone muss ISORA dafür auf dem Home-Bildschirm liegen.',
+  'Lock-screen alerts aren’t set up on this server yet.': 'Sperrbildschirm-Hinweise sind auf diesem Server noch nicht eingerichtet.',
+  'Send a test': 'Test senden',
 }

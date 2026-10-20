@@ -208,10 +208,28 @@ function media(e) {
 // The payload is parsed inside waitUntil: a push whose handler throws before showing anything is
 // a "silent push", which Chrome counts against the site and eventually revokes. A body that is
 // not JSON still shows a notification.
+// The personal app's rest push (api/rest-push.js): the page tells the worker when the current
+// rest ends, and null when it was skipped; kept in the device cache, which outlives the worker.
+// A push for a rest that is gone, or that was moved later, shows nothing; one that arrives while
+// the app is on screen is dropped too, since the page already rings and flashes.
+const REST_URL = '/isora-rest'
+const restRecord = async () => { try { const r = await (await caches.open(DEVICE_CACHE)).match(REST_URL); return r ? await r.json() : null } catch { return null } }
+self.addEventListener('message', e => {
+  const m = e.data
+  if (!m || m.type !== 'isora-rest') return
+  e.waitUntil(caches.open(DEVICE_CACHE).then(c => c.put(REST_URL, new Response(JSON.stringify({ endsAt: m.endsAt ?? null, at: Date.now() })))).catch(() => {}))
+})
+const appOnScreen = async () => { try { return (await self.clients.matchAll({ type: 'window', includeUncontrolled: true })).some(c => c.visibilityState === 'visible') } catch { return false } }
+
 self.addEventListener('push', e => {
   e.waitUntil((async () => {
     let data = {}
     try { data = e.data ? e.data.json() : {} } catch { data = { body: (() => { try { return e.data.text() } catch { return '' } })() } }
+    if (data.tag === 'isora-rest') {
+      const rec = await restRecord()
+      const stale = rec && (rec.endsAt == null || (data.endsAt && rec.endsAt > data.endsAt + 5000))
+      if (stale || await appOnScreen()) return
+    }
     // One alert per kind: a new rest-timer push replaces the last one instead of stacking
     // up in the tray (issue #172). `tag` alone should do that, but iOS keeps every one, so
     // the previous notification with the same tag is closed by hand first.

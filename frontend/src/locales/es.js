@@ -2458,4 +2458,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': 'Abre esta página en Safari primero y luego Compartir → Añadir a pantalla de inicio.',
   'Tap ⋮, then “Add to Home screen”.': 'Toca ⋮ y luego «Añadir a pantalla de inicio».',
   'Install': 'Instalar',
+  'Lock screen': 'Pantalla de bloqueo',
+  'Rest over on the lock screen': 'Fin del descanso en la pantalla de bloqueo',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': 'Una notificación cuando termina el descanso, incluso con el teléfono bloqueado. En iPhone, ISORA debe estar en la pantalla de inicio.',
+  'Lock-screen alerts aren’t set up on this server yet.': 'Las alertas de pantalla de bloqueo aún no están configuradas en este servidor.',
+  'Send a test': 'Enviar una prueba',
 }

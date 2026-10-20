@@ -2458,4 +2458,9 @@ export default {
   'Open this page in Safari first, then Share → Add to Home Screen.': '먼저 이 페이지를 Safari에서 연 뒤 공유 → 홈 화면에 추가.',
   'Tap ⋮, then “Add to Home screen”.': '⋮을 탭한 뒤 “홈 화면에 추가”를 선택하세요.',
   'Install': '설치',
+  'Lock screen': '잠금 화면',
+  'Rest over on the lock screen': '잠금 화면에 휴식 종료 알림',
+  'A notification when the rest ends, even with the phone locked. On iPhone this needs ISORA added to the home screen.': '휴식이 끝나면 잠금 상태에서도 알림이 와요. iPhone에서는 ISORA를 홈 화면에 추가해야 해요.',
+  'Lock-screen alerts aren’t set up on this server yet.': '이 서버에는 잠금 화면 알림이 아직 설정되지 않았어요.',
+  'Send a test': '테스트 보내기',
 }
