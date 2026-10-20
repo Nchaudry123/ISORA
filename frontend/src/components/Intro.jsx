@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { t } from '../lib/i18n.js'
+import { setUp } from '../lib/onboarding.js'
 import Buddy from './Buddy.jsx'
 
 // The app intro, once each time ISORA is opened (not on every tab switch or reload of a sheet):
@@ -26,7 +27,7 @@ const decide = () => {
 
 export default function Intro() {
   const [show] = useState(shouldShow)
-  const full = useState(() => !useStore.getState().S.onboarded)[0]
+  const full = useState(() => !setUp(useStore.getState().S))[0]   // the long one before the first setup only
   const [phase, setPhase] = useState(show ? 'play' : 'gone')
   const total = full ? FULL_MS : SHORT_MS
 

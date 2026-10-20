@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { pickPlan, normalizeProfile, parseWeight, parseHeight, SCRIPT, GEAR, scriptedFocus, resumeScript, unitHint, planShape, shapeRoutine } from './onboarding.js'
+import { pickPlan, normalizeProfile, parseWeight, parseHeight, SCRIPT, GEAR, scriptedFocus, resumeScript, unitHint, planShape, shapeRoutine, setUp } from './onboarding.js'
 
 const step = key => SCRIPT.find(s => s.key === key)
 
@@ -111,5 +111,15 @@ describe('the goal shapes the plan', () => {
     const r = shapeRoutine(base, planShape({ goal: 'fitness', experience: 'beginner' }))
     expect(r.ex.map(e => e.reps)).toEqual([12, 12, 15, undefined])
     expect(shapeRoutine(null, {})).toBeNull()
+  })
+})
+
+describe('past the first setup', () => {
+  it('is the chat’s flag, or routines or workouts from before the chat, a backup or an import', () => {
+    expect(setUp({ onboarded: true, routines: [], workouts: [] })).toBe(true)
+    expect(setUp({ onboarded: false, routines: [{ id: 'r' }], workouts: [] })).toBe(true)
+    expect(setUp({ routines: [], workouts: [{ id: 'w' }] })).toBe(true)
+    expect(setUp({ onboarded: false, routines: [], workouts: [] })).toBe(false)
+    expect(setUp(undefined)).toBe(false)
   })
 })

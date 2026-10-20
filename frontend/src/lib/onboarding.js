@@ -212,3 +212,11 @@ export function scriptedFocus(p) {
     focusAreas: p.goal === 'strength' ? ['compound lifts', 'progressive overload'] : p.goal === 'muscle' ? ['volume', 'mind-muscle connection'] : p.goal === 'fitness' ? ['conditioning', 'consistency'] : ['mobility', 'consistency'],
   }
 }
+
+/**
+ * Whether this phone is past its first setup. `onboarded` is written by the first-run chat, so a
+ * state from before the chat existed, restored from a backup or imported from another app never
+ * has it; routines or workouts in the state mean the same thing. Home's card and Iso's guide read
+ * this, not the flag alone.
+ */
+export const setUp = S => !!S?.onboarded || (S?.routines?.length > 0) || (S?.workouts?.length > 0)

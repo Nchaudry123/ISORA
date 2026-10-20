@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { t } from '../lib/i18n.js'
 import { PERSONAL } from '../lib/demo.js'
+import { setUp } from '../lib/onboarding.js'
 import { MOBILE } from '../lib/mobile.js'
 import { shouldOfferInstall, deviceOf, putOffNow, canPromptInstall, promptInstall, isStandalone, installState } from '../lib/install.js'
 
@@ -18,7 +19,7 @@ import { Button } from './ui.jsx'
 // icon, so the way to the home screen is never more than a tap away.
 
 export default function InstallBanner() {
-  const onboarded = useStore(s => !!s.S.onboarded)
+  const onboarded = useStore(s => setUp(s.S))
   const offer = PERSONAL && !MOBILE && isPhoneTab()
   const [show, setShow] = useState(() => PERSONAL && !MOBILE && shouldOfferInstall())
   const [gone, setGone] = useState(false)   // launched from the icon meanwhile

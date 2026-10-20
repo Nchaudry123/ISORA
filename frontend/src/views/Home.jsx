@@ -9,6 +9,7 @@ import LineChart from '../components/LineChart.jsx'
 import Icon from '../components/Icon.jsx'
 import { useOwedTour } from '../components/Tour.jsx'
 import InstallBanner from '../components/InstallBanner.jsx'
+import { setUp } from '../lib/onboarding.js'
 import QueueRow from '../components/QueueRow.jsx'
 import { queueOf, queueView, weekTally, pinState } from '../lib/queue.js'
 import { scheduleModeOf } from '../lib/rotation.js'
@@ -29,7 +30,7 @@ import { cleanProfile, greetingFor } from '../lib/profile.js'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
 export default function Home() {
-  const tourReady = useStore(st => st.S.routines.length > 0 && !st.S.active && !!st.S.onboarded)
+  const tourReady = useStore(st => st.S.routines.length > 0 && !st.S.active && setUp(st.S))
   useOwedTour('home', tourReady)
   const nav = useNavigate()
   const S = useStore(s => s.S)
