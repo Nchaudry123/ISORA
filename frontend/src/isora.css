@@ -623,3 +623,4 @@ button.avatar:active{transform:scale(.94)}
 .plan-day .ss{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .plan-day .grow{min-width:0}
 .plan-sum{color:var(--label-2);font-weight:500}
+.progline .progline-iso{flex:none;margin:-6px 2px -6px -4px}

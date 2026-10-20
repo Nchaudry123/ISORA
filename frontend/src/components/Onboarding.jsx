@@ -6,7 +6,7 @@ import { todayISO } from '../lib/format.js'
 import { PERSONAL } from '../lib/demo.js'
 import { newProfile } from '../lib/equipment.js'
 import { cleanProfile } from '../lib/profile.js'
-import { SCRIPT, normalizeProfile, scriptedFocus, pickPlan, resumeScript, unitHint } from '../lib/onboarding.js'
+import { SCRIPT, normalizeProfile, scriptedFocus, pickPlan, resumeScript, unitHint, planShape } from '../lib/onboarding.js'
 import { normalizeCode, download, saveCode } from '../lib/cloud.js'
 import { loadStarterPlan, PLAN_COPY } from '../sheets.jsx'
 import IsoraMark from './IsoraMark.jsx'
@@ -166,7 +166,7 @@ function OnboardingChat() {
       if (gear) { s.equipProfiles = [...(s.equipProfiles || []), gear]; s.equipFilterOn = true; s.activeEquipId = gear.id }
       s.onboarded = true
     })
-    loadStarterPlan(pickPlan(p), gear)
+    loadStarterPlan(pickPlan(p), gear, planShape(p))
   }
   const skip = () => update(s => { s.onboarded = true })
 

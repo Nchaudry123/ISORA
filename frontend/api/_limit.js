@@ -5,6 +5,17 @@
 // Files starting with "_" in api/ are not deployed as routes of their own.
 const hits = new Map()
 
+// A ceiling for the whole instance per UTC day, whoever is asking: the brake if many addresses
+// hit at once. Best-effort like the rest (per instance); the credit cap on the key is the wall.
+const daily = { day: '', n: 0 }
+export function dailyCapReached(max) {
+  const day = new Date().toISOString().slice(0, 10)
+  if (daily.day !== day) { daily.day = day; daily.n = 0 }
+  if (daily.n >= max) return true
+  daily.n++
+  return false
+}
+
 export function limited(req, { max, windowMs }) {
   const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim()
   const now = Date.now()

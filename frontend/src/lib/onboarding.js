@@ -23,6 +23,48 @@ export function pickPlan({ goal, daysPerWeek, experience } = {}) {
   return 'full-body'
 }
 
+/**
+ * How the plan should progress, from the goal and the level the chat learned. Beginners add
+ * weight every clean session (linear); from intermediate on, reps climb through a range before
+ * the weight does (double progression). Strength keeps the reps low with bigger jumps, muscle
+ * lives at 8 to 12, fitness and staying active at 12 to 15. The rest is for when Rest Blast is
+ * off (with it on, every rest is 3:00).
+ */
+export function planShape({ goal, experience } = {}) {
+  const g = GOALS.includes(goal) ? goal : 'fitness'
+  const lvl = LEVELS.includes(experience) ? experience : 'beginner'
+  if (g === 'strength') return lvl === 'advanced' ? { prog: 'double', repsMin: 4, reps: 6, rest: 180, goal: g } : { prog: 'linear', reps: 5, rest: 180, goal: g }
+  if (g === 'muscle') return lvl === 'beginner' ? { prog: 'linear', reps: 10, rest: 120, goal: g } : { prog: 'double', repsMin: 8, reps: 12, rest: 120, goal: g }
+  return lvl === 'beginner' ? { prog: 'linear', reps: 12, rest: 75, goal: g } : { prog: 'double', repsMin: 12, reps: 15, rest: 75, goal: g }
+}
+
+/**
+ * A starter routine shaped to that: the routine's progression rule, and the main lifts' sets and
+ * reps. Which exercises count as main lifts is read off the plan as written: the ones it gives
+ * 8 reps or fewer (the compounds); accessories written at 12 or 15 keep their reps, since a
+ * 5-rep lateral raise helps nobody. Returns the same routine object, changed in place.
+ */
+export function shapeRoutine(routine, shape) {
+  if (!routine || !shape) return routine
+  routine.prog = shape.prog
+  for (const ex of routine.ex || []) {
+    if (shape.rest > 0) ex.restSec = shape.rest
+    if (!(ex.reps > 0) || ex.sec > 0) continue
+    const main = ex.reps <= 8
+    if (shape.goal === 'strength') {
+      if (!main) continue
+      ex.reps = shape.reps
+      if (shape.repsMin) ex.repsMin = shape.repsMin; else delete ex.repsMin
+      if (ex.sets < 4) ex.sets = 4
+    } else {
+      if (ex.reps >= 15 && shape.goal === 'muscle') continue   // calves, abs: already high-rep work
+      ex.reps = Math.max(ex.reps, shape.reps)
+      if (shape.repsMin) ex.repsMin = shape.repsMin; else delete ex.repsMin
+    }
+  }
+  return routine
+}
+
 /** An answer from the model (or the script) made safe to apply. */
 export function normalizeProfile(p) {
   const o = p && typeof p === 'object' ? p : {}

@@ -2,7 +2,8 @@
 // buddy is, who you are, its mood and a few facts about your training; the model writes one short
 // line in the buddy's voice. The app caches it per mood per day (lib/buddy.js lineKey), so this
 // runs a handful of times a day at most, and it falls back on written lines when this is down.
-import { limited } from './_limit.js'
+import { limited, dailyCapReached } from './_limit.js'
+import { rejectForeign } from './_origin.js'
 
 const ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
 const DEFAULT_MODELS = ['deepseek/deepseek-v4.1-flash', 'google/gemini-3.8-flash', 'qwen/qwen3.8-flash']
@@ -17,9 +18,10 @@ const int = v => (Number.isFinite(Number(v)) ? Math.round(Number(v)) : null)
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ error: 'method' }) }
+  if (rejectForeign(req, res)) return
   const key = process.env.OPENROUTER_API_KEY
   if (!key) return res.status(503).json({ error: 'not-configured' })
-  if (limited(req, { max: 30, windowMs: 60 * 60 * 1000 })) return res.status(429).json({ error: 'busy' })
+  if (limited(req, { max: 30, windowMs: 60 * 60 * 1000 }) || dailyCapReached(1500)) return res.status(429).json({ error: 'busy' })
   const b = req.body || {}
   const mood = MOODS.includes(b.mood) ? b.mood : 'chill'
   const facts = {

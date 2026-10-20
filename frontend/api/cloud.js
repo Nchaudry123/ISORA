@@ -10,6 +10,7 @@
 // this answers 503 and the app keeps backups on the device only.
 import { put, get } from '@vercel/blob'
 import { limited } from './_limit.js'
+import { rejectForeign } from './_origin.js'
 
 const ID = /^[0-9a-f]{64}$/
 const MAX_B64 = 3_500_000      // under Vercel's 4.5 MB request limit
@@ -22,6 +23,7 @@ const readAll = async stream => {
 }
 
 export default async function handler(req, res) {
+  if (rejectForeign(req, res)) return
   res.setHeader('Cache-Control', 'no-store')
   if (!process.env.BLOB_READ_WRITE_TOKEN) return res.status(503).json({ error: 'not-configured' })
   // automatic backups are a few an hour; this only stops someone filling the store

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { pickPlan, normalizeProfile, parseWeight, parseHeight, SCRIPT, GEAR, scriptedFocus, resumeScript, unitHint } from './onboarding.js'
+import { pickPlan, normalizeProfile, parseWeight, parseHeight, SCRIPT, GEAR, scriptedFocus, resumeScript, unitHint, planShape, shapeRoutine } from './onboarding.js'
 
 const step = key => SCRIPT.find(s => s.key === key)
 
@@ -80,5 +80,36 @@ describe('the unit someone writes in', () => {
     expect(unitHint('80 kg')).toBe('kg'); expect(unitHint('80kgs')).toBe('kg'); expect(unitHint('1.80 m')).toBe('kg'); expect(unitHint('180cm')).toBe('kg')
     expect(unitHint('80')).toBeNull(); expect(unitHint('skip')).toBeNull(); expect(unitHint('')).toBeNull()
     expect(normalizeProfile({ unit: 'lb' }).unit).toBe('lb'); expect(normalizeProfile({ unit: 'stone' }).unit).toBeNull()
+  })
+})
+
+describe('the goal shapes the plan', () => {
+  const routine = () => ({ id: 'r', name: 'Upper A', ex: [{ id: '0025', sets: 3, reps: 8, weight: 0 }, { id: '0334', sets: 2, reps: 12, weight: 0 }, { id: '0605', sets: 3, reps: 15, weight: 0 }] })
+  it('picks the rule and the rep range from goal and level', () => {
+    expect(planShape({ goal: 'strength', experience: 'beginner' })).toMatchObject({ prog: 'linear', reps: 5 })
+    expect(planShape({ goal: 'strength', experience: 'advanced' })).toMatchObject({ prog: 'double', repsMin: 4, reps: 6 })
+    expect(planShape({ goal: 'muscle', experience: 'beginner' })).toMatchObject({ prog: 'linear', reps: 10 })
+    expect(planShape({ goal: 'muscle', experience: 'intermediate' })).toMatchObject({ prog: 'double', repsMin: 8, reps: 12 })
+    expect(planShape({ goal: 'active', experience: 'advanced' })).toMatchObject({ prog: 'double', repsMin: 12, reps: 15, rest: 75 })
+    expect(planShape({})).toMatchObject({ prog: 'linear', reps: 12 })
+  })
+  it('strength: the big lifts go to 4 sets of 5, accessories keep their reps', () => {
+    const r = shapeRoutine(routine(), planShape({ goal: 'strength', experience: 'intermediate' }))
+    expect(r.prog).toBe('linear'); expect(r.ex[0].restSec).toBe(180)
+    expect(r.ex[0]).toMatchObject({ sets: 4, reps: 5 })
+    expect(r.ex[1]).toMatchObject({ sets: 2, reps: 12 })
+  })
+  it('muscle: everything but the high-rep finishers works 8 to 12 under double progression', () => {
+    const r = shapeRoutine(routine(), planShape({ goal: 'muscle', experience: 'intermediate' }))
+    expect(r.prog).toBe('double')
+    expect(r.ex[0]).toMatchObject({ sets: 3, repsMin: 8, reps: 12 })
+    expect(r.ex[1]).toMatchObject({ repsMin: 8, reps: 12 })
+    expect(r.ex[2]).toMatchObject({ reps: 15 }); expect(r.ex[2].repsMin).toBeUndefined()
+  })
+  it('fitness: higher reps everywhere, and a timed hold is left alone', () => {
+    const base = routine(); base.ex.push({ id: 'plank', sets: 3, sec: 30, weight: 0 })
+    const r = shapeRoutine(base, planShape({ goal: 'fitness', experience: 'beginner' }))
+    expect(r.ex.map(e => e.reps)).toEqual([12, 12, 15, undefined])
+    expect(shapeRoutine(null, {})).toBeNull()
   })
 })
